@@ -34,6 +34,12 @@
         <ProjectReference Include="..\GorgeCompilerToolchain\GorgeCompilerToolchain.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Views\PropertiesPanelView.axaml.cs">
+        <DependentUpon>PropertiesPanelView.axaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
     <Target Name="CopyGodotApplication" AfterTargets="Build">
         <ItemGroup>
             <GodotFiles Include="GodotApplication\**\*.*" />

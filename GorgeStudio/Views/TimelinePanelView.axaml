@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GorgeStudio.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="200"
+             x:Class="GorgeStudio.Views.TimelinePanelView"
+             x:DataType="vm:TimelinePanelViewModel">
+
+    <Design.DataContext>
+        <vm:TimelinePanelViewModel/>
+    </Design.DataContext>
+
+    <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+            BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+            BorderThickness="0,1,0,0">
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8" Margin="12">
+            <TextBlock Text="{Binding Title}"
+                       FontSize="14"
+                       FontWeight="SemiBold" />
+            <Separator Height="1" Width="100"
+                       Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}" />
+            <TextBlock Text="Timeline content area"
+                       FontSize="12"
+                       Opacity="0.5" />
+        </StackPanel>
+    </Border>
+
+</UserControl>

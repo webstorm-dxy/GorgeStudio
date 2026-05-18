@@ -8,13 +8,13 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="GorgeStudio"
-        Width="1200" Height="800">
+        Width="1920" Height="1200">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto,300,Auto">
         <!-- 工具栏 -->
         <Border Grid.Row="0"
                 Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
@@ -35,14 +35,42 @@
             </StackPanel>
         </Border>
 
-        <!-- 嵌入区域 -->
-        <Border x:Name="EmbedHost"
-                Grid.Row="1"
-                Background="Black"
-                Focusable="False" />
+        <!-- Row 1: Embed area + Right panel -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,4,350">
+            <!-- Left: Godot embed area -->
+            <Border x:Name="EmbedHost"
+                    Grid.Column="0"
+                    Background="Black"
+                    Focusable="False" />
+
+            <!-- Resize handle -->
+            <GridSplitter Grid.Column="1"
+                          Width="4"
+                          Background="Gray"
+                          ResizeDirection="Columns" />
+
+            <!-- Right: Properties panel -->
+            <Border Grid.Column="2"
+                    MinWidth="150"
+                    Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                    BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                    BorderThickness="1,0,0,0">
+                <ContentControl Content="{Binding RightPanel}" />
+            </Border>
+        </Grid>
+
+        <!-- Row 2: Resize handle (horizontal) -->
+        <GridSplitter Grid.Row="2"
+                      Height="4"
+                      Background="Gray"
+                      ResizeDirection="Rows" />
+
+        <!-- Timeline -->
+        <ContentControl Grid.Row="3"
+                        Content="{Binding TimelinePanel}" />
 
         <!-- 状态栏 -->
-        <Border Grid.Row="2"
+        <Border Grid.Row="4"
                 Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
                 Padding="8,4"
                 BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"

@@ -4,6 +4,8 @@
     <option name="projectPerEditor">
       <map>
         <entry key="GorgeStudio/Views/MainWindow.axaml" value="GorgeStudio/GorgeStudio.csproj" />
+        <entry key="GorgeStudio/Views/PropertiesPanelView.axaml" value="GorgeStudio/GorgeStudio.csproj" />
+        <entry key="GorgeStudio/Views/TimelinePanelView.axaml" value="GorgeStudio/GorgeStudio.csproj" />
       </map>
     </option>
   </component>

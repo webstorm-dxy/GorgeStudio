@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GorgeStudio.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="400"
+             x:Class="GorgeStudio.Views.PropertiesPanelView"
+             x:DataType="vm:PropertiesPanelViewModel">
+
+    <Design.DataContext>
+        <vm:PropertiesPanelViewModel/>
+    </Design.DataContext>
+
+    <StackPanel Orientation="Vertical" Spacing="8" Margin="12">
+        <TextBlock Text="{Binding Title}"
+                   FontSize="14"
+                   FontWeight="SemiBold" />
+        <Separator Height="1"
+                   Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}" />
+        <TextBlock Text="{Binding Description}"
+                   FontSize="12"
+                   TextWrapping="Wrap"
+                   Opacity="0.7" />
+    </StackPanel>
+
+</UserControl>
