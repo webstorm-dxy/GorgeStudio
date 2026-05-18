@@ -15,8 +15,43 @@
     </Design.DataContext>
 
     <Grid RowDefinitions="Auto,*,Auto">
+        <!-- 工具栏 -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                Padding="8,6"
+                BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <TextBlock Text="GorgeStudio"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center" />
+                <Separator Width="1" Height="20"
+                           Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                           VerticalAlignment="Center" />
+                <Button Content="启动 Godot"
+                        Command="{Binding LaunchCommand}"
+                        IsEnabled="{Binding CanLaunch}" />
+            </StackPanel>
+        </Border>
 
+        <!-- 嵌入区域 -->
+        <Border x:Name="EmbedHost"
+                Grid.Row="1"
+                Background="Black"
+                Focusable="False" />
 
+        <!-- 状态栏 -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                Padding="8,4"
+                BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                BorderThickness="0,1,0,0">
+            <TextBlock Text="{Binding StatusText}"
+                       FontSize="12"
+                       VerticalAlignment="Center"
+                       Opacity="0.7" />
+        </Border>
     </Grid>
 
 </Window>

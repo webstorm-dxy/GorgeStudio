@@ -3,12 +3,13 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="GodotApplication\" />
+
         <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
@@ -25,4 +26,13 @@
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
     </ItemGroup>
+
+    <Target Name="CopyGodotApplication" AfterTargets="Build">
+        <ItemGroup>
+            <GodotFiles Include="GodotApplication\**\*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(GodotFiles)"
+              DestinationFolder="$(OutputPath)GodotApplication\%(RecursiveDir)"
+              />
+    </Target>
 </Project>

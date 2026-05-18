@@ -1,0 +1,22 @@
+@echo off
+set "USERPROFILE=C:\Users\daxingyi"
+set "APPDATA=C:\Users\daxingyi\AppData\Roaming"
+set "LOCALAPPDATA=C:\Users\daxingyi\AppData\Local"
+set "TEMP=C:\Users\daxingyi\AppData\Local\Temp"
+set "TMP=C:\Users\daxingyi\AppData\Local\Temp"
+set "ALLUSERSPROFILE=C:\ProgramData"
+set "ProgramData=C:\ProgramData"
+set "SystemDrive=C:"
+set "SystemRoot=C:\WINDOWS"
+set "ProgramFiles=C:\Program Files"
+set "ProgramFiles(x86)=C:\Program Files (x86)"
+set "CommonProgramFiles=C:\Program Files\Common Files"
+set "PUBLIC=C:\Users\Public"
+set "NUGET_PACKAGES=C:\Users\daxingyi\.nuget\packages"
+set "DOTNET_CLI_HOME=C:\Users\daxingyi\.dotnet"
+set "HOMEDRIVE=C:"
+set "HOMEPATH=\Users\daxingyi"
+if not exist "%DOTNET_CLI_HOME%" mkdir "%DOTNET_CLI_HOME%"
+if not exist "%USERPROFILE%\.dotnet" mkdir "%USERPROFILE%\.dotnet"
+cd /d C:\Users\daxingyi\RiderProjects\GorgeStudio
+dotnet build GorgeStudio.sln
