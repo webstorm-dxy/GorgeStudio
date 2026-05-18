@@ -25,6 +25,13 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\GorgeCore\GorgeCore.csproj"/>
+        <ProjectReference Include="..\GorgeCompileFramework\GorgeCompileFramework.csproj"/>
+        <ProjectReference Include="..\GorgeCompilerToolchain\GorgeCompilerToolchain.csproj"/>
     </ItemGroup>
 
     <Target Name="CopyGodotApplication" AfterTargets="Build">
