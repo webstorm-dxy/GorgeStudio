@@ -692,4 +692,105 @@ interface IUpdatable {
     }
 
     #endregion
+
+    #region Real File Tests
+
+    private static string GetDremuStaffPath() =>
+        Path.Combine(AppContext.BaseDirectory, "TestAssets", "DremuStaff.g");
+
+    [Fact]
+    public async Task CompileRealDremuStaffFile_FileIsFoundAndLoaded()
+    {
+        var filePath = GetDremuStaffPath();
+        Assert.True(File.Exists(filePath), $"Test asset not found at: {filePath}");
+
+        var result = await _fileService.LoadAndCompileFileAsync(filePath, isChart: true);
+
+        Assert.True(result.CompileTime > TimeSpan.Zero);
+        Assert.NotNull(result.ErrorMessage);
+    }
+
+    [Fact]
+    public async Task CompileRealDremuStaffFile_FailsWithMissingNamespaceError()
+    {
+        var filePath = GetDremuStaffPath();
+        var result = await _fileService.LoadAndCompileFileAsync(filePath, isChart: true);
+
+        Assert.False(result.Success);
+        Assert.NotNull(result.ErrorMessage);
+        Assert.Contains("Gorge", result.ErrorMessage);
+    }
+
+    #endregion
+
+    #region ChartMetadataTests
+
+    private static string GetChartMetadataPath() =>
+        Path.Combine(AppContext.BaseDirectory, "TestAssets", "ChartMetadata.g");
+
+    [Fact]
+    public async Task CompileChartMetadataFile_ReturnsSuccess()
+    {
+        var filePath = GetChartMetadataPath();
+        Assert.True(File.Exists(filePath), $"Test asset not found at: {filePath}");
+
+        var result = await _fileService.LoadAndCompileFileAsync(filePath, isChart: true);
+
+        AssertSuccess(result);
+        Assert.Equal("DremuStaff", result.Project!.Classes[0].FullName);
+    }
+
+    [Fact]
+    public async Task CompileChartMetadataFile_HasElementStaffAnnotation()
+    {
+        var filePath = GetChartMetadataPath();
+        var result = await _fileService.LoadAndCompileFileAsync(filePath, isChart: true);
+
+        var staff = FindClass(result.Project!, "DremuStaff");
+        Assert.Contains("ElementStaff", staff.AnnotationNames);
+        Assert.NotEmpty(staff.Annotations);
+        Assert.Equal("ElementStaff", staff.Annotations[0].Name);
+    }
+
+    [Fact]
+    public async Task CompileChartMetadataFile_HasAnnotationMetadata()
+    {
+        var filePath = GetChartMetadataPath();
+        var result = await _fileService.LoadAndCompileFileAsync(filePath, isChart: true);
+
+        var staff = FindClass(result.Project!, "DremuStaff");
+        var annotation = staff.Annotations.First(a => a.Name == "ElementStaff");
+        Assert.True(annotation.Parameters.ContainsKey("form"));
+        Assert.Equal("Dremu", annotation.Parameters["form"]);
+        Assert.True(annotation.Parameters.ContainsKey("displayName"));
+        Assert.Equal("Dremu谱表", annotation.Parameters["displayName"]);
+    }
+
+    [Fact]
+    public async Task CompileChartMetadataFile_HasChartStaticMethod()
+    {
+        var filePath = GetChartMetadataPath();
+        var result = await _fileService.LoadAndCompileFileAsync(filePath, isChart: true);
+
+        var staff = FindClass(result.Project!, "DremuStaff");
+        Assert.Single(staff.StaticMethods);
+        var period = staff.StaticMethods[0];
+        Assert.Equal("Period", period.Name);
+        Assert.Equal("int", period.ReturnType);
+        Assert.Contains("Chart", period.Annotations.Select(a => a.Name));
+    }
+
+    [Fact]
+    public async Task CompileChartMetadataFile_HasFieldsAndMethods()
+    {
+        var filePath = GetChartMetadataPath();
+        var result = await _fileService.LoadAndCompileFileAsync(filePath, isChart: true);
+
+        var staff = FindClass(result.Project!, "DremuStaff");
+        Assert.Equal(2, staff.Fields.Count);
+        Assert.Single(staff.Methods);
+        Assert.Equal("Update", staff.Methods[0].Name);
+    }
+
+    #endregion
 }

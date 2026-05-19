@@ -27,4 +27,10 @@
         <ProjectReference Include="..\GorgeCompileFramework\GorgeCompileFramework.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="TestAssets\*.g">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
