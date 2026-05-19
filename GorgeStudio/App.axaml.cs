@@ -9,6 +9,7 @@ using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using GorgeStudio.Interop;
 using GorgeStudio.Services;
+using GorgeStudio.Services.EmbedService;
 using GorgeStudio.ViewModels;
 using GorgeStudio.Views;
 

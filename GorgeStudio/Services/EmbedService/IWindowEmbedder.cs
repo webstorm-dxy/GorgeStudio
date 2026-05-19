@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 
-namespace GorgeStudio.Services;
+namespace GorgeStudio.Services.EmbedService;
 
 /// <summary>
 /// Abstracts OS-level window embedding for an external process.

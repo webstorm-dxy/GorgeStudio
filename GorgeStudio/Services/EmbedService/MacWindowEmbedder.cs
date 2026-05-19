@@ -5,7 +5,7 @@ using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 
-namespace GorgeStudio.Services;
+namespace GorgeStudio.Services.EmbedService;
 
 /// <summary>
 /// macOS window embedder. Launches the Godot process as a standalone window.

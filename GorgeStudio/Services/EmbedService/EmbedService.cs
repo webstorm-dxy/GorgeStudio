@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 
-namespace GorgeStudio.Services;
+namespace GorgeStudio.Services.EmbedService;
 
 /// <summary>
 /// IEmbedService 实现，管理 IWindowEmbedder 生命周期、路径解析和进程嵌入。

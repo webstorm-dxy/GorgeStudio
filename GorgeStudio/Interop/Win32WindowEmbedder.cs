@@ -11,6 +11,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using GorgeStudio.Services;
+using GorgeStudio.Services.EmbedService;
 
 namespace GorgeStudio.Interop;
 

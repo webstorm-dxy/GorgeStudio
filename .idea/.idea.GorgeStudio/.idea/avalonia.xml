@@ -3,6 +3,7 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
+        <entry key="GorgeStudio/App.axaml" value="GorgeStudio/GorgeStudio.csproj" />
         <entry key="GorgeStudio/Views/MainWindow.axaml" value="GorgeStudio/GorgeStudio.csproj" />
         <entry key="GorgeStudio/Views/PropertiesPanelView.axaml" value="GorgeStudio/GorgeStudio.csproj" />
         <entry key="GorgeStudio/Views/TimelinePanelView.axaml" value="GorgeStudio/GorgeStudio.csproj" />
