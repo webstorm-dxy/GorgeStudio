@@ -15,21 +15,17 @@
     </Design.DataContext>
 
     <Grid RowDefinitions="Auto,*,Auto,300,Auto">
-        <!-- 工具栏 -->
-        <Border Grid.Row="0"
-                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                Padding="8,6"
-                BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
-                BorderThickness="0,0,0,1">
-            <StackPanel Orientation="Horizontal" Spacing="12">
-                <TextBlock Text="GorgeStudio"
-                           FontSize="14"
-                           FontWeight="SemiBold"
+        <!-- Toolbar -->
+        <Border Grid.Row="0" Classes="toolbar">
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <TextBlock Classes="subtitle"
+                           Text="GorgeStudio"
                            VerticalAlignment="Center" />
-                <Separator Width="1" Height="20"
+                <Separator Width="1" Height="22"
                            Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
                            VerticalAlignment="Center" />
-                <Button Content="加载Godot运行核心"
+                <Button Classes="accent"
+                        Content="加载Godot运行核心"
                         Command="{Binding LaunchCommand}"
                         IsEnabled="{Binding CanLaunch}" />
             </StackPanel>
@@ -37,39 +33,39 @@
 
         <!-- Row 1: Embed area + Right panel -->
         <Grid Grid.Row="1" ColumnDefinitions="*,4,350,4,350">
-            <!-- Left: Godot embed area -->
+            <!-- Left: Godot embed area (must stay native: no CornerRadius, no transparent) -->
             <Border x:Name="EmbedHost"
                     Grid.Column="0"
                     Background="Black"
+                    BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                    BorderThickness="1"
                     Focusable="False" />
 
             <!-- Resize handle -->
             <GridSplitter Grid.Column="1"
                           Width="4"
-                          Background="Gray"
                           ResizeDirection="Columns" />
 
             <!-- Right: Properties panel -->
             <Border Grid.Column="2"
                     MinWidth="150"
-                    Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                    BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
-                    BorderThickness="1,0,0,0">
+                    Classes="cardPanel"
+                    BorderThickness="1,0,0,0"
+                    CornerRadius="0">
                 <ContentControl Content="{Binding RightPanel}" />
             </Border>
 
             <!-- Resize handle -->
             <GridSplitter Grid.Column="3"
                           Width="4"
-                          Background="Gray"
                           ResizeDirection="Columns" />
 
             <!-- Element List panel -->
             <Border Grid.Column="4"
                     MinWidth="150"
-                    Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                    BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
-                    BorderThickness="1,0,0,0">
+                    Classes="cardPanel"
+                    BorderThickness="1,0,0,0"
+                    CornerRadius="0">
                 <ContentControl Content="{Binding ElementListPanel}" />
             </Border>
         </Grid>
@@ -77,23 +73,17 @@
         <!-- Row 2: Resize handle (horizontal) -->
         <GridSplitter Grid.Row="2"
                       Height="4"
-                      Background="Gray"
                       ResizeDirection="Rows" />
 
         <!-- Timeline -->
         <ContentControl Grid.Row="3"
                         Content="{Binding TimelinePanel}" />
 
-        <!-- 状态栏 -->
-        <Border Grid.Row="4"
-                Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                Padding="8,4"
-                BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
-                BorderThickness="0,1,0,0">
-            <TextBlock Text="{Binding StatusText}"
-                       FontSize="12"
-                       VerticalAlignment="Center"
-                       Opacity="0.7" />
+        <!-- Status bar -->
+        <Border Grid.Row="4" Classes="statusBar">
+            <TextBlock Classes="statusBarText"
+                       Text="{Binding StatusText}"
+                       VerticalAlignment="Center" />
         </Border>
     </Grid>
 

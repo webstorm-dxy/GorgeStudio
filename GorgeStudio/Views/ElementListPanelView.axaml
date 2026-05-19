@@ -11,16 +11,22 @@
         <vm:ElementListPanelViewModel/>
     </Design.DataContext>
 
-    <StackPanel Orientation="Vertical" Spacing="8" Margin="12">
-        <TextBlock Text="{Binding Title}"
-                   FontSize="14"
-                   FontWeight="SemiBold" />
-        <Separator Height="1"
-                   Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}" />
-        <TextBlock Text="{Binding Description}"
-                   FontSize="12"
-                   TextWrapping="Wrap"
-                   Opacity="0.7" />
-    </StackPanel>
+    <Border Classes="cardPanel" CornerRadius="0" BorderThickness="0">
+        <DockPanel>
+            <!-- Header -->
+            <Border DockPanel.Dock="Top" Classes="panelHeader">
+                <TextBlock Classes="subtitle" Text="{Binding Title}" />
+            </Border>
+
+            <!-- Content -->
+            <ScrollViewer>
+                <StackPanel Orientation="Vertical" Spacing="12" Margin="16">
+                    <TextBlock Classes="caption"
+                               Text="{Binding Description}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
 
 </UserControl>
