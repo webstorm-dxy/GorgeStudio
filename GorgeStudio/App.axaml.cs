@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using GorgeStudio.Interop;
 using GorgeStudio.Services;
 using GorgeStudio.Services.EmbedService;
+using GorgeStudio.Services.FileService;
 using GorgeStudio.ViewModels;
 using GorgeStudio.Views;
 
@@ -53,6 +54,9 @@ public partial class App : Application
                 var factory = sp.GetRequiredService<Func<IWindowEmbedder>>();
                 return new EmbedService(mainWindow.EmbedHostControl, mainWindow, factory);
             });
+
+            // 注册文件服务（加载、编译 .g 谱面文件）
+            services.AddSingleton<IFileService>(_ => new GorgeStudio.Services.FileService.FileService());
 
             // ViewModel 由容器解析，自动注入 IEmbedService
             services.AddTransient<MainWindowViewModel>();
