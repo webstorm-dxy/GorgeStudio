@@ -19,6 +19,9 @@ public partial class MainWindowViewModel : ViewModelBase
     private ViewModelBase? _rightPanel;
 
     [ObservableProperty]
+    private ViewModelBase? _elementListPanel;
+
+    [ObservableProperty]
     private ViewModelBase? _timelinePanel;
 
     /// <summary>
@@ -37,6 +40,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _embedService = embedService;
         _embedService.StatusChanged += msg => StatusText = msg;
         RightPanel = new PropertiesPanelViewModel();
+        ElementListPanel = new ElementListPanelViewModel();
         TimelinePanel = new TimelinePanelViewModel();
     }
 
