@@ -1,4 +1,8 @@
+using System;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GorgeStudio.Services;
@@ -47,6 +51,30 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task LaunchAsync()
     {
+        if (OperatingSystem.IsMacOS())
+        {
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime
+                && lifetime.MainWindow is not null)
+            {
+                var dialog = new Window
+                {
+                    Title = "提示",
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    CanResize = false,
+                };
+                var panel = new StackPanel { Margin = new Thickness(24, 16), Spacing = 12 };
+                panel.Children.Add(new TextBlock { Text = "Mac仅支持远程仿真" });
+                var button = new Button { Content = "确定", HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center };
+                button.Click += (_, _) => dialog.Close();
+                panel.Children.Add(button);
+                dialog.Content = panel;
+                await dialog.ShowDialog(lifetime.MainWindow);
+            }
+            StatusText = "Mac仅支持远程仿真";
+            return;
+        }
+
         CanLaunch = false;
         StatusText = "正在启动...";
 

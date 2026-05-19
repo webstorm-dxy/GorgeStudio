@@ -11,19 +11,21 @@
         <vm:TimelinePanelViewModel/>
     </Design.DataContext>
 
-    <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-            BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
-            BorderThickness="0,1,0,0">
-        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8" Margin="12">
-            <TextBlock Text="{Binding Title}"
-                       FontSize="14"
-                       FontWeight="SemiBold" />
-            <Separator Height="1" Width="100"
-                       Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}" />
-            <TextBlock Text="Timeline content area"
-                       FontSize="12"
-                       Opacity="0.5" />
-        </StackPanel>
+    <Border Classes="cardPanel" CornerRadius="0" BorderThickness="0,1,0,0">
+        <DockPanel>
+            <!-- Header strip -->
+            <Border DockPanel.Dock="Top" Classes="panelHeader">
+                <TextBlock Classes="subtitle" Text="{Binding Title}" />
+            </Border>
+
+            <!-- Timeline content area -->
+            <Grid Margin="16,8">
+                <TextBlock Classes="caption"
+                           Text="Timeline content area"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+            </Grid>
+        </DockPanel>
     </Border>
 
 </UserControl>

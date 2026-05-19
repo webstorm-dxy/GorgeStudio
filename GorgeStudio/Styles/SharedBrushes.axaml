@@ -1,0 +1,36 @@
+<Styles xmlns="https://github.com/avaloniaui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ===== Surface Brushes ===== -->
+    <Styles.Resources>
+        <SolidColorBrush x:Key="SurfacePanelBrush"
+                         Color="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
+        <SolidColorBrush x:Key="SurfaceCardBrush"
+                         Color="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
+
+        <!-- Toolbar background -->
+        <SolidColorBrush x:Key="ToolbarBackgroundBrush"
+                         Color="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
+
+        <!-- Status bar background -->
+        <SolidColorBrush x:Key="StatusBarBackgroundBrush"
+                         Color="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
+
+        <!-- Divider -->
+        <SolidColorBrush x:Key="DividerStrokeBrush"
+                         Color="{DynamicResource SystemControlBackgroundBaseMediumBrush}" />
+
+        <!-- Accent -->
+        <SolidColorBrush x:Key="AccentFillBrush"
+                         Color="{DynamicResource SystemAccentColor}" />
+
+        <!-- Foreground / Text -->
+        <SolidColorBrush x:Key="TextPrimaryBrush"
+                         Color="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+        <SolidColorBrush x:Key="TextSecondaryBrush"
+                         Color="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+        <SolidColorBrush x:Key="TextTertiaryBrush"
+                         Color="{DynamicResource SystemControlForegroundBaseLowBrush}" />
+    </Styles.Resources>
+
+</Styles>

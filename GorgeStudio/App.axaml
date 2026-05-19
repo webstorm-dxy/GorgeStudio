@@ -11,5 +11,8 @@
   
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://GorgeStudio/Styles/SharedBrushes.axaml" />
+        <StyleInclude Source="avares://GorgeStudio/Styles/SharedTypography.axaml" />
+        <StyleInclude Source="avares://GorgeStudio/Styles/SharedStyles.axaml" />
     </Application.Styles>
 </Application>
