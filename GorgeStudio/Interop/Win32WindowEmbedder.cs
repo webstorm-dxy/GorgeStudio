@@ -4,11 +4,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using GorgeStudio.Services;
 
 namespace GorgeStudio.Interop;
 
@@ -16,7 +18,8 @@ namespace GorgeStudio.Interop;
 /// 将外部进程的所有顶层窗口通过 Win32 SetParent 嵌入到 Avalonia 控件区域。
 /// 支持多窗口进程（如 Godot 引擎先弹出 splash 再创建主窗口），自动捕获延迟出现的窗口。
 /// </summary>
-public sealed partial class Win32WindowEmbedder : IDisposable
+[SupportedOSPlatform("windows7.0")]
+internal sealed partial class Win32WindowEmbedder : IWindowEmbedder
 {
     // ── P/Invoke ────────────────────────────────────────────────────────
     [LibraryImport("user32.dll")]
@@ -126,9 +129,6 @@ public sealed partial class Win32WindowEmbedder : IDisposable
     /// <summary>状态变化时触发，可用于更新 UI 状态栏。</summary>
     public event Action<string>? StatusChanged;
 
-    /// <summary>嵌入完成（含失败）时触发。</summary>
-    public event Action<bool>? EmbedCompleted;
-
     // ── Public API ──────────────────────────────────────────────────────
 
     /// <summary>
@@ -150,7 +150,6 @@ public sealed partial class Win32WindowEmbedder : IDisposable
         if (!File.Exists(executablePath))
         {
             ReportStatus($"错误：找不到文件 {executablePath}");
-            EmbedCompleted?.Invoke(false);
             return false;
         }
 
@@ -171,14 +170,12 @@ public sealed partial class Win32WindowEmbedder : IDisposable
         catch (Exception ex)
         {
             ReportStatus($"错误：启动进程失败 — {ex.Message}");
-            EmbedCompleted?.Invoke(false);
             return false;
         }
 
         if (_process == null)
         {
             ReportStatus("错误：Process.Start 返回 null");
-            EmbedCompleted?.Invoke(false);
             return false;
         }
 
@@ -188,7 +185,6 @@ public sealed partial class Win32WindowEmbedder : IDisposable
         if (firstBatch.Count == 0)
         {
             ReportStatus("错误：等待应用窗口超时");
-            EmbedCompleted?.Invoke(false);
             return false;
         }
 
@@ -217,7 +213,6 @@ public sealed partial class Win32WindowEmbedder : IDisposable
         // 7. 启动后台轮询，捕获后续可能出现的窗口
         StartWindowMonitor();
 
-        EmbedCompleted?.Invoke(true);
         return true;
     }
 
