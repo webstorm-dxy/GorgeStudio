@@ -3,7 +3,16 @@
     "allow": [
       "Bash(dotnet build *)",
       "Bash(dotnet sln *)",
-      "Bash(dotnet test *)"
+      "Bash(dotnet test *)",
+      "Bash(taskkill /F /PID 28060)",
+      "Bash(taskkill /F /PID 22356)",
+      "Bash(taskkill /F /PID 41940)",
+      "Bash(cmd.exe /c \"taskkill /F /PID 28060\")",
+      "Bash(cmd.exe /c \"taskkill /F /PID 22356\")",
+      "Bash(cmd.exe /c \"taskkill /F /PID 41940\")",
+      "Bash(taskkill -f -pid 32880)",
+      "Bash(taskkill -f -pid 50764)",
+      "Bash(taskkill -f -pid 42396)"
     ]
   }
 }

@@ -149,8 +149,7 @@ class Calculator {
 
         var cls = FindClass(result.Project!, "Calculator");
         Assert.True(cls.IsChartCode);
-        Assert.Single(result.Project!.ChartClasses);
-        Assert.Empty(result.Project!.LibraryClasses);
+        Assert.Contains(result.Project!.ChartClasses, c => c.ClassName == "Calculator");
     }
 
     [Fact]
@@ -575,6 +574,7 @@ class ClassB {
         var zipPath = CreateTempZipWithContent(("Score.g", SimpleClass));
         var result = await _fileService.LoadAndCompileZipAsync(zipPath, isChart: true);
 
+        AssertSuccess(result);
         var cls = FindClass(result.Project!, "Calculator");
         Assert.True(cls.IsChartCode);
     }
@@ -707,18 +707,18 @@ interface IUpdatable {
         var result = await _fileService.LoadAndCompileFileAsync(filePath, isChart: true);
 
         Assert.True(result.CompileTime > TimeSpan.Zero);
-        Assert.NotNull(result.ErrorMessage);
+        Assert.True(result.Success, result.ErrorMessage ?? "Expected success.");
+        Assert.NotNull(result.Project);
     }
 
     [Fact]
-    public async Task CompileRealDremuStaffFile_FailsWithMissingNamespaceError()
+    public async Task CompileRealDremuStaffFile_SucceedsWithBuiltinTypes()
     {
         var filePath = GetDremuStaffPath();
         var result = await _fileService.LoadAndCompileFileAsync(filePath, isChart: true);
 
-        Assert.False(result.Success);
-        Assert.NotNull(result.ErrorMessage);
-        Assert.Contains("Gorge", result.ErrorMessage);
+        Assert.True(result.Success, result.ErrorMessage ?? "Expected success.");
+        Assert.NotNull(result.Project);
     }
 
     #endregion

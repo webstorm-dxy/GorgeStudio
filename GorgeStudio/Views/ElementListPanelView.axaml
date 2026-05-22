@@ -18,13 +18,19 @@
                 <TextBlock Classes="subtitle" Text="{Binding Title}" />
             </Border>
 
-            <!-- Content -->
+            <!-- TreeView content -->
             <ScrollViewer>
-                <StackPanel Orientation="Vertical" Spacing="12" Margin="16">
-                    <TextBlock Classes="caption"
-                               Text="{Binding Description}"
-                               TextWrapping="Wrap" />
-                </StackPanel>
+                <TreeView ItemsSource="{Binding RootNodes}"
+                          SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+                    <TreeView.ItemTemplate>
+                        <TreeDataTemplate ItemsSource="{Binding Children}">
+                            <TextBlock Text="{Binding DisplayName}"
+                                       FontSize="12"
+                                       VerticalAlignment="Center"
+                                       Margin="2,1" />
+                        </TreeDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
             </ScrollViewer>
         </DockPanel>
     </Border>

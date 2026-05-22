@@ -10,9 +10,12 @@
 
     <ItemGroup>
 
+        <Folder Include="Assets\Forms\" />
+
         <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
         <Folder Include="Services\FileService\" />
+        <Folder Include="Services\GorgeClassService\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -47,6 +50,15 @@
         </ItemGroup>
         <Copy SourceFiles="@(GodotFiles)"
               DestinationFolder="$(OutputPath)GodotApplication\%(RecursiveDir)"
+              />
+    </Target>
+
+    <Target Name="CopyAssetForms" AfterTargets="Build">
+        <ItemGroup>
+            <AssetFormFiles Include="Assets\Forms\**\*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(AssetFormFiles)"
+              DestinationFolder="$(OutputPath)Assets\Forms\%(RecursiveDir)"
               />
     </Target>
 </Project>

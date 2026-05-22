@@ -28,12 +28,24 @@
                         Content="加载Godot运行核心"
                         Command="{Binding LaunchCommand}"
                         IsEnabled="{Binding CanLaunch}" />
+                <Button Content="打开文件"
+                        Command="{Binding LoadFileCommand}"
+                        IsEnabled="{Binding CanLaunch}" />
+                <Button Content="打开ZIP"
+                        Command="{Binding LoadZipCommand}"
+                        IsEnabled="{Binding CanLaunch}" />
+                <Separator Width="1" Height="22"
+                           Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                           VerticalAlignment="Center" />
+                <Button Content="保存"
+                        Command="{Binding SaveCommand}"
+                        IsEnabled="{Binding CanLaunch}" />
             </StackPanel>
         </Border>
 
         <!-- Row 1: Embed area + Right panel -->
         <Grid Grid.Row="1" ColumnDefinitions="*,4,350,4,350">
-            <!-- Left: Godot embed area (must stay native: no CornerRadius, no transparent) -->
+            <!-- Left: Godot embed area -->
             <Border x:Name="EmbedHost"
                     Grid.Column="0"
                     Background="Black"
@@ -41,7 +53,6 @@
                     BorderThickness="1"
                     Focusable="False" />
 
-            <!-- Resize handle -->
             <GridSplitter Grid.Column="1"
                           Width="4"
                           ResizeDirection="Columns" />
@@ -55,7 +66,6 @@
                 <ContentControl Content="{Binding RightPanel}" />
             </Border>
 
-            <!-- Resize handle -->
             <GridSplitter Grid.Column="3"
                           Width="4"
                           ResizeDirection="Columns" />

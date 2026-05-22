@@ -1,0 +1,2743 @@
+fileFormatVersion: 2
+guid: 9b17b436fab267f44a00fc119a9e7277
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6048201122521262305
+    second: SliderRing_0
+  - first:
+      213: 4807577104556730456
+    second: SliderRing_1
+  - first:
+      213: -5527976698971279821
+    second: SliderRing_2
+  - first:
+      213: -1005532621277319394
+    second: SliderRing_3
+  - first:
+      213: -4921728759612941553
+    second: SliderRing_4
+  - first:
+      213: 8308224789343405772
+    second: SliderRing_5
+  - first:
+      213: 4312261964476926551
+    second: SliderRing_6
+  - first:
+      213: -9133557101893353971
+    second: SliderRing_7
+  - first:
+      213: -1440735754771646188
+    second: SliderRing_8
+  - first:
+      213: -435955791958367796
+    second: SliderRing_9
+  - first:
+      213: 2192083117590217573
+    second: SliderRing_10
+  - first:
+      213: 5485966486684248532
+    second: SliderRing_11
+  - first:
+      213: -988932609724526127
+    second: SliderRing_12
+  - first:
+      213: -5272631124792875454
+    second: SliderRing_13
+  - first:
+      213: 26831287372834188
+    second: SliderRing_14
+  - first:
+      213: 5695823318957000096
+    second: SliderRing_15
+  - first:
+      213: 4417895440933687746
+    second: SliderRing_16
+  - first:
+      213: -7048470157486197139
+    second: SliderRing_17
+  - first:
+      213: 8397955267108118052
+    second: SliderRing_18
+  - first:
+      213: -3463773993144982733
+    second: SliderRing_19
+  - first:
+      213: -1497354459727637479
+    second: SliderRing_20
+  - first:
+      213: 2342666453590839462
+    second: SliderRing_21
+  - first:
+      213: -9173050390926451218
+    second: SliderRing_22
+  - first:
+      213: 4382053603603887679
+    second: SliderRing_23
+  - first:
+      213: -1514040019830569405
+    second: SliderRing_24
+  - first:
+      213: 1155589953733482799
+    second: SliderRing_25
+  - first:
+      213: -1810294416877063562
+    second: SliderRing_26
+  - first:
+      213: -6974946309850687188
+    second: SliderRing_27
+  - first:
+      213: -659188849108794054
+    second: SliderRing_28
+  - first:
+      213: -5653755613421707376
+    second: SliderRing_29
+  - first:
+      213: 6331437997237650995
+    second: SliderRing_30
+  - first:
+      213: 3054673712202088134
+    second: SliderRing_31
+  - first:
+      213: -8175523273466717438
+    second: SliderRing_32
+  - first:
+      213: -5524649045133744574
+    second: SliderRing_33
+  - first:
+      213: 850778779171674511
+    second: SliderRing_34
+  - first:
+      213: 5293130101960412974
+    second: SliderRing_35
+  - first:
+      213: -3650404385482270235
+    second: SliderRing_36
+  - first:
+      213: 4285487252095212234
+    second: SliderRing_37
+  - first:
+      213: -6102443087023802698
+    second: SliderRing_38
+  - first:
+      213: 8163742061898459957
+    second: SliderRing_39
+  - first:
+      213: -1645751092802074583
+    second: SliderRing_40
+  - first:
+      213: 7464093681678902071
+    second: SliderRing_41
+  - first:
+      213: 405574588313123144
+    second: SliderRing_42
+  - first:
+      213: -8616557328936443635
+    second: SliderRing_43
+  - first:
+      213: 2532038908223664818
+    second: SliderRing_44
+  - first:
+      213: -8891302947179301030
+    second: SliderRing_45
+  - first:
+      213: -1307028713592405666
+    second: SliderRing_46
+  - first:
+      213: -3836559410082952586
+    second: SliderRing_47
+  - first:
+      213: -5182616467625304527
+    second: SliderRing_48
+  - first:
+      213: -6794130670355522936
+    second: SliderRing_49
+  - first:
+      213: 4231817912777127680
+    second: SliderRing_50
+  - first:
+      213: -7649793329847664
+    second: SliderRing_51
+  - first:
+      213: -594686035105093452
+    second: SliderRing_52
+  - first:
+      213: -2607968892053671150
+    second: SliderRing_53
+  - first:
+      213: -9021959458652094593
+    second: SliderRing_54
+  - first:
+      213: -8992320419568097576
+    second: SliderRing_55
+  - first:
+      213: -7110619642641696551
+    second: SliderRing_56
+  - first:
+      213: -123851719517458338
+    second: SliderRing_57
+  - first:
+      213: -4137828701614924577
+    second: SliderRing_58
+  - first:
+      213: 5610685345892310051
+    second: SliderRing_59
+  - first:
+      213: 6269984414862901769
+    second: SliderRing_60
+  - first:
+      213: 7741832102795542240
+    second: SliderRing_61
+  - first:
+      213: -7547472104270613516
+    second: SliderRing_62
+  - first:
+      213: -7676368013547012745
+    second: SliderRing_63
+  - first:
+      213: 6556510431012593196
+    second: SliderRing_64
+  - first:
+      213: -3525974383680839556
+    second: SliderRing_65
+  - first:
+      213: -8475691383812149954
+    second: SliderRing_66
+  - first:
+      213: 2917872822915759843
+    second: SliderRing_67
+  - first:
+      213: -2397939647460562438
+    second: SliderRing_68
+  - first:
+      213: -4023176067132444982
+    second: SliderRing_69
+  - first:
+      213: 3876693622443340676
+    second: SliderRing_70
+  - first:
+      213: -2647152133811788619
+    second: SliderRing_71
+  - first:
+      213: -6327138486793899424
+    second: SliderRing_72
+  - first:
+      213: 1698917846538182064
+    second: SliderRing_73
+  - first:
+      213: -4674629324122353215
+    second: SliderRing_74
+  - first:
+      213: 8899373736120021749
+    second: SliderRing_75
+  - first:
+      213: -1248809782131935408
+    second: SliderRing_76
+  - first:
+      213: -4955942810205346397
+    second: SliderRing_77
+  - first:
+      213: -6245292322750951975
+    second: SliderRing_78
+  - first:
+      213: 6057596113413517963
+    second: SliderRing_79
+  - first:
+      213: -19731732359362480
+    second: SliderRing_80
+  - first:
+      213: -3078354564042620808
+    second: SliderRing_81
+  - first:
+      213: -3293160711524295498
+    second: SliderRing_82
+  - first:
+      213: 4399425506430116101
+    second: SliderRing_83
+  - first:
+      213: -5211224311531488146
+    second: SliderRing_84
+  - first:
+      213: 8538025873290062231
+    second: SliderRing_85
+  - first:
+      213: -2416055076777300289
+    second: SliderRing_86
+  - first:
+      213: -3399563485093606012
+    second: SliderRing_87
+  - first:
+      213: -5480644408610655170
+    second: SliderRing_88
+  - first:
+      213: 1896464053659270964
+    second: SliderRing_89
+  - first:
+      213: 2702163210246201744
+    second: SliderRing_90
+  - first:
+      213: 5992011985448312202
+    second: SliderRing_91
+  - first:
+      213: -7810616006736809820
+    second: SliderRing_92
+  - first:
+      213: 9171762740708491460
+    second: SliderRing_93
+  - first:
+      213: 7309737020973855812
+    second: SliderRing_94
+  - first:
+      213: -5553901140179225241
+    second: SliderRing_95
+  - first:
+      213: 3078063880433124368
+    second: SliderRing_96
+  - first:
+      213: 451247657552341187
+    second: SliderRing_97
+  - first:
+      213: 8378943905131428176
+    second: SliderRing_98
+  - first:
+      213: 1006103408438904618
+    second: SliderRing_99
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SliderRing_0
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 1767
+        width: 182
+        height: 259
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e8affd40e68fe350800000000000000
+      internalID: 6048201122521262305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_1
+      rect:
+        serializedVersion: 2
+        x: 719
+        y: 1860
+        width: 112
+        height: 295
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 858a76ba7e1f7b240800000000000000
+      internalID: 4807577104556730456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_2
+      rect:
+        serializedVersion: 2
+        x: 808
+        y: 1949
+        width: 46
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33e2e231b7ea843b0800000000000000
+      internalID: -5527976698971279821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_3
+      rect:
+        serializedVersion: 2
+        x: 849
+        y: 1960
+        width: 43
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1fa2b29861ab02f0800000000000000
+      internalID: -1005532621277319394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_4
+      rect:
+        serializedVersion: 2
+        x: 892
+        y: 1970
+        width: 40
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0b527205c182bbb0800000000000000
+      internalID: -4921728759612941553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_5
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 1978
+        width: 37
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc688e25d6ebc4370800000000000000
+      internalID: 8308224789343405772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_6
+      rect:
+        serializedVersion: 2
+        x: 978
+        y: 1984
+        width: 33
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75a431bc86b38db30800000000000000
+      internalID: 4312261964476926551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_7
+      rect:
+        serializedVersion: 2
+        x: 988
+        y: 1905
+        width: 37
+        height: 312
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0e76ed15361f3180800000000000000
+      internalID: -9133557101893353971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_8
+      rect:
+        serializedVersion: 2
+        x: 1021
+        y: 1989
+        width: 30
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 419b1a1e67a710ce0800000000000000
+      internalID: -1440735754771646188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_9
+      rect:
+        serializedVersion: 2
+        x: 1064
+        y: 1992
+        width: 27
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc12c8a548c23f9f0800000000000000
+      internalID: -435955791958367796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_10
+      rect:
+        serializedVersion: 2
+        x: 1108
+        y: 1992
+        width: 25
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56388163bf7db6e10800000000000000
+      internalID: 2192083117590217573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_11
+      rect:
+        serializedVersion: 2
+        x: 1148
+        y: 1990
+        width: 28
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d923882471122c40800000000000000
+      internalID: 5485966486684248532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_12
+      rect:
+        serializedVersion: 2
+        x: 1188
+        y: 1987
+        width: 31
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d1d192f70b9642f0800000000000000
+      internalID: -988932609724526127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_13
+      rect:
+        serializedVersion: 2
+        x: 1222
+        y: 1902
+        width: 49
+        height: 311
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2466d077de9d3d6b0800000000000000
+      internalID: -5272631124792875454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_14
+      rect:
+        serializedVersion: 2
+        x: 1267
+        y: 1974
+        width: 38
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8569b8e9e25f5000800000000000000
+      internalID: 26831287372834188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_15
+      rect:
+        serializedVersion: 2
+        x: 1306
+        y: 1965
+        width: 42
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a581dd7121ab0f40800000000000000
+      internalID: 5695823318957000096
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_16
+      rect:
+        serializedVersion: 2
+        x: 1345
+        y: 1954
+        width: 45
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c19bab1f748f4d30800000000000000
+      internalID: 4417895440933687746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_17
+      rect:
+        serializedVersion: 2
+        x: 1384
+        y: 1942
+        width: 47
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d66f7157cbdce2e90800000000000000
+      internalID: -7048470157486197139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_18
+      rect:
+        serializedVersion: 2
+        x: 1413
+        y: 1848
+        width: 124
+        height: 291
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42e999732d78b8470800000000000000
+      internalID: 8397955267108118052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_19
+      rect:
+        serializedVersion: 2
+        x: 1587
+        y: 1749
+        width: 191
+        height: 253
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3336b54b7e33eefc0800000000000000
+      internalID: -3463773993144982733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_20
+      rect:
+        serializedVersion: 2
+        x: 611
+        y: 1865
+        width: 60
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 914561d5d04583be0800000000000000
+      internalID: -1497354459727637479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_21
+      rect:
+        serializedVersion: 2
+        x: 648
+        y: 1885
+        width: 58
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a091814ab2d28020800000000000000
+      internalID: 2342666453590839462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_22
+      rect:
+        serializedVersion: 2
+        x: 687
+        y: 1904
+        width: 55
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eed12163547c2b080800000000000000
+      internalID: -9173050390926451218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_23
+      rect:
+        serializedVersion: 2
+        x: 1495
+        y: 1894
+        width: 56
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f36b78d098e20dc30800000000000000
+      internalID: 4382053603603887679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_24
+      rect:
+        serializedVersion: 2
+        x: 1531
+        y: 1875
+        width: 59
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 346064aaf9c0dfae0800000000000000
+      internalID: -1514040019830569405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_25
+      rect:
+        serializedVersion: 2
+        x: 1565
+        y: 1854
+        width: 62
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f295b4ab0fa790010800000000000000
+      internalID: 1155589953733482799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_26
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 1633
+        width: 239
+        height: 208
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6727b27b1da80e6e0800000000000000
+      internalID: -1810294416877063562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_27
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 1743
+        width: 71
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c299de93943043f90800000000000000
+      internalID: -6974946309850687188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_28
+      rect:
+        serializedVersion: 2
+        x: 471
+        y: 1770
+        width: 69
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a35c8f8fb371ad6f0800000000000000
+      internalID: -659188849108794054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_29
+      rect:
+        serializedVersion: 2
+        x: 1724
+        y: 1727
+        width: 72
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09fd0277933d981b0800000000000000
+      internalID: -5653755613421707376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_30
+      rect:
+        serializedVersion: 2
+        x: 1730
+        y: 1610
+        width: 246
+        height: 199
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 336c2c62059cdd750800000000000000
+      internalID: 6331437997237650995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_31
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 1589
+        width: 79
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ce77809e81646a20800000000000000
+      internalID: 3054673712202088134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_32
+      rect:
+        serializedVersion: 2
+        x: 325
+        y: 1622
+        width: 78
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20bd31806e4ba8e80800000000000000
+      internalID: -8175523273466717438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_33
+      rect:
+        serializedVersion: 2
+        x: 1828
+        y: 1603
+        width: 78
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2462a1cd6f08453b0800000000000000
+      internalID: -5524649045133744574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_34
+      rect:
+        serializedVersion: 2
+        x: 1850
+        y: 1570
+        width: 79
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f89d7f2cac29ecb00800000000000000
+      internalID: 850778779171674511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_35
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 1467
+        width: 281
+        height: 144
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2f074598c9f47940800000000000000
+      internalID: 5293130101960412974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_36
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 1554
+        width: 80
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e91dc45d88275dc0800000000000000
+      internalID: -3650404385482270235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_37
+      rect:
+        serializedVersion: 2
+        x: 1835
+        y: 1440
+        width: 287
+        height: 134
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aca999643fb197b30800000000000000
+      internalID: 4285487252095212234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_38
+      rect:
+        serializedVersion: 2
+        x: 1871
+        y: 1535
+        width: 80
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b678ef2854cf4ba0800000000000000
+      internalID: -6102443087023802698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_39
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 1409
+        width: 83
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53b6f55e6207b4170800000000000000
+      internalID: 8163742061898459957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_40
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 1447
+        width: 82
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92842d4c91e1929e0800000000000000
+      internalID: -1645751092802074583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_41
+      rect:
+        serializedVersion: 2
+        x: 1924
+        y: 1427
+        width: 82
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73365b238a9c59760800000000000000
+      internalID: 7464093681678902071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_42
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 1371
+        width: 83
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 849345270f3e0a500800000000000000
+      internalID: 405574588313123144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_43
+      rect:
+        serializedVersion: 2
+        x: 1938
+        y: 1389
+        width: 83
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0164f503c6db6880800000000000000
+      internalID: -8616557328936443635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_44
+      rect:
+        serializedVersion: 2
+        x: 1951
+        y: 1351
+        width: 83
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b2b322c8fb932320800000000000000
+      internalID: 2532038908223664818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_45
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 1280
+        width: 307
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a577ef2e31fbb9480800000000000000
+      internalID: -8891302947179301030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_46
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 1332
+        width: 83
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e51c6175f408cdde0800000000000000
+      internalID: -1307028713592405666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_47
+      rect:
+        serializedVersion: 2
+        x: 1962
+        y: 1312
+        width: 83
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67ac2522b8dc1cac0800000000000000
+      internalID: -3836559410082952586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_48
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 1254
+        width: 83
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13e9a1808c5a318b0800000000000000
+      internalID: -5182616467625304527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_49
+      rect:
+        serializedVersion: 2
+        x: 1895
+        y: 1250
+        width: 309
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88a5fd3f62666b1a0800000000000000
+      internalID: -6794130670355522936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_50
+      rect:
+        serializedVersion: 2
+        x: 1971
+        y: 1273
+        width: 83
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 007373578ff6aba30800000000000000
+      internalID: 4231817912777127680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_51
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 1214
+        width: 82
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09228f1bd82d4eff0800000000000000
+      internalID: -7649793329847664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_52
+      rect:
+        serializedVersion: 2
+        x: 1978
+        y: 1233
+        width: 83
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b8ecaca3304fb7f0800000000000000
+      internalID: -594686035105093452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_53
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 1175
+        width: 82
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2133fdb3c12aecbd0800000000000000
+      internalID: -2607968892053671150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_54
+      rect:
+        serializedVersion: 2
+        x: 1984
+        y: 1193
+        width: 82
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7ff0193caf8bc280800000000000000
+      internalID: -9021959458652094593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_55
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 1118
+        width: 82
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d6e625c83cd43380800000000000000
+      internalID: -8992320419568097576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_56
+      rect:
+        serializedVersion: 2
+        x: 1988
+        y: 1154
+        width: 81
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d83d63db11025d90800000000000000
+      internalID: -7110619642641696551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_57
+      rect:
+        serializedVersion: 2
+        x: 1989
+        y: 1113
+        width: 81
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e50375d648df74ef0800000000000000
+      internalID: -123851719517458338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_58
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 1075
+        width: 81
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdc93d218ba7396c0800000000000000
+      internalID: -4137828701614924577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_59
+      rect:
+        serializedVersion: 2
+        x: 1989
+        y: 1070
+        width: 81
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32c966c68982ddd40800000000000000
+      internalID: 5610685345892310051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_60
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1031
+        width: 312
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90283230b95730750800000000000000
+      internalID: 6269984414862901769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_61
+      rect:
+        serializedVersion: 2
+        x: 1905
+        y: 1027
+        width: 312
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0eef7dd8743807b60800000000000000
+      internalID: 7741832102795542240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_62
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 988
+        width: 82
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f3b7c00c1ef14790800000000000000
+      internalID: -7547472104270613516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_63
+      rect:
+        serializedVersion: 2
+        x: 1982
+        y: 983
+        width: 82
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77dfb5b76ff087590800000000000000
+      internalID: -7676368013547012745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_64
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 945
+        width: 82
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2e16a6cf776dfa50800000000000000
+      internalID: 6556510431012593196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_65
+      rect:
+        serializedVersion: 2
+        x: 1976
+        y: 940
+        width: 83
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c70a39dbaf8311fc0800000000000000
+      internalID: -3525974383680839556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_66
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 902
+        width: 83
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3da902b79b406a80800000000000000
+      internalID: -8475691383812149954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_67
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 860
+        width: 83
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3eef8a57fdd5e7820800000000000000
+      internalID: 2917872822915759843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_68
+      rect:
+        serializedVersion: 2
+        x: 1968
+        y: 898
+        width: 83
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af9a940789ec8bed0800000000000000
+      internalID: -2397939647460562438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_69
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 761
+        width: 298
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acea7b1ceaeca28c0800000000000000
+      internalID: -4023176067132444982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_70
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 818
+        width: 83
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 483f1cc5f48ccc530800000000000000
+      internalID: 3876693622443340676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_71
+      rect:
+        serializedVersion: 2
+        x: 1866
+        y: 756
+        width: 298
+        height: 103
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b42bb5d82d634bd0800000000000000
+      internalID: -2647152133811788619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_72
+      rect:
+        serializedVersion: 2
+        x: 1958
+        y: 855
+        width: 83
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06272f1a11d7138a0800000000000000
+      internalID: -6327138486793899424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_73
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 736
+        width: 83
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bdda79b7c4c39710800000000000000
+      internalID: 1698917846538182064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_74
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 697
+        width: 82
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c1101f9561602fb0800000000000000
+      internalID: -4674629324122353215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_75
+      rect:
+        serializedVersion: 2
+        x: 1902
+        y: 692
+        width: 82
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f2ffd8134de08b70800000000000000
+      internalID: 8899373736120021749
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_76
+      rect:
+        serializedVersion: 2
+        x: 1919
+        y: 732
+        width: 82
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0573eff9e165baee0800000000000000
+      internalID: -1248809782131935408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_77
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 511
+        width: 266
+        height: 173
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a52f869544f83bb0800000000000000
+      internalID: -4955942810205346397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_78
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 658
+        width: 81
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dd84ffa8b34459a0800000000000000
+      internalID: -6245292322750951975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_79
+      rect:
+        serializedVersion: 2
+        x: 1779
+        y: 506
+        width: 265
+        height: 173
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b82bcc41297e01450800000000000000
+      internalID: 6057596113413517963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_80
+      rect:
+        serializedVersion: 2
+        x: 1884
+        y: 653
+        width: 81
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 058caed0816e9bff0800000000000000
+      internalID: -19731732359362480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_81
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 299
+        width: 217
+        height: 231
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 870898575dc7745d0800000000000000
+      internalID: -3078354564042620808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_82
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 479
+        width: 75
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6bc5251e7c75c42d0800000000000000
+      internalID: -3293160711524295498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_83
+      rect:
+        serializedVersion: 2
+        x: 1650
+        y: 295
+        width: 216
+        height: 231
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5016f8e5036ed0d30800000000000000
+      internalID: 4399425506430116101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_84
+      rect:
+        serializedVersion: 2
+        x: 1769
+        y: 475
+        width: 75
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6c394259130ea7b0800000000000000
+      internalID: -5211224311531488146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_85
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 333
+        width: 66
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7996c8c9b492d7670800000000000000
+      internalID: 8538025873290062231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_86
+      rect:
+        serializedVersion: 2
+        x: 561
+        y: 308
+        width: 64
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbee8ee55b2787ed0800000000000000
+      internalID: -2416055076777300289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_87
+      rect:
+        serializedVersion: 2
+        x: 571
+        y: 136
+        width: 154
+        height: 276
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48d4b9f950352d0d0800000000000000
+      internalID: -3399563485093606012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_88
+      rect:
+        serializedVersion: 2
+        x: 828
+        y: 0
+        width: 555
+        height: 338
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e34f784b2f6d0f3b0800000000000000
+      internalID: -5480644408610655170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_89
+      rect:
+        serializedVersion: 2
+        x: 1487
+        y: 134
+        width: 154
+        height: 276
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43f78a74208915a10800000000000000
+      internalID: 1896464053659270964
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_90
+      rect:
+        serializedVersion: 2
+        x: 1588
+        y: 305
+        width: 63
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 091aadf7f13008520800000000000000
+      internalID: 2702163210246201744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_91
+      rect:
+        serializedVersion: 2
+        x: 1621
+        y: 329
+        width: 65
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8d978a5727e72350800000000000000
+      internalID: 5992011985448312202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_92
+      rect:
+        serializedVersion: 2
+        x: 674
+        y: 243
+        width: 56
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a0f871df1e1b9390800000000000000
+      internalID: -7810616006736809820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_93
+      rect:
+        serializedVersion: 2
+        x: 713
+        y: 225
+        width: 53
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c0c71c5e95a84f70800000000000000
+      internalID: 9171762740708491460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_94
+      rect:
+        serializedVersion: 2
+        x: 754
+        y: 209
+        width: 50
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4443ba88717617560800000000000000
+      internalID: 7309737020973855812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_95
+      rect:
+        serializedVersion: 2
+        x: 795
+        y: 195
+        width: 47
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 765fafdb6549ce2b0800000000000000
+      internalID: -5553901140179225241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_96
+      rect:
+        serializedVersion: 2
+        x: 1371
+        y: 194
+        width: 47
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0144d2d7aca77ba20800000000000000
+      internalID: 3078063880433124368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_97
+      rect:
+        serializedVersion: 2
+        x: 1409
+        y: 208
+        width: 50
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c8622e8a57234600800000000000000
+      internalID: 451247657552341187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_98
+      rect:
+        serializedVersion: 2
+        x: 1447
+        y: 223
+        width: 52
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0597842961df74470800000000000000
+      internalID: 8378943905131428176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SliderRing_99
+      rect:
+        serializedVersion: 2
+        x: 1483
+        y: 241
+        width: 55
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a278f4b28b566fd00800000000000000
+      internalID: 1006103408438904618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      SliderRing_0: 6048201122521262305
+      SliderRing_1: 4807577104556730456
+      SliderRing_10: 2192083117590217573
+      SliderRing_11: 5485966486684248532
+      SliderRing_12: -988932609724526127
+      SliderRing_13: -5272631124792875454
+      SliderRing_14: 26831287372834188
+      SliderRing_15: 5695823318957000096
+      SliderRing_16: 4417895440933687746
+      SliderRing_17: -7048470157486197139
+      SliderRing_18: 8397955267108118052
+      SliderRing_19: -3463773993144982733
+      SliderRing_2: -5527976698971279821
+      SliderRing_20: -1497354459727637479
+      SliderRing_21: 2342666453590839462
+      SliderRing_22: -9173050390926451218
+      SliderRing_23: 4382053603603887679
+      SliderRing_24: -1514040019830569405
+      SliderRing_25: 1155589953733482799
+      SliderRing_26: -1810294416877063562
+      SliderRing_27: -6974946309850687188
+      SliderRing_28: -659188849108794054
+      SliderRing_29: -5653755613421707376
+      SliderRing_3: -1005532621277319394
+      SliderRing_30: 6331437997237650995
+      SliderRing_31: 3054673712202088134
+      SliderRing_32: -8175523273466717438
+      SliderRing_33: -5524649045133744574
+      SliderRing_34: 850778779171674511
+      SliderRing_35: 5293130101960412974
+      SliderRing_36: -3650404385482270235
+      SliderRing_37: 4285487252095212234
+      SliderRing_38: -6102443087023802698
+      SliderRing_39: 8163742061898459957
+      SliderRing_4: -4921728759612941553
+      SliderRing_40: -1645751092802074583
+      SliderRing_41: 7464093681678902071
+      SliderRing_42: 405574588313123144
+      SliderRing_43: -8616557328936443635
+      SliderRing_44: 2532038908223664818
+      SliderRing_45: -8891302947179301030
+      SliderRing_46: -1307028713592405666
+      SliderRing_47: -3836559410082952586
+      SliderRing_48: -5182616467625304527
+      SliderRing_49: -6794130670355522936
+      SliderRing_5: 8308224789343405772
+      SliderRing_50: 4231817912777127680
+      SliderRing_51: -7649793329847664
+      SliderRing_52: -594686035105093452
+      SliderRing_53: -2607968892053671150
+      SliderRing_54: -9021959458652094593
+      SliderRing_55: -8992320419568097576
+      SliderRing_56: -7110619642641696551
+      SliderRing_57: -123851719517458338
+      SliderRing_58: -4137828701614924577
+      SliderRing_59: 5610685345892310051
+      SliderRing_6: 4312261964476926551
+      SliderRing_60: 6269984414862901769
+      SliderRing_61: 7741832102795542240
+      SliderRing_62: -7547472104270613516
+      SliderRing_63: -7676368013547012745
+      SliderRing_64: 6556510431012593196
+      SliderRing_65: -3525974383680839556
+      SliderRing_66: -8475691383812149954
+      SliderRing_67: 2917872822915759843
+      SliderRing_68: -2397939647460562438
+      SliderRing_69: -4023176067132444982
+      SliderRing_7: -9133557101893353971
+      SliderRing_70: 3876693622443340676
+      SliderRing_71: -2647152133811788619
+      SliderRing_72: -6327138486793899424
+      SliderRing_73: 1698917846538182064
+      SliderRing_74: -4674629324122353215
+      SliderRing_75: 8899373736120021749
+      SliderRing_76: -1248809782131935408
+      SliderRing_77: -4955942810205346397
+      SliderRing_78: -6245292322750951975
+      SliderRing_79: 6057596113413517963
+      SliderRing_8: -1440735754771646188
+      SliderRing_80: -19731732359362480
+      SliderRing_81: -3078354564042620808
+      SliderRing_82: -3293160711524295498
+      SliderRing_83: 4399425506430116101
+      SliderRing_84: -5211224311531488146
+      SliderRing_85: 8538025873290062231
+      SliderRing_86: -2416055076777300289
+      SliderRing_87: -3399563485093606012
+      SliderRing_88: -5480644408610655170
+      SliderRing_89: 1896464053659270964
+      SliderRing_9: -435955791958367796
+      SliderRing_90: 2702163210246201744
+      SliderRing_91: 5992011985448312202
+      SliderRing_92: -7810616006736809820
+      SliderRing_93: 9171762740708491460
+      SliderRing_94: 7309737020973855812
+      SliderRing_95: -5553901140179225241
+      SliderRing_96: 3078063880433124368
+      SliderRing_97: 451247657552341187
+      SliderRing_98: 8378943905131428176
+      SliderRing_99: 1006103408438904618
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
