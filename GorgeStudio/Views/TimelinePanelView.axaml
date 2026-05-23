@@ -20,25 +20,11 @@
                     <Separator Grid.Column="1" Width="1" Height="16" Margin="12,0"
                                Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
                                VerticalAlignment="Center" />
-                    <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="8" Margin="0,0,12,0">
-                        <Button Content="-" Width="28" Height="28" Padding="0"
-                                Click="ZoomOut_Click" ToolTip.Tip="缩小" />
-                        <Button Content="+" Width="28" Height="28" Padding="0"
-                                Click="ZoomIn_Click" ToolTip.Tip="放大" />
-                    </StackPanel>
                 </Grid>
             </Border>
 
             <!-- Timeline canvas area -->
-            <ScrollViewer x:Name="TimelineScroller"
-                          HorizontalScrollBarVisibility="Auto"
-                          VerticalScrollBarVisibility="Hidden"
-                          ScrollChanged="OnScrollChanged">
-                <Canvas x:Name="TimelineCanvas"
-                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                        Height="160"
-                        Width="2000" />
-            </ScrollViewer>
+            <ScrollViewer x:Name="TimelineScroller" />
         </DockPanel>
     </Border>
 

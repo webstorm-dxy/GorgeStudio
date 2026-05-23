@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using GorgeStudio.Models;
 using GorgeStudio.Models.Chart;
 using GorgeStudio.Services;
@@ -15,6 +16,7 @@ using GorgeStudio.Services.ChartService;
 using GorgeStudio.Services.CodeGeneration;
 using GorgeStudio.Services.FileService;
 using GorgeStudio.Services.Packaging;
+using GorgeStudio.Views;
 
 namespace GorgeStudio.ViewModels;
 
@@ -25,6 +27,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IChartService? _chartService;
     private readonly IGorgeCodeGenerator? _codeGenerator;
     private readonly IPackageWriter? _packageWriter;
+    private readonly IServiceProvider? _serviceProvider;
 
     [ObservableProperty]
     private string _statusText = "就绪";
@@ -63,6 +66,7 @@ public partial class MainWindowViewModel : ViewModelBase
         IChartService chartService,
         IGorgeCodeGenerator codeGenerator,
         IPackageWriter packageWriter,
+        IServiceProvider serviceProvider,
         ElementListPanelViewModel elementListPanel,
         PropertiesPanelViewModel propertiesPanel,
         TimelinePanelViewModel timelinePanel)
@@ -72,6 +76,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _chartService = chartService;
         _codeGenerator = codeGenerator;
         _packageWriter = packageWriter;
+        _serviceProvider = serviceProvider;
 
         RightPanel = propertiesPanel;
         ElementListPanel = elementListPanel;
@@ -178,32 +183,6 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task LoadFileAsync()
-    {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
-            || desktop.MainWindow is not { } window)
-            return;
-
-        var files = await window.StorageProvider.OpenFilePickerAsync(new Avalonia.Platform.Storage.FilePickerOpenOptions
-        {
-            Title = "打开 Gorge 源文件",
-            AllowMultiple = false,
-            FileTypeFilter = new[]
-            {
-                new Avalonia.Platform.Storage.FilePickerFileType("谱面源文件")
-                {
-                    Patterns = new[] { "*.g" }
-                }
-            }
-        });
-
-        if (files.Count == 0) return;
-
-        var path = files[0].Path.LocalPath;
-        await LoadAndHandleResult(() => _fileService!.LoadAndCompileFileAsync(path));
-    }
-
-    [RelayCommand]
     private async Task LoadZipAsync()
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
@@ -276,6 +255,18 @@ public partial class MainWindowViewModel : ViewModelBase
         finally
         {
             CanLaunch = true;
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenProjectSettingsAsync()
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+            && desktop.MainWindow is { } window
+            && _serviceProvider != null)
+        {
+            var vm = _serviceProvider.GetRequiredService<ProjectSettingsWindowViewModel>();
+            await ProjectSettingsWindow.ShowAsync(window, vm);
         }
     }
 

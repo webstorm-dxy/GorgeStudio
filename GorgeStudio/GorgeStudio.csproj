@@ -42,6 +42,9 @@
       <Compile Update="Views\PropertiesPanelView.axaml.cs">
         <DependentUpon>PropertiesPanelView.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\ProjectSettingsWindow.axaml.cs">
+        <DependentUpon>ProjectSettingsWindow.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <Target Name="CopyGodotApplication" AfterTargets="Build">

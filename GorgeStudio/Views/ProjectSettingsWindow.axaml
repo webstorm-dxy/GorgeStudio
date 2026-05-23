@@ -1,0 +1,92 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GorgeStudio.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="400"
+        x:Class="GorgeStudio.Views.ProjectSettingsWindow"
+        x:DataType="vm:ProjectSettingsWindowViewModel"
+        Title="项目设置"
+        Width="550" Height="400"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner">
+
+    <Design.DataContext>
+        <vm:ProjectSettingsWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="*,Auto" ColumnDefinitions="160,*">
+        <!-- Left sidebar: category list -->
+        <Border Grid.Row="0" Grid.Column="0"
+                Classes="cardPanel"
+                CornerRadius="0"
+                BorderThickness="0,0,1,0">
+            <ListBox ItemsSource="{Binding Categories}"
+                     SelectedItem="{Binding SelectedCategory}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ISettingsCategory">
+                        <TextBlock Text="{Binding Name}"
+                                   Padding="12,8" FontSize="13" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <!-- Right pane: selected category content -->
+        <Border Grid.Row="0" Grid.Column="1"
+                Padding="24">
+            <ContentControl Content="{Binding SelectedCategory}">
+                <ContentControl.DataTemplates>
+                    <DataTemplate x:DataType="vm:TimelineSettingsCategory">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="时间线设置"
+                                       FontSize="16" FontWeight="Bold"
+                                       Margin="0,0,0,8" />
+                            <Grid ColumnDefinitions="120,*"
+                                  RowDefinitions="Auto,Auto,Auto,Auto"
+                                  RowSpacing="8">
+                                <TextBlock Grid.Row="0" Grid.Column="0"
+                                           Text="BPM" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="0" Grid.Column="1"
+                                               Value="{Binding Bpm}"
+                                               Minimum="1" Maximum="999" />
+
+                                <TextBlock Grid.Row="1" Grid.Column="0"
+                                           Text="偏移量" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="1" Grid.Column="1"
+                                               Value="{Binding Offset}"
+                                               Minimum="0" Maximum="999999" />
+
+                                <TextBlock Grid.Row="2" Grid.Column="0"
+                                           Text="每小节拍数" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="2" Grid.Column="1"
+                                               Value="{Binding BeatsPerBar}"
+                                               Minimum="1" Maximum="64" />
+
+                                <TextBlock Grid.Row="3" Grid.Column="0"
+                                           Text="每拍细分数" VerticalAlignment="Center" />
+                                <NumericUpDown Grid.Row="3" Grid.Column="1"
+                                               Value="{Binding SubdivisionsPerBeat}"
+                                               Minimum="1" Maximum="64" />
+                            </Grid>
+                        </StackPanel>
+                    </DataTemplate>
+                </ContentControl.DataTemplates>
+            </ContentControl>
+        </Border>
+
+        <!-- Bottom button bar -->
+        <Border Grid.Row="1" Grid.ColumnSpan="2"
+                Padding="16,12"
+                BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                BorderThickness="0,1,0,0">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right" Spacing="8">
+                <Button Content="确定" Classes="accent"
+                        Command="{Binding OkCommand}" />
+                <Button Content="取消"
+                        Command="{Binding CancelCommand}" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
