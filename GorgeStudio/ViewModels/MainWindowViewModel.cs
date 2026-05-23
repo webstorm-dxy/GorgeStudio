@@ -27,7 +27,14 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IChartService? _chartService;
     private readonly IGorgeCodeGenerator? _codeGenerator;
     private readonly IPackageWriter? _packageWriter;
+    private readonly IProjectSettingsService? _projectSettingsService;
     private readonly IServiceProvider? _serviceProvider;
+
+    /// <summary>
+    /// 当前已加载或已保存的 .gpkg/.zip 文件路径。
+    /// 为 null 表示尚未从文件加载或保存过，此时保存将触发"另存为"对话框。
+    /// </summary>
+    private string? _currentFilePath;
 
     [ObservableProperty]
     private string _statusText = "就绪";
@@ -66,6 +73,7 @@ public partial class MainWindowViewModel : ViewModelBase
         IChartService chartService,
         IGorgeCodeGenerator codeGenerator,
         IPackageWriter packageWriter,
+        IProjectSettingsService projectSettingsService,
         IServiceProvider serviceProvider,
         ElementListPanelViewModel elementListPanel,
         PropertiesPanelViewModel propertiesPanel,
@@ -76,6 +84,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _chartService = chartService;
         _codeGenerator = codeGenerator;
         _packageWriter = packageWriter;
+        _projectSettingsService = projectSettingsService;
         _serviceProvider = serviceProvider;
 
         RightPanel = propertiesPanel;
@@ -195,9 +204,9 @@ public partial class MainWindowViewModel : ViewModelBase
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new Avalonia.Platform.Storage.FilePickerFileType("ZIP 谱面包")
+                new Avalonia.Platform.Storage.FilePickerFileType("Gorge 谱面包")
                 {
-                    Patterns = new[] { "*.zip" }
+                    Patterns = new[] { "*.gpkg", "*.zip" }
                 }
             }
         });
@@ -205,6 +214,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (files.Count == 0) return;
 
         var path = files[0].Path.LocalPath;
+        _currentFilePath = path;
         await LoadAndHandleResult(() => _fileService!.LoadAndCompileZipAsync(path));
     }
 
@@ -222,6 +232,11 @@ public partial class MainWindowViewModel : ViewModelBase
             if (result.Success && result.Project != null)
             {
                 CurrentProject = result.Project;
+
+                if (result.Settings != null && _projectSettingsService != null)
+                {
+                    _projectSettingsService.SaveSettings(result.Settings);
+                }
 
                 var elementListPanel = ElementListPanel as ElementListPanelViewModel;
                 elementListPanel?.LoadProject(result.Project);
@@ -271,10 +286,33 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// 将当前谱面文档保存为 .zip 文件。
+    /// 保存当前谱面文档。
+    /// 如果已从文件加载或曾保存过，直接覆盖保存；否则弹出"另存为"对话框。
     /// </summary>
     [RelayCommand]
     private async Task SaveAsync()
+    {
+        if (CurrentScore == null || _codeGenerator == null || _packageWriter == null)
+        {
+            StatusText = "没有可保存的谱面数据";
+            return;
+        }
+
+        if (_currentFilePath != null)
+        {
+            await WriteSaveDataAsync(_currentFilePath);
+        }
+        else
+        {
+            await SaveAsAsync();
+        }
+    }
+
+    /// <summary>
+    /// 另存为：始终弹出文件选择对话框，将当前谱面保存到新路径。
+    /// </summary>
+    [RelayCommand]
+    private async Task SaveAsAsync()
     {
         if (CurrentScore == null || _codeGenerator == null || _packageWriter == null)
         {
@@ -288,29 +326,37 @@ public partial class MainWindowViewModel : ViewModelBase
 
         var file = await window.StorageProvider.SaveFilePickerAsync(new Avalonia.Platform.Storage.FilePickerSaveOptions
         {
-            Title = "保存谱面包",
-            DefaultExtension = ".zip",
+            Title = "另存为",
+            DefaultExtension = ".gpkg",
             FileTypeChoices = new[]
             {
-                new Avalonia.Platform.Storage.FilePickerFileType("ZIP 谱面包")
+                new Avalonia.Platform.Storage.FilePickerFileType("Gorge 谱面包")
                 {
-                    Patterns = new[] { "*.zip" }
+                    Patterns = new[] { "*.gpkg" }
                 }
             }
         });
 
         if (file == null) return;
+        await WriteSaveDataAsync(file.Path.LocalPath);
+    }
 
+    /// <summary>
+    /// 将当前谱面数据写入指定路径。
+    /// </summary>
+    private async Task WriteSaveDataAsync(string savePath)
+    {
         try
         {
             StatusText = "正在保存...";
-            var sourceFiles = _codeGenerator.Generate(CurrentScore);
-            var zipData = _packageWriter.WriteZip(sourceFiles, CurrentScore.ChartAssetFiles);
+            var sourceFiles = _codeGenerator!.Generate(CurrentScore!);
+            var zipData = _packageWriter!.WriteZip(sourceFiles, CurrentScore!.ChartAssetFiles, _projectSettingsService?.CurrentSettings);
 
-            await using var stream = await file.OpenWriteAsync();
+            await using var stream = new FileStream(savePath, FileMode.Create, FileAccess.Write, FileShare.None);
             await stream.WriteAsync(zipData);
 
-            StatusText = $"保存成功：{file.Name}";
+            _currentFilePath = savePath;
+            StatusText = $"保存成功：{Path.GetFileName(savePath)}";
         }
         catch (Exception ex)
         {

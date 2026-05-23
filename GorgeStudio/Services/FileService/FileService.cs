@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Gorge.GorgeCompiler;
 using Gorge.GorgeCompiler.CompileContext;
@@ -66,7 +67,8 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
-                AssetFiles = package.AssetFiles
+                AssetFiles = package.AssetFiles,
+                Settings = package.Settings
             };
         }
         catch (OperationCanceledException)
@@ -120,7 +122,8 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
-                AssetFiles = package.AssetFiles
+                AssetFiles = package.AssetFiles,
+                Settings = package.Settings
             };
         }
         catch (OperationCanceledException)
@@ -173,7 +176,8 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
-                AssetFiles = package.AssetFiles
+                AssetFiles = package.AssetFiles,
+                Settings = package.Settings
             };
         }
         catch (OperationCanceledException)
@@ -227,7 +231,8 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
-                AssetFiles = package.AssetFiles
+                AssetFiles = package.AssetFiles,
+                Settings = package.Settings
             };
         }
         catch (OperationCanceledException)
@@ -339,11 +344,24 @@ public sealed class FileService : IFileService, IDisposable
         var assetPaths = new List<string>();
         var assetFiles = new List<AssetFile>();
         var sourcePathIsChart = new Dictionary<string, bool>();
+        ProjectSettings? projectSettings = null;
 
         foreach (var entry in archive.Entries)
         {
             if (string.IsNullOrEmpty(entry.Name))
                 continue;
+
+            // 仅在 ZIP 根目录下的 setting.json 被视为项目设置
+            if (entry.FullName.Equals("setting.json", StringComparison.OrdinalIgnoreCase))
+            {
+                using var reader = new StreamReader(entry.Open());
+                var json = reader.ReadToEnd();
+                if (!string.IsNullOrWhiteSpace(json))
+                {
+                    projectSettings = JsonSerializer.Deserialize<ProjectSettings>(json);
+                }
+                continue;
+            }
 
             var entryPath = $"{sourceName}/{entry.FullName}";
 
@@ -370,7 +388,8 @@ public sealed class FileService : IFileService, IDisposable
             SourceFiles = sourceFiles,
             AssetPaths = assetPaths,
             AssetFiles = assetFiles,
-            SourcePathIsChart = sourcePathIsChart
+            SourcePathIsChart = sourcePathIsChart,
+            Settings = projectSettings
         };
     }
 

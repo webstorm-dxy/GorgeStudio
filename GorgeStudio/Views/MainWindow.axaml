@@ -18,12 +18,15 @@
         <!-- Menu -->
         <Menu Grid.Row="0">
             <MenuItem Header="文件">
-                <MenuItem Header="打开ZIP"
+                <MenuItem Header="打开"
                           Command="{Binding LoadZipCommand}"
                           IsEnabled="{Binding CanLaunch}" />
                 <Separator />
                 <MenuItem Header="保存"
                           Command="{Binding SaveCommand}"
+                          IsEnabled="{Binding CanLaunch}" />
+                <MenuItem Header="另存为"
+                          Command="{Binding SaveAsCommand}"
                           IsEnabled="{Binding CanLaunch}" />
             </MenuItem>
             <MenuItem Header="项目">

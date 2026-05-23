@@ -40,4 +40,9 @@ internal class GorgePackage
     /// 此映射用于在编译后正确标注每个编译类型的来源属性。
     /// </summary>
     public Dictionary<string, bool> SourcePathIsChart { get; init; } = new();
+
+    /// <summary>
+    /// 从包中解析出的项目设置。当包中包含 setting.json 时填充，否则为 null。
+    /// </summary>
+    public Models.ProjectSettings? Settings { get; init; }
 }

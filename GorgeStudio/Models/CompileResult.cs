@@ -50,4 +50,10 @@ public class CompileResult
     /// 仅在从 ZIP 加载或目录加载时非空；单文件加载时为空。
     /// </summary>
     public IReadOnlyList<AssetFile> AssetFiles { get; init; } = new List<AssetFile>();
+
+    /// <summary>
+    /// 从包中提取的项目设置（如 setting.json）。
+    /// 仅从 ZIP/GPGK 加载时非 null；单文件或目录加载时为 null。
+    /// </summary>
+    public ProjectSettings? Settings { get; init; }
 }
