@@ -18,12 +18,43 @@
                 <TextBlock Classes="subtitle" Text="{Binding Title}" />
             </Border>
 
-            <!-- Content -->
+            <!-- Property grid -->
             <ScrollViewer>
-                <StackPanel Orientation="Vertical" Spacing="12" Margin="16">
-                    <TextBlock Classes="caption"
-                               Text="{Binding Description}"
-                               TextWrapping="Wrap" />
+                <StackPanel Spacing="0">
+                    <!-- Description line -->
+                    <Border Padding="16,8" BorderThickness="0,0,0,1"
+                            BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}">
+                        <TextBlock Classes="caption"
+                                   Text="{Binding Description}"
+                                   TextWrapping="Wrap" />
+                    </Border>
+
+                    <!-- Property entries -->
+                    <ItemsControl ItemsSource="{Binding Properties}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="120,*,8"
+                                      Margin="0">
+                                    <Border Grid.Column="0"
+                                            Padding="16,4,8,4"
+                                            BorderThickness="0,0,1,0"
+                                            BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}">
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+                                    <Border Grid.Column="1"
+                                            Padding="8,4,16,4">
+                                        <TextBlock Text="{Binding Value}"
+                                                   FontSize="12"
+                                                   VerticalAlignment="Center"
+                                                   TextWrapping="Wrap" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
             </ScrollViewer>
         </DockPanel>

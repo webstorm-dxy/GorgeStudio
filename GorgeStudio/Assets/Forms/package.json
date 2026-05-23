@@ -1,0 +1,14 @@
+{
+  "name": "cn.starbow.gorge.sampleforms",
+  "version": "0.0.1", 
+  "displayName": "Gorge Sample Forms",
+  "description": "玩法无感知音乐游戏引擎（Gameplay Oblivious Rhythm Game Engine，Gorge）示例模态集",
+  "unity": "2022.3",
+  "author": {
+    "name": "Starbow"
+  },
+  "dependencies": {
+    "com.unity.addressables": "1.22.3"
+  },
+  "type": "library"
+}

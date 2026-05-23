@@ -9,6 +9,11 @@ using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using GorgeStudio.Interop;
 using GorgeStudio.Services;
+using GorgeStudio.Services.EmbedService;
+using GorgeStudio.Services.FileService;
+using GorgeStudio.Services.ChartService;
+using GorgeStudio.Services.CodeGeneration;
+using GorgeStudio.Services.Packaging;
 using GorgeStudio.ViewModels;
 using GorgeStudio.Views;
 
@@ -29,41 +34,58 @@ public partial class App : Application
         {
             DisableAvaloniaDataAnnotationValidation();
 
-            // 1. 创建 View（EmbedService 依赖 MainWindow）
             var mainWindow = new MainWindow();
 
-            // 2. 配置 DI 容器
             var services = new ServiceCollection();
 
-            // 根据平台注册 IWindowEmbedder 工厂
+            // 平台嵌入器工厂
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 services.AddSingleton<Func<IWindowEmbedder>>(_ => () => new Win32WindowEmbedder());
             }
             else
             {
-                // macOS / Linux：以独立窗口方式启动
                 services.AddSingleton<Func<IWindowEmbedder>>(_ => () => new MacWindowEmbedder());
             }
 
-            // IEmbedService 需要 View 层控件，通过工厂方法解析 IWindowEmbedder 并注入
+            // 嵌入服务
             services.AddSingleton<IEmbedService>(sp =>
             {
                 var factory = sp.GetRequiredService<Func<IWindowEmbedder>>();
                 return new EmbedService(mainWindow.EmbedHostControl, mainWindow, factory);
             });
 
-            // ViewModel 由容器解析，自动注入 IEmbedService
+            // 文件服务
+            services.AddSingleton<IFileService>(_ => new GorgeStudio.Services.FileService.FileService());
+
+            // 谱面服务
+            services.AddSingleton<IChartService, ChartService>();
+
+            // 源码生成和打包
+            services.AddSingleton<IGorgeCodeGenerator, GorgeCodeGenerator>();
+            services.AddSingleton<IPackageWriter, PackageWriter>();
+
+            // 面板 ViewModel
+            services.AddTransient<ElementListPanelViewModel>();
+            services.AddTransient<PropertiesPanelViewModel>();
+            services.AddTransient<TimelinePanelViewModel>();
+
+            // 主窗口 ViewModel（注入所有依赖）
             services.AddTransient<MainWindowViewModel>();
 
             _serviceProvider = services.BuildServiceProvider();
 
-            // 3. 从容器解析 ViewModel 并绑定
-            mainWindow.DataContext = _serviceProvider.GetRequiredService<MainWindowViewModel>();
+            var mainWindowViewModel = _serviceProvider.GetRequiredService<MainWindowViewModel>();
+            mainWindow.DataContext = mainWindowViewModel;
 
             desktop.MainWindow = mainWindow;
 
-            // 应用程序退出时释放容器
+            // 启动时自动加载 Assets/Forms 目录下的所有 .g 源文件
+            mainWindow.Opened += async (_, _) =>
+            {
+                await mainWindowViewModel.AutoLoadAsync();
+            };
+
             desktop.Exit += (_, _) =>
             {
                 _serviceProvider?.Dispose();
