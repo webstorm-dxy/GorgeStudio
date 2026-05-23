@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -35,6 +36,11 @@ public partial class MainWindowViewModel : ViewModelBase
     /// 为 null 表示尚未从文件加载或保存过，此时保存将触发"另存为"对话框。
     /// </summary>
     private string? _currentFilePath;
+
+    /// <summary>
+    /// 当前已加载的 Form 列表。用于保存时将 Form 源文件打包进 .gpkg。
+    /// </summary>
+    private List<FormInfo>? _loadedForms;
 
     [ObservableProperty]
     private string _statusText = "就绪";
@@ -104,8 +110,9 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// 启动时自动加载 Assets/Forms 目录下的所有 .g 源文件。
-    /// 先查找输出目录，找不到则回退到源码树（dev 模式）。
+    /// 启动时扫描 Assets/Forms 目录，发现可用 Form 并弹出选择窗口。
+    /// 内置库（Native、DremuBase 等）会被自动排除。
+    /// 用户可选择多个 Form，确定后一次性编译加载。
     /// </summary>
     public async Task AutoLoadAsync()
     {
@@ -116,7 +123,101 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        await LoadAndHandleResult(() => _fileService!.LoadAndCompileDirectoryAsync(formsPath, recursive: true));
+        if (_fileService == null) return;
+
+        var forms = await _fileService.DiscoverFormsAsync(formsPath);
+
+        if (forms.Count == 0)
+        {
+            StatusText = "未发现可用模态";
+            return;
+        }
+
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
+            || desktop.MainWindow is not { } window)
+            return;
+
+        var vm = new FormSelectionWindowViewModel(forms);
+        var ok = await FormSelectionWindow.ShowAsync(window, vm);
+        if (!ok)
+        {
+            StatusText = "已取消加载";
+            return;
+        }
+
+        var selected = vm.GetSelectedForms();
+        if (selected.Count == 0)
+        {
+            StatusText = "未选择任何模态";
+            return;
+        }
+
+        var paths = selected.Select(f => f.Path).ToList();
+        await LoadAndHandleResult(() => _fileService.LoadAndCompileMultipleDirectoriesAsync(paths), selected);
+    }
+
+    /// <summary>
+    /// 打开模态管理窗口，允许用户重新选择要加载的 Form。
+    /// </summary>
+    [RelayCommand]
+    private async Task ManageFormsAsync()
+    {
+        var formsPath = ResolveAssetFormsPath();
+        if (formsPath == null)
+        {
+            StatusText = "Assets/Forms 目录未找到";
+            return;
+        }
+
+        if (_fileService == null) return;
+
+        var forms = await _fileService.DiscoverFormsAsync(formsPath);
+
+        if (forms.Count == 0)
+        {
+            StatusText = "未发现可用模态";
+            return;
+        }
+
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
+            || desktop.MainWindow is not { } window)
+            return;
+
+        var vm = new FormSelectionWindowViewModel(forms);
+        var ok = await FormSelectionWindow.ShowAsync(window, vm);
+        if (!ok)
+            return;
+
+        var selected = vm.GetSelectedForms();
+        if (selected.Count == 0)
+        {
+            StatusText = "未选择任何模态";
+            return;
+        }
+
+        var paths = selected.Select(f => f.Path).ToList();
+        await LoadAndHandleResult(() => _fileService.LoadAndCompileMultipleDirectoriesAsync(paths), selected);
+    }
+
+    /// <summary>
+    /// 从 setting.json 的 Forms 列表恢复 FormInfo 列表。
+    /// 在 Assets/Forms/ 目录下查找对应的 Form 目录。
+    /// </summary>
+    private List<FormInfo>? RestoreFormsFromSettings(List<string> formDirNames)
+    {
+        var formsPath = ResolveAssetFormsPath();
+        if (formsPath == null)
+            return null;
+
+        var forms = new List<FormInfo>();
+        foreach (var dirName in formDirNames)
+        {
+            var dirPath = Path.Combine(formsPath, dirName);
+            if (Directory.Exists(dirPath))
+                forms.Add(new FormInfo { DirectoryName = dirName, Path = dirPath });
+        }
+
+        return forms.Count > 0 ? forms : null;
     }
 
     /// <summary>
@@ -218,7 +319,7 @@ public partial class MainWindowViewModel : ViewModelBase
         await LoadAndHandleResult(() => _fileService!.LoadAndCompileZipAsync(path));
     }
 
-    private async Task LoadAndHandleResult(Func<Task<CompileResult>> loadAction)
+    private async Task LoadAndHandleResult(Func<Task<CompileResult>> loadAction, List<FormInfo>? loadedForms = null)
     {
         if (_fileService == null) return;
 
@@ -236,7 +337,15 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (result.Settings != null && _projectSettingsService != null)
                 {
                     _projectSettingsService.SaveSettings(result.Settings);
+
+                    // 从 setting.json 恢复已加载的 Form 信息
+                    if (loadedForms == null && result.Settings.Forms.Count > 0)
+                    {
+                        loadedForms = RestoreFormsFromSettings(result.Settings.Forms);
+                    }
                 }
+
+                _loadedForms = loadedForms;
 
                 var elementListPanel = ElementListPanel as ElementListPanelViewModel;
                 elementListPanel?.LoadProject(result.Project);
@@ -343,6 +452,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     /// <summary>
     /// 将当前谱面数据写入指定路径。
+    /// 同时将已加载 Form 的源文件打包进 .gpkg，确保下次打开时自包含。
     /// </summary>
     private async Task WriteSaveDataAsync(string savePath)
     {
@@ -350,7 +460,32 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             StatusText = "正在保存...";
             var sourceFiles = _codeGenerator!.Generate(CurrentScore!);
-            var zipData = _packageWriter!.WriteZip(sourceFiles, CurrentScore!.ChartAssetFiles, _projectSettingsService?.CurrentSettings);
+
+            // 收集已加载 Form 的 .g 源文件
+            List<Gorge.GorgeCompiler.SourceCodeFile>? formSourceFiles = null;
+            if (_loadedForms is { Count: > 0 })
+            {
+                formSourceFiles = new List<Gorge.GorgeCompiler.SourceCodeFile>();
+                foreach (var form in _loadedForms)
+                {
+                    var formGFiles = Directory.EnumerateFiles(form.Path, "*.g", SearchOption.AllDirectories);
+                    foreach (var filePath in formGFiles)
+                    {
+                        var relativePath = "Forms/" + form.DirectoryName + "/" + Path.GetRelativePath(form.Path, filePath);
+                        var code = await File.ReadAllTextAsync(filePath);
+                        formSourceFiles.Add(new Gorge.GorgeCompiler.SourceCodeFile(relativePath, code, true));
+                    }
+                }
+            }
+
+            // 更新项目设置中的 Forms 列表
+            var settings = _projectSettingsService?.CurrentSettings;
+            if (settings != null && _loadedForms != null)
+            {
+                settings.Forms = _loadedForms.Select(f => f.DirectoryName).ToList();
+            }
+
+            var zipData = _packageWriter!.WriteZip(sourceFiles, CurrentScore!.ChartAssetFiles, settings, formSourceFiles);
 
             await using var stream = new FileStream(savePath, FileMode.Create, FileAccess.Write, FileShare.None);
             await stream.WriteAsync(zipData);

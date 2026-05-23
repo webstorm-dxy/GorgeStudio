@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using GorgeStudio.Models;
@@ -12,6 +13,14 @@ namespace GorgeStudio.Services;
 /// </summary>
 public interface IFileService
 {
+    /// <summary>
+    /// 扫描 Forms 根目录，发现所有可用的 Form（模态）。
+    /// 跳过内置库目录（Native、DremuBase、NativeDocs）。
+    /// </summary>
+    /// <param name="formsRootPath">Assets/Forms 目录的完整路径。</param>
+    /// <returns>可用 Form 信息列表。</returns>
+    Task<List<FormInfo>> DiscoverFormsAsync(string formsRootPath);
+
     /// <summary>
     /// 加载并编译单个 Gorge 源文件（.g）。
     /// </summary>
@@ -38,6 +47,23 @@ public interface IFileService
     Task<CompileResult> LoadAndCompileDirectoryAsync(
         string directoryPath,
         bool recursive = false,
+        bool isChart = true,
+        IProgress<float>? progress = null,
+        CancellationToken ct = default);
+
+    /// <summary>
+    /// 从多个目录加载所有 .g 源文件并一次性编译。
+    /// 适用于多选 Form 后统一编译的场景。内置库会自动注入。
+    /// </summary>
+    /// <param name="directoryPaths">多个目录的完整路径。</param>
+    /// <param name="recursive">是否递归搜索子目录。默认 <c>true</c>。</param>
+    /// <param name="isChart">是否将源文件标记为谱面代码。默认 <c>true</c>。</param>
+    /// <param name="progress">编译进度报告器。可为 <c>null</c>。</param>
+    /// <param name="ct">取消令牌。</param>
+    /// <returns>包含编译结果或错误信息的 <see cref="CompileResult"/>。</returns>
+    Task<CompileResult> LoadAndCompileMultipleDirectoriesAsync(
+        IReadOnlyList<string> directoryPaths,
+        bool recursive = true,
         bool isChart = true,
         IProgress<float>? progress = null,
         CancellationToken ct = default);

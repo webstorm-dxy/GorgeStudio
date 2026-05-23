@@ -33,6 +33,11 @@
                 <MenuItem Header="项目设置"
                           Command="{Binding OpenProjectSettingsCommand}" />
             </MenuItem>
+            <MenuItem Header="模态">
+                <MenuItem Header="管理模式..."
+                          Command="{Binding ManageFormsCommand}"
+                          IsEnabled="{Binding CanLaunch}" />
+            </MenuItem>
         </Menu>
 
         <!-- Toolbar -->

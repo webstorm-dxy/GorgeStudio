@@ -1,0 +1,65 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GorgeStudio.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="380"
+        x:Class="GorgeStudio.Views.FormSelectionWindow"
+        x:DataType="vm:FormSelectionWindowViewModel"
+        Title="选择要加载的模态"
+        Width="420" Height="380"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner">
+
+    <Design.DataContext>
+        <vm:FormSelectionWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="20,16,20,8">
+            <TextBlock Text="选择要加载的模态（可多选）"
+                       FontSize="15" FontWeight="SemiBold" />
+        </Border>
+
+        <!-- Form list with checkboxes -->
+        <Border Grid.Row="1" Padding="20,0">
+            <ListBox ItemsSource="{Binding Items}"
+                     BorderThickness="0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:FormSelectionItem">
+                        <CheckBox IsChecked="{Binding IsSelected}"
+                                  VerticalAlignment="Center"
+                                  Margin="0,3">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="{Binding Form.Name}"
+                                           FontSize="14" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding Form.DirectoryName}"
+                                           FontSize="12"
+                                           Foreground="{DynamicResource SystemControlBackgroundBaseMediumBrush}" />
+                                <TextBlock Text="{Binding Form.Version}"
+                                           FontSize="11"
+                                           Foreground="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </CheckBox>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <!-- Bottom button bar -->
+        <Border Grid.Row="2"
+                Padding="16,12"
+                BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                BorderThickness="0,1,0,0">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right" Spacing="8">
+                <Button Content="确定" Classes="accent"
+                        Command="{Binding OkCommand}" />
+                <Button Content="取消"
+                        Command="{Binding CancelCommand}" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -11,8 +11,6 @@
     <ItemGroup>
 
         <Folder Include="Assets\Forms\" />
-
-        <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
         <Folder Include="Services\FileService\" />
         <Folder Include="Services\GorgeClassService\" />
