@@ -11,8 +11,6 @@
     <ItemGroup>
 
         <Folder Include="Assets\Forms\" />
-
-        <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
         <Folder Include="Services\FileService\" />
         <Folder Include="Services\GorgeClassService\" />
@@ -41,6 +39,9 @@
     <ItemGroup>
       <Compile Update="Views\PropertiesPanelView.axaml.cs">
         <DependentUpon>PropertiesPanelView.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\ProjectSettingsWindow.axaml.cs">
+        <DependentUpon>ProjectSettingsWindow.axaml</DependentUpon>
       </Compile>
     </ItemGroup>
 

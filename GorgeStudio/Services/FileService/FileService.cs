@@ -5,6 +5,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Gorge.GorgeCompiler;
 using Gorge.GorgeCompiler.CompileContext;
@@ -66,7 +68,8 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
-                AssetFiles = package.AssetFiles
+                AssetFiles = package.AssetFiles,
+                Settings = package.Settings
             };
         }
         catch (OperationCanceledException)
@@ -120,7 +123,8 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
-                AssetFiles = package.AssetFiles
+                AssetFiles = package.AssetFiles,
+                Settings = package.Settings
             };
         }
         catch (OperationCanceledException)
@@ -173,7 +177,8 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
-                AssetFiles = package.AssetFiles
+                AssetFiles = package.AssetFiles,
+                Settings = package.Settings
             };
         }
         catch (OperationCanceledException)
@@ -227,7 +232,8 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
-                AssetFiles = package.AssetFiles
+                AssetFiles = package.AssetFiles,
+                Settings = package.Settings
             };
         }
         catch (OperationCanceledException)
@@ -246,6 +252,102 @@ public sealed class FileService : IFileService, IDisposable
     public void Dispose()
     {
         StatusChanged = null;
+    }
+
+    private static readonly HashSet<string> BuiltinDirectoryNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Native", "DremuBase", "NativeDocs"
+    };
+
+    /// <inheritdoc/>
+    public Task<List<FormInfo>> DiscoverFormsAsync(string formsRootPath)
+    {
+        var forms = new List<FormInfo>();
+        var fullPath = Path.GetFullPath(formsRootPath);
+
+        if (!Directory.Exists(fullPath))
+            return Task.FromResult(forms);
+
+        foreach (var subDir in Directory.EnumerateDirectories(fullPath))
+        {
+            var dirName = Path.GetFileName(subDir);
+            if (BuiltinDirectoryNames.Contains(dirName))
+                continue;
+
+            var gFiles = Directory.EnumerateFiles(subDir, "*.g", SearchOption.TopDirectoryOnly).ToList();
+            if (gFiles.Count == 0)
+                continue;
+
+            string? formName = null;
+            string? version = null;
+            foreach (var gFile in gFiles)
+            {
+                var content = File.ReadAllText(gFile);
+                var match = Regex.Match(content, @"@Form\s*\(\s*name\s*=\s*""([^""]*)""\s*,\s*version\s*=\s*""([^""]*)""");
+                if (match.Success)
+                {
+                    formName = match.Groups[1].Value;
+                    version = match.Groups[2].Value;
+                    break;
+                }
+            }
+
+            forms.Add(new FormInfo
+            {
+                Name = formName ?? dirName,
+                DirectoryName = dirName,
+                Version = version ?? "?",
+                Path = subDir
+            });
+        }
+
+        return Task.FromResult(forms);
+    }
+
+    /// <inheritdoc/>
+    public async Task<CompileResult> LoadAndCompileMultipleDirectoriesAsync(
+        IReadOnlyList<string> directoryPaths, bool recursive = true, bool isChart = true,
+        IProgress<float>? progress = null, CancellationToken ct = default)
+    {
+        var sw = Stopwatch.StartNew();
+        try
+        {
+            ReportStatus($"Loading {directoryPaths.Count} directories...");
+            var package = await LoadPackageFromMultipleDirectoriesAsync(directoryPaths, recursive, isChart, ct);
+
+            if (package.SourceFiles.Count == 0)
+            {
+                return new CompileResult
+                {
+                    Success = false,
+                    ErrorMessage = "No .g source files found in the selected directories.",
+                    CompileTime = sw.Elapsed
+                };
+            }
+
+            ReportStatus($"Compiling {package.SourceFiles.Count} source file(s)...");
+            var (project, classDecls) = await CompilePackageAsync(package, progress, ct);
+
+            ReportStatus("Compilation complete.");
+            return new CompileResult
+            {
+                Project = project,
+                Success = true,
+                SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
+                CompileTime = sw.Elapsed,
+                ClassDeclarations = classDecls,
+                AssetFiles = package.AssetFiles,
+                Settings = package.Settings
+            };
+        }
+        catch (OperationCanceledException)
+        {
+            return new CompileResult { Success = false, ErrorMessage = "Compilation cancelled.", CompileTime = sw.Elapsed };
+        }
+        catch (Exception ex)
+        {
+            return new CompileResult { Success = false, ErrorMessage = ex.Message, CompileTime = sw.Elapsed };
+        }
     }
 
     #region File Loading
@@ -321,6 +423,53 @@ public sealed class FileService : IFileService, IDisposable
     }
 
     /// <summary>
+    /// 从多个目录加载所有 .g 源文件和资源文件，合并为一个 <see cref="GorgePackage"/>。
+    /// </summary>
+    private static async Task<GorgePackage> LoadPackageFromMultipleDirectoriesAsync(
+        IReadOnlyList<string> directoryPaths, bool recursive, bool isChart, CancellationToken ct = default)
+    {
+        var allSourceFiles = new List<SourceCodeFile>();
+        var allAssetPaths = new List<string>();
+        var allAssetFiles = new List<AssetFile>();
+        var sourcePathIsChart = new Dictionary<string, bool>();
+
+        foreach (var directoryPath in directoryPaths)
+        {
+            var fullPath = Path.GetFullPath(directoryPath);
+            if (!Directory.Exists(fullPath))
+                continue;
+
+            var searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            var filePaths = Directory.EnumerateFiles(fullPath, "*.g", searchOption).ToList();
+
+            foreach (var filePath in filePaths)
+            {
+                var code = await File.ReadAllTextAsync(filePath, ct);
+                var nativeMarker = $"{Path.DirectorySeparatorChar}Native{Path.DirectorySeparatorChar}";
+                var fileIsChart = isChart && !filePath.Contains(nativeMarker);
+                allSourceFiles.Add(new SourceCodeFile(filePath, code, fileIsChart));
+                sourcePathIsChart[filePath] = fileIsChart;
+            }
+
+            var allFiles = Directory.EnumerateFiles(fullPath, "*.*", searchOption);
+            foreach (var file in allFiles)
+            {
+                if (!file.EndsWith(".g", StringComparison.OrdinalIgnoreCase))
+                    allAssetPaths.Add(file);
+            }
+        }
+
+        return new GorgePackage
+        {
+            SourcePath = string.Join("; ", directoryPaths),
+            SourceFiles = allSourceFiles,
+            AssetPaths = allAssetPaths,
+            AssetFiles = allAssetFiles,
+            SourcePathIsChart = sourcePathIsChart
+        };
+    }
+
+    /// <summary>
     /// 从 Zip 流中加载所有 .g 源文件，构建 <see cref="GorgePackage"/>。
     /// </summary>
     /// <param name="zipStream">Zip 文件的只读流。方法内部会包装为 <see cref="ZipArchive"/>。</param>
@@ -339,11 +488,24 @@ public sealed class FileService : IFileService, IDisposable
         var assetPaths = new List<string>();
         var assetFiles = new List<AssetFile>();
         var sourcePathIsChart = new Dictionary<string, bool>();
+        ProjectSettings? projectSettings = null;
 
         foreach (var entry in archive.Entries)
         {
             if (string.IsNullOrEmpty(entry.Name))
                 continue;
+
+            // 仅在 ZIP 根目录下的 setting.json 被视为项目设置
+            if (entry.FullName.Equals("setting.json", StringComparison.OrdinalIgnoreCase))
+            {
+                using var reader = new StreamReader(entry.Open());
+                var json = reader.ReadToEnd();
+                if (!string.IsNullOrWhiteSpace(json))
+                {
+                    projectSettings = JsonSerializer.Deserialize<ProjectSettings>(json);
+                }
+                continue;
+            }
 
             var entryPath = $"{sourceName}/{entry.FullName}";
 
@@ -370,7 +532,8 @@ public sealed class FileService : IFileService, IDisposable
             SourceFiles = sourceFiles,
             AssetPaths = assetPaths,
             AssetFiles = assetFiles,
-            SourcePathIsChart = sourcePathIsChart
+            SourcePathIsChart = sourcePathIsChart,
+            Settings = projectSettings
         };
     }
 

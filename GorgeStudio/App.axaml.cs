@@ -65,7 +65,11 @@ public partial class App : Application
             services.AddSingleton<IGorgeCodeGenerator, GorgeCodeGenerator>();
             services.AddSingleton<IPackageWriter, PackageWriter>();
 
+            // 项目设置服务
+            services.AddSingleton<IProjectSettingsService, ProjectSettingsService>();
+
             // 面板 ViewModel
+            services.AddTransient<ProjectSettingsWindowViewModel>();
             services.AddTransient<ElementListPanelViewModel>();
             services.AddTransient<PropertiesPanelViewModel>();
             services.AddTransient<TimelinePanelViewModel>();
