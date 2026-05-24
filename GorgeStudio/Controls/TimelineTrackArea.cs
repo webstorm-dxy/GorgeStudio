@@ -7,6 +7,9 @@ namespace GorgeStudio.Controls;
 
 public class TimelineTrackArea : Control
 {
+    private const double MinimumScrollableWidth = 2400.0;
+    private const double MinimumScrollableHeight = 480.0;
+
     private static readonly IBrush DefaultBgBrush = new SolidColorBrush(Color.FromRgb(35, 35, 35));
     private static readonly IBrush DefaultLineBrush = new SolidColorBrush(Color.FromRgb(80, 80, 80));
     private static readonly IBrush DefaultSelectedHighlightBrush = new SolidColorBrush(Color.FromRgb(35, 74, 108));
@@ -107,16 +110,15 @@ public class TimelineTrackArea : Control
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        var desiredWidth = TotalDurationSeconds * PixelsPerSecond;
-        var desiredHeight = TrackCount * TrackRowHeight;
+        var desiredWidth = Math.Max(TotalDurationSeconds * PixelsPerSecond, MinimumScrollableWidth);
+        var desiredHeight = Math.Max(TrackCount * TrackRowHeight, MinimumScrollableHeight);
         return new Size(desiredWidth, desiredHeight);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var width = Math.Max(TotalDurationSeconds * PixelsPerSecond, finalSize.Width);
-        var contentHeight = TrackCount * TrackRowHeight;
-        var height = Math.Max(contentHeight, finalSize.Height);
+        var width = Math.Max(Math.Max(TotalDurationSeconds * PixelsPerSecond, MinimumScrollableWidth), finalSize.Width);
+        var height = Math.Max(Math.Max(TrackCount * TrackRowHeight, MinimumScrollableHeight), finalSize.Height);
         return new Size(width, height);
     }
 

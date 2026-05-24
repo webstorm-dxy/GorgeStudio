@@ -9,6 +9,8 @@ namespace GorgeStudio.Controls;
 
 public class TimelineRuler : Control
 {
+    private const double MinimumScrollableWidth = 2400.0;
+
     private static readonly IBrush DefaultBgBrush = new SolidColorBrush(Color.FromRgb(30, 30, 30));
     private static readonly IBrush DefaultMinorBrush = new SolidColorBrush(Color.FromRgb(120, 120, 120));
     private static readonly IBrush DefaultMajorBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200));
@@ -90,13 +92,13 @@ public class TimelineRuler : Control
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        var desiredWidth = TotalDurationSeconds * PixelsPerSecond;
+        var desiredWidth = Math.Max(TotalDurationSeconds * PixelsPerSecond, MinimumScrollableWidth);
         return new Size(desiredWidth, 0);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var width = Math.Max(TotalDurationSeconds * PixelsPerSecond, finalSize.Width);
+        var width = Math.Max(Math.Max(TotalDurationSeconds * PixelsPerSecond, MinimumScrollableWidth), finalSize.Width);
         return new Size(width, finalSize.Height);
     }
 

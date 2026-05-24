@@ -98,8 +98,9 @@
                 <!-- Area F: Scrollbars provided by this ScrollViewer -->
                 <ScrollViewer Grid.Row="1" Grid.Column="1"
                               x:Name="TrackScroller"
-                              HorizontalScrollBarVisibility="Auto"
-                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Visible"
+                              VerticalScrollBarVisibility="Visible"
+                              AllowAutoHide="False"
                               ScrollChanged="OnTrackScrollerScrollChanged">
                     <controls:TimelineTrackArea x:Name="TrackAreaControl"
                         PointerPressed="OnTrackAreaPointerPressed"
