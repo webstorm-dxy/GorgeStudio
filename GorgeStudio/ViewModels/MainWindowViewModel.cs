@@ -347,6 +347,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
                 _loadedForms = loadedForms;
 
+                if (loadedForms != null && _projectSettingsService != null)
+                    _projectSettingsService.CurrentSettings.Forms = loadedForms.Select(f => f.Name).ToList();
+
                 var elementListPanel = ElementListPanel as ElementListPanelViewModel;
                 elementListPanel?.LoadProject(result.Project);
 

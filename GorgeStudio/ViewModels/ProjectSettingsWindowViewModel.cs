@@ -69,12 +69,14 @@ public partial class ProjectSettingsWindowViewModel : ViewModelBase
     {
         if (SelectedCategory is TimelineSettingsCategory ts)
         {
+            var currentSettings = _settingsService.CurrentSettings;
             _settingsService.SaveSettings(new ProjectSettings
             {
                 Bpm = ts.Bpm,
                 Offset = ts.Offset,
                 BeatsPerBar = ts.BeatsPerBar,
                 SubdivisionsPerBeat = ts.SubdivisionsPerBeat,
+                Forms = currentSettings.Forms,
             });
         }
         DialogResult = true;

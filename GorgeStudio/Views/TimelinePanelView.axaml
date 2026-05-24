@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:GorgeStudio.ViewModels"
+             xmlns:controls="using:GorgeStudio.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="200"
@@ -12,20 +13,105 @@
     </Design.DataContext>
 
     <Border Classes="cardPanel" CornerRadius="0" BorderThickness="0,1,0,0">
-        <DockPanel>
+        <Grid RowDefinitions="Auto,*">
+
             <!-- Header strip -->
-            <Border DockPanel.Dock="Top" Classes="panelHeader">
-                <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto">
-                    <TextBlock Grid.Column="0" Classes="subtitle" Text="{Binding Title}" VerticalAlignment="Center" />
-                    <Separator Grid.Column="1" Width="1" Height="16" Margin="12,0"
-                               Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
-                               VerticalAlignment="Center" />
-                </Grid>
+            <Border Grid.Row="0" Classes="panelHeader">
+                <TextBlock Classes="subtitle" Text="{Binding Title}" VerticalAlignment="Center" />
             </Border>
 
-            <!-- Timeline canvas area -->
-            <ScrollViewer x:Name="TimelineScroller" />
-        </DockPanel>
+            <!-- Timeline body: frozen-header Grid -->
+            <Grid Grid.Row="1" ColumnDefinitions="180,*" RowDefinitions="Auto,*">
+
+                <!-- ===== LEFT COLUMN ===== -->
+
+                <!-- Area A: Toolbar (Row 0, Col 0) -->
+                <Border Grid.Row="0" Grid.Column="0"
+                        Padding="6,4"
+                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                        BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                        BorderThickness="0,0,0,1">
+                    <Grid ColumnDefinitions="*,*,*,*">
+                        <Button Grid.Column="0" Content="＋" Height="26" Margin="2,0"
+                                Command="{Binding AddTrackCommand}"
+                                ToolTip.Tip="Add Track" />
+                        <Button Grid.Column="1" Content="－" Height="26" Margin="2,0"
+                                Command="{Binding DeleteTrackCommand}"
+                                ToolTip.Tip="Delete Track" />
+                        <Button Grid.Column="2" Content="⊞" Height="26" Margin="2,0"
+                                Command="{Binding CopyTrackCommand}"
+                                ToolTip.Tip="Copy Track" />
+                        <Button Grid.Column="3" Content="⚙" Height="26" Margin="2,0"
+                                Command="{Binding OpenSettingsCommand}"
+                                ToolTip.Tip="Settings" />
+                    </Grid>
+                </Border>
+
+                <!-- Area B: Track name list (Row 1, Col 0) -->
+                <ScrollViewer Grid.Row="1" Grid.Column="0"
+                              x:Name="TrackNameScroller"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Hidden">
+                    <ListBox ItemsSource="{Binding Tracks}"
+                             SelectedIndex="{Binding SelectedTrackIndex, Mode=TwoWay}"
+                             Background="Transparent"
+                             BorderThickness="0">
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem:selected">
+                                <Setter Property="Background" Value="#234A6C" />
+                            </Style>
+                        </ListBox.Styles>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:TrackInfo">
+                                <Border Height="40" Padding="10,0"
+                                        Background="Transparent"
+                                        BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                                        BorderThickness="0,0,0,1">
+                                    <TextBlock Text="{Binding Name}"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis" />
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+
+                <!-- ===== RIGHT COLUMN ===== -->
+
+                <!-- Area C: Time ruler (Row 0, Col 1) -->
+                <ScrollViewer Grid.Row="0" Grid.Column="1"
+                              x:Name="RulerScroller"
+                              HorizontalScrollBarVisibility="Hidden"
+                              VerticalScrollBarVisibility="Disabled">
+                    <controls:TimelineRuler x:Name="RulerControl"
+                        Height="36"
+                        PixelsPerSecond="{Binding PixelsPerSecond}"
+                        Bpm="{Binding Bpm}"
+                        BeatsPerBar="{Binding BeatsPerBar}"
+                        SubdivisionsPerBeat="{Binding SubdivisionsPerBeat}"
+                        TotalDurationSeconds="{Binding TotalDuration}" />
+                </ScrollViewer>
+
+                <!-- Area E: Main track editing area (Row 1, Col 1) -->
+                <!-- Area D: Playhead drawn inside TimelineTrackArea -->
+                <!-- Area F: Scrollbars provided by this ScrollViewer -->
+                <ScrollViewer Grid.Row="1" Grid.Column="1"
+                              x:Name="TrackScroller"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto"
+                              ScrollChanged="OnTrackScrollerScrollChanged">
+                    <controls:TimelineTrackArea x:Name="TrackAreaControl"
+                        PixelsPerSecond="{Binding PixelsPerSecond}"
+                        PlayheadPositionSeconds="{Binding PlayheadPosition}"
+                        TrackCount="{Binding Tracks.Count}"
+                        TrackRowHeight="40"
+                        TotalDurationSeconds="{Binding TotalDuration}"
+                        SelectedTrackIndex="{Binding SelectedTrackIndex}" />
+                </ScrollViewer>
+
+            </Grid>
+        </Grid>
     </Border>
 
 </UserControl>

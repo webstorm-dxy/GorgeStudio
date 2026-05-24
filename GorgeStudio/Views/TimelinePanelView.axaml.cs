@@ -1,25 +1,29 @@
-using System;
 using Avalonia.Controls;
-using GorgeStudio.ViewModels;
+using Avalonia.Controls.Primitives;
 
 namespace GorgeStudio.Views;
 
 public partial class TimelinePanelView : UserControl
 {
+    private bool _isSyncing;
+
     public TimelinePanelView()
     {
         InitializeComponent();
     }
 
-    private void ZoomIn_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void OnTrackScrollerScrollChanged(object? sender, ScrollChangedEventArgs e)
     {
-        if (DataContext is TimelinePanelViewModel vm)
-            vm.ZoomLevel = Math.Min(vm.ZoomLevel * 1.5, 20.0);
-    }
+        if (_isSyncing) return;
+        _isSyncing = true;
 
-    private void ZoomOut_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        if (DataContext is TimelinePanelViewModel vm)
-            vm.ZoomLevel = Math.Max(vm.ZoomLevel / 1.5, 0.1);
+        RulerScroller.Offset = RulerScroller.Offset.WithX(TrackScroller.Offset.X);
+        TrackNameScroller.Offset = TrackNameScroller.Offset.WithY(TrackScroller.Offset.Y);
+
+        RulerControl.ScrollOffsetX = TrackScroller.Offset.X;
+        TrackAreaControl.ScrollOffsetX = TrackScroller.Offset.X;
+        TrackAreaControl.ScrollOffsetY = TrackScroller.Offset.Y;
+
+        _isSyncing = false;
     }
 }
