@@ -46,6 +46,11 @@ public partial class TimelinePanelViewModel : ViewModelBase
     [ObservableProperty]
     private double _pixelsPerSecond = 100.0;
 
+    public const double MinPixelsPerSecond = 10.0;
+    public const double MaxPixelsPerSecond = 2000.0;
+    public const double DefaultPixelsPerSecond = 100.0;
+    private const double ZoomStepMultiplier = 1.1;
+
     public double ContentWidth => TotalDuration * PixelsPerSecond;
 
     [ObservableProperty]
@@ -129,6 +134,18 @@ public partial class TimelinePanelViewModel : ViewModelBase
         return TimelineSnapper.SnapDuration(
             duration, IsSnapEnabled, SnapMode,
             Bpm, BeatsPerBar, SubdivisionsPerBeat);
+    }
+
+    public bool TryZoomTimeline(double multiplier, out double oldPps, out double newPps)
+    {
+        oldPps = PixelsPerSecond;
+        newPps = Math.Clamp(oldPps * multiplier, MinPixelsPerSecond, MaxPixelsPerSecond);
+
+        if (Math.Abs(newPps - oldPps) < 0.001)
+            return false;
+
+        ZoomLevel = newPps / DefaultPixelsPerSecond;
+        return true;
     }
 
     private double GetSnapIntervalSeconds()
@@ -276,7 +293,7 @@ public partial class TimelinePanelViewModel : ViewModelBase
 
     partial void OnZoomLevelChanged(double value)
     {
-        PixelsPerSecond = Math.Max(10, Math.Min(2000, 100.0 * value));
+        PixelsPerSecond = Math.Clamp(DefaultPixelsPerSecond * value, MinPixelsPerSecond, MaxPixelsPerSecond);
     }
 
     partial void OnSelectedTrackIndexChanged(int value)

@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using GorgeStudio.Controls;
 using GorgeStudio.ViewModels;
 
@@ -22,6 +23,7 @@ public partial class TimelinePanelView : UserControl
 
     // Drag state
     private const double DragThresholdPixels = 4;
+    private const double ZoomStepMultiplier = 1.1;
     private PeriodDragMode _dragMode;
     private PeriodBlockInfo? _draggingPeriod;
     private Point _dragStartPoint;
@@ -35,6 +37,16 @@ public partial class TimelinePanelView : UserControl
         TrackNameScroller.AddHandler(
             InputElement.PointerWheelChangedEvent,
             OnTrackNameScrollerPointerWheelChanged,
+            RoutingStrategies.Tunnel | RoutingStrategies.Bubble,
+            handledEventsToo: true);
+        TrackScroller.AddHandler(
+            InputElement.PointerWheelChangedEvent,
+            OnTimelinePointerWheelChanged,
+            RoutingStrategies.Tunnel | RoutingStrategies.Bubble,
+            handledEventsToo: true);
+        RulerScroller.AddHandler(
+            InputElement.PointerWheelChangedEvent,
+            OnTimelinePointerWheelChanged,
             RoutingStrategies.Tunnel | RoutingStrategies.Bubble,
             handledEventsToo: true);
     }
@@ -59,6 +71,39 @@ public partial class TimelinePanelView : UserControl
         var maxY = Math.Max(0, TrackScroller.Extent.Height - TrackScroller.Viewport.Height);
         var nextY = Math.Clamp(TrackScroller.Offset.Y - e.Delta.Y * 40, 0, maxY);
         TrackScroller.Offset = new Vector(TrackScroller.Offset.X, nextY);
+        e.Handled = true;
+    }
+
+    private void OnTimelinePointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    {
+        if (DataContext is not TimelinePanelViewModel vm) return;
+
+        var keyModifiers = e.KeyModifiers;
+        var isZoomModifier = (keyModifiers & KeyModifiers.Control) != 0
+                          || (keyModifiers & KeyModifiers.Meta) != 0;
+
+        if (!isZoomModifier) return;
+
+        var multiplier = e.Delta.Y > 0 ? ZoomStepMultiplier : 1.0 / ZoomStepMultiplier;
+
+        var pointerPosition = e.GetPosition(TrackScroller);
+        var anchorTime = (TrackScroller.Offset.X + pointerPosition.X) / vm.PixelsPerSecond;
+
+        if (!vm.TryZoomTimeline(multiplier, out _, out _))
+            return;
+
+        var newOffsetX = anchorTime * vm.PixelsPerSecond - pointerPosition.X;
+        var maxOffsetX = Math.Max(0, TrackScroller.Extent.Width - TrackScroller.Viewport.Width);
+        newOffsetX = Math.Clamp(newOffsetX, 0, maxOffsetX);
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            TrackScroller.Offset = TrackScroller.Offset.WithX(newOffsetX);
+            RulerScroller.Offset = RulerScroller.Offset.WithX(newOffsetX);
+            RulerControl.ScrollOffsetX = newOffsetX;
+            TrackAreaControl.ScrollOffsetX = newOffsetX;
+        }, DispatcherPriority.Loaded);
+
         e.Handled = true;
     }
 
