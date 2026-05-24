@@ -17,7 +17,31 @@
 
             <!-- Header strip -->
             <Border Grid.Row="0" Classes="panelHeader">
-                <TextBlock Classes="subtitle" Text="{Binding Title}" VerticalAlignment="Center" />
+                <DockPanel LastChildFill="False">
+                    <TextBlock DockPanel.Dock="Left"
+                               Classes="subtitle"
+                               Text="{Binding Title}"
+                               VerticalAlignment="Center" />
+                    <StackPanel DockPanel.Dock="Right"
+                                Orientation="Horizontal"
+                                Spacing="6"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="吸附"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                        <ComboBox ItemsSource="{Binding SnapModeOptions}"
+                                  SelectedItem="{Binding SelectedSnapModeOption, Mode=TwoWay}"
+                                  Width="92"
+                                  Height="26">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:SnapModeOption">
+                                    <TextBlock Text="{Binding DisplayName}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </DockPanel>
             </Border>
 
             <!-- Timeline body: frozen-header Grid -->
@@ -32,16 +56,20 @@
                         BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
                         BorderThickness="0,0,0,1">
                     <Grid ColumnDefinitions="*,*,*,*">
-                        <Button Grid.Column="0" Content="＋" Height="26" Margin="2,0"
+                        <Button Grid.Column="0"
+                                Content="＋" Height="26" Margin="2,0"
                                 Command="{Binding AddTrackCommand}"
                                 ToolTip.Tip="Add Track" />
-                        <Button Grid.Column="1" Content="－" Height="26" Margin="2,0"
+                        <Button Grid.Column="1"
+                                Content="－" Height="26" Margin="2,0"
                                 Command="{Binding DeleteTrackCommand}"
                                 ToolTip.Tip="Delete Track" />
-                        <Button Grid.Column="2" Content="⊞" Height="26" Margin="2,0"
+                        <Button Grid.Column="2"
+                                Content="⊞" Height="26" Margin="2,0"
                                 Command="{Binding CopyTrackCommand}"
                                 ToolTip.Tip="Copy Track" />
-                        <Button Grid.Column="3" Content="⚙" Height="26" Margin="2,0"
+                        <Button Grid.Column="3"
+                                Content="⚙" Height="26" Margin="2,0"
                                 Command="{Binding OpenSettingsCommand}"
                                 ToolTip.Tip="Settings" />
                     </Grid>
@@ -57,6 +85,11 @@
                              Background="Transparent"
                              BorderThickness="0">
                         <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="MinHeight" Value="40" />
+                                <Setter Property="Height" Value="40" />
+                            </Style>
                             <Style Selector="ListBoxItem:selected">
                                 <Setter Property="Background" Value="#234A6C" />
                             </Style>
@@ -90,7 +123,8 @@
                         Bpm="{Binding Bpm}"
                         BeatsPerBar="{Binding BeatsPerBar}"
                         SubdivisionsPerBeat="{Binding SubdivisionsPerBeat}"
-                        TotalDurationSeconds="{Binding TotalDuration}" />
+                        TotalDurationSeconds="{Binding TotalDuration}"
+                        OffsetMilliseconds="{Binding Offset}" />
                 </ScrollViewer>
 
                 <!-- Area E: Main track editing area (Row 1, Col 1) -->

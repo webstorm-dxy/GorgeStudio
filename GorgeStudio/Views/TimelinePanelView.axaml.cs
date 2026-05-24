@@ -82,7 +82,7 @@ public partial class TimelinePanelView : UserControl
         {
             vm.SelectPeriod(null);
             var time = (point.Position.X + TrackAreaControl.ScrollOffsetX) / TrackAreaControl.PixelsPerSecond;
-            vm.PlayheadPosition = Math.Max(0, time);
+            vm.PlayheadPosition = vm.SnapTime(Math.Max(0, time));
         }
     }
 
@@ -123,12 +123,12 @@ public partial class TimelinePanelView : UserControl
             if (_dragMode == PeriodDragMode.ResizeMinLength)
             {
                 var previewMinLength = Math.Max(0.25, _dragStartMinLength + deltaSeconds);
-                vm.PreviewPeriodMinLength(_draggingPeriod.Period, previewMinLength);
+                vm.PreviewPeriodMinLength(_draggingPeriod.Period, vm.SnapDuration(previewMinLength));
             }
             else
             {
                 var previewTime = Math.Max(0, _dragStartTimeOffset + deltaSeconds);
-                vm.PreviewPeriodTimeOffset(_draggingPeriod.Period, previewTime);
+                vm.PreviewPeriodTimeOffset(_draggingPeriod.Period, vm.SnapTime(previewTime));
             }
         }
     }

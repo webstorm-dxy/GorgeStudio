@@ -11,6 +11,7 @@ using CommunityToolkit.Mvvm.Input;
 using Gorge.GorgeLanguage.Objective;
 using Gorge.Native.Gorge;
 using GorgeStudio.Models.Chart;
+using GorgeStudio.Models.Timeline;
 using GorgeStudio.Services;
 using GorgeStudio.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -67,6 +68,80 @@ public partial class TimelinePanelViewModel : ViewModelBase
 
     [ObservableProperty]
     private IPeriod? _selectedPeriod;
+
+    // Snap state (session-only, not persisted)
+    [ObservableProperty]
+    private bool _isSnapEnabled;
+
+    [ObservableProperty]
+    private TimelineSnapMode _snapMode = TimelineSnapMode.Subdivision;
+
+    [ObservableProperty]
+    private int _offset;
+
+    public ObservableCollection<SnapModeOption> SnapModeOptions { get; } = new()
+    {
+        new() { Mode = null, DisplayName = "关" },
+        new() { Mode = TimelineSnapMode.Bar, DisplayName = "小节" },
+        new() { Mode = TimelineSnapMode.Beat, DisplayName = "拍" },
+        new() { Mode = TimelineSnapMode.Subdivision, DisplayName = "细分" }
+    };
+
+    public SnapModeOption SelectedSnapModeOption
+    {
+        get
+        {
+            if (!IsSnapEnabled)
+                return SnapModeOptions[0];
+            return SnapModeOptions.FirstOrDefault(o => o.Mode == SnapMode) ?? SnapModeOptions[^1];
+        }
+        set
+        {
+            if (value?.Mode == null)
+                IsSnapEnabled = false;
+            else
+            {
+                IsSnapEnabled = true;
+                SnapMode = value.Mode.Value;
+            }
+        }
+    }
+
+    partial void OnSnapModeChanged(TimelineSnapMode value)
+    {
+        OnPropertyChanged(nameof(SelectedSnapModeOption));
+    }
+
+    partial void OnIsSnapEnabledChanged(bool value)
+    {
+        OnPropertyChanged(nameof(SelectedSnapModeOption));
+    }
+
+    public double SnapTime(double seconds)
+    {
+        return TimelineSnapper.Snap(
+            seconds, IsSnapEnabled, SnapMode,
+            Bpm, Offset, BeatsPerBar, SubdivisionsPerBeat);
+    }
+
+    public double SnapDuration(double duration)
+    {
+        return TimelineSnapper.SnapDuration(
+            duration, IsSnapEnabled, SnapMode,
+            Bpm, BeatsPerBar, SubdivisionsPerBeat);
+    }
+
+    private double GetSnapIntervalSeconds()
+    {
+        var beatSeconds = Bpm > 0 ? 60.0 / Bpm : 0.5;
+        return SnapMode switch
+        {
+            TimelineSnapMode.Bar => beatSeconds * BeatsPerBar,
+            TimelineSnapMode.Beat => beatSeconds,
+            TimelineSnapMode.Subdivision => beatSeconds / SubdivisionsPerBeat,
+            _ => beatSeconds / SubdivisionsPerBeat
+        };
+    }
 
     public double TrackRowHeight => 40.0;
 
@@ -223,6 +298,7 @@ public partial class TimelinePanelViewModel : ViewModelBase
         if (_settingsService?.CurrentSettings is { } s)
         {
             Bpm = s.Bpm;
+            Offset = s.Offset;
             BeatsPerBar = s.BeatsPerBar;
             SubdivisionsPerBeat = s.SubdivisionsPerBeat;
         }
@@ -387,7 +463,7 @@ public partial class TimelinePanelViewModel : ViewModelBase
         var track = Tracks[SelectedTrackIndex];
         if (track.Staff == null) return;
 
-        var period = _periodEditingService.CreatePeriod(track.Staff, _simulationScore, (float)PlayheadPosition);
+        var period = _periodEditingService.CreatePeriod(track.Staff, _simulationScore, (float)SnapTime(PlayheadPosition));
         _periodEditingService.InsertPeriod(track.Staff, period);
         RefreshFromScore();
     }
@@ -538,4 +614,10 @@ public partial class PeriodBlockInfo : ObservableObject
     }
     public bool IsSelected { get; set; }
     public bool IsAudio => Period is AudioPeriod;
+}
+
+public sealed class SnapModeOption
+{
+    public TimelineSnapMode? Mode { get; init; }
+    public string DisplayName { get; init; } = "";
 }

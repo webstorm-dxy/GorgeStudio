@@ -31,8 +31,17 @@ public class TimelineRuler : Control
     public static readonly StyledProperty<int> SubdivisionsPerBeatProperty =
         AvaloniaProperty.Register<TimelineRuler, int>(nameof(SubdivisionsPerBeat), 4);
 
+    public static readonly StyledProperty<int> OffsetMillisecondsProperty =
+        AvaloniaProperty.Register<TimelineRuler, int>(nameof(OffsetMilliseconds));
+
     public static readonly StyledProperty<double> TotalDurationSecondsProperty =
         AvaloniaProperty.Register<TimelineRuler, double>(nameof(TotalDurationSeconds), 10.0);
+
+    public int OffsetMilliseconds
+    {
+        get => GetValue(OffsetMillisecondsProperty);
+        set => SetValue(OffsetMillisecondsProperty, value);
+    }
 
     public double PixelsPerSecond
     {
@@ -73,7 +82,8 @@ public class TimelineRuler : Control
     private static readonly AvaloniaProperty[] RenderProperties =
     {
         PixelsPerSecondProperty, ScrollOffsetXProperty, BpmProperty,
-        BeatsPerBarProperty, SubdivisionsPerBeatProperty, TotalDurationSecondsProperty
+        BeatsPerBarProperty, SubdivisionsPerBeatProperty, TotalDurationSecondsProperty,
+        OffsetMillisecondsProperty
     };
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -115,11 +125,12 @@ public class TimelineRuler : Control
         if (division.TickIntervalSeconds <= 0) return;
 
         var scrollX = ScrollOffsetX;
+        var offsetSeconds = OffsetMilliseconds / 1000.0;
         var startTime = scrollX / PixelsPerSecond;
         var endTime = (scrollX + width) / PixelsPerSecond;
 
-        var firstTick = (int)(startTime / division.TickIntervalSeconds);
-        var lastTick = (int)(endTime / division.TickIntervalSeconds) + 1;
+        var firstTick = (int)Math.Floor((startTime - offsetSeconds) / division.TickIntervalSeconds);
+        var lastTick = (int)Math.Ceiling((endTime - offsetSeconds) / division.TickIntervalSeconds);
 
         var minorPen = new Pen(DefaultMinorBrush, 1);
         var highlightPen = new Pen(DefaultMinorBrush, 1);
@@ -127,7 +138,7 @@ public class TimelineRuler : Control
 
         for (var i = firstTick; i <= lastTick; i++)
         {
-            var time = i * division.TickIntervalSeconds;
+            var time = offsetSeconds + i * division.TickIntervalSeconds;
             var x = time * PixelsPerSecond - scrollX;
             if (x < 0 || x > width) continue;
 
