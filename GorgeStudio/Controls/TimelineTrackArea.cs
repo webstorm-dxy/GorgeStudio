@@ -105,6 +105,13 @@ public class TimelineTrackArea : Control
         }
     }
 
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var desiredWidth = TotalDurationSeconds * PixelsPerSecond;
+        var desiredHeight = TrackCount * TrackRowHeight;
+        return new Size(desiredWidth, desiredHeight);
+    }
+
     protected override Size ArrangeOverride(Size finalSize)
     {
         var width = Math.Max(TotalDurationSeconds * PixelsPerSecond, finalSize.Width);

@@ -88,6 +88,12 @@ public class TimelineRuler : Control
         }
     }
 
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var desiredWidth = TotalDurationSeconds * PixelsPerSecond;
+        return new Size(desiredWidth, 0);
+    }
+
     protected override Size ArrangeOverride(Size finalSize)
     {
         var width = Math.Max(TotalDurationSeconds * PixelsPerSecond, finalSize.Width);

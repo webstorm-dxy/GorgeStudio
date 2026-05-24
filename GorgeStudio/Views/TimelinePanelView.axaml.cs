@@ -1,5 +1,8 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using GorgeStudio.ViewModels;
 
 namespace GorgeStudio.Views;
 
@@ -25,5 +28,13 @@ public partial class TimelinePanelView : UserControl
         TrackAreaControl.ScrollOffsetY = TrackScroller.Offset.Y;
 
         _isSyncing = false;
+    }
+
+    private void OnTrackAreaPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        var point = e.GetCurrentPoint(TrackAreaControl);
+        var time = (point.Position.X + TrackAreaControl.ScrollOffsetX) / TrackAreaControl.PixelsPerSecond;
+        if (DataContext is TimelinePanelViewModel vm)
+            vm.PlayheadPosition = Math.Max(0, time);
     }
 }
