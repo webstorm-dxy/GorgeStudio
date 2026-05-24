@@ -144,6 +144,8 @@ public partial class TimelinePanelViewModel : ViewModelBase
     }
 
     public double TrackRowHeight => 40.0;
+    public double TrackListHeight => TrackCount * TrackRowHeight;
+    public double TimelineContentHeight => Math.Max(TrackListHeight, 480.0);
 
     public bool CanAddPeriod => SelectedTrackIndex >= 0 && SelectedTrackIndex < TrackCount;
     public bool CanDeletePeriod => SelectedPeriod != null;
@@ -285,6 +287,8 @@ public partial class TimelinePanelViewModel : ViewModelBase
     partial void OnTrackCountChanged(int value)
     {
         OnPropertyChanged(nameof(CanAddPeriod));
+        OnPropertyChanged(nameof(TrackListHeight));
+        OnPropertyChanged(nameof(TimelineContentHeight));
     }
 
     partial void OnSelectedPeriodChanged(IPeriod? value)

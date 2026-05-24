@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using GorgeStudio.Controls;
 using GorgeStudio.ViewModels;
 
@@ -31,6 +32,11 @@ public partial class TimelinePanelView : UserControl
     public TimelinePanelView()
     {
         InitializeComponent();
+        TrackNameScroller.AddHandler(
+            InputElement.PointerWheelChangedEvent,
+            OnTrackNameScrollerPointerWheelChanged,
+            RoutingStrategies.Tunnel | RoutingStrategies.Bubble,
+            handledEventsToo: true);
     }
 
     private void OnTrackScrollerScrollChanged(object? sender, ScrollChangedEventArgs e)
@@ -39,13 +45,21 @@ public partial class TimelinePanelView : UserControl
         _isSyncing = true;
 
         RulerScroller.Offset = RulerScroller.Offset.WithX(TrackScroller.Offset.X);
-        TrackNameScroller.Offset = TrackNameScroller.Offset.WithY(TrackScroller.Offset.Y);
+        TrackNameScroller.Offset = new Vector(0, TrackScroller.Offset.Y);
 
         RulerControl.ScrollOffsetX = TrackScroller.Offset.X;
         TrackAreaControl.ScrollOffsetX = TrackScroller.Offset.X;
         TrackAreaControl.ScrollOffsetY = TrackScroller.Offset.Y;
 
         _isSyncing = false;
+    }
+
+    private void OnTrackNameScrollerPointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    {
+        var maxY = Math.Max(0, TrackScroller.Extent.Height - TrackScroller.Viewport.Height);
+        var nextY = Math.Clamp(TrackScroller.Offset.Y - e.Delta.Y * 40, 0, maxY);
+        TrackScroller.Offset = new Vector(TrackScroller.Offset.X, nextY);
+        e.Handled = true;
     }
 
     private void OnTrackAreaPointerPressed(object? sender, PointerPressedEventArgs e)
