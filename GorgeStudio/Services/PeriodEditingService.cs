@@ -82,17 +82,37 @@ public class PeriodEditingService : IPeriodEditingService
         staff.RemovePeriod(period);
     }
 
+    private const float MinimumPeriodLengthSeconds = 0.25f;
+
+    public void UpdatePeriodConfig(IPeriod period, float? timeOffset = null, float? minLength = null)
+    {
+        var newConfig = (Injector)period.ConfigInjector.Clone();
+        var decl = newConfig.InjectedClassDeclaration;
+
+        if (timeOffset.HasValue)
+        {
+            if (!decl.TryGetInjectorFieldByName("timeOffset", out var field))
+                throw new InvalidOperationException("PeriodConfig missing timeOffset field.");
+            newConfig.SetInjectorFloat(field.Index, Math.Max(0, timeOffset.Value));
+        }
+
+        if (minLength.HasValue)
+        {
+            if (!decl.TryGetInjectorFieldByName("minLength", out var field))
+                throw new InvalidOperationException("PeriodConfig missing minLength field.");
+            newConfig.SetInjectorFloat(field.Index, Math.Max(MinimumPeriodLengthSeconds, minLength.Value));
+        }
+
+        period.UpdateConfig(newConfig);
+    }
+
     public void UpdatePeriodTimeOffset(IPeriod period, float timeOffset)
     {
-        var clamped = Math.Max(0, timeOffset);
-        var oldConfig = period.ConfigInjector;
-        var newConfig = (Injector)oldConfig.Clone();
+        UpdatePeriodConfig(period, timeOffset: timeOffset);
+    }
 
-        var decl = newConfig.InjectedClassDeclaration;
-        if (!decl.TryGetInjectorFieldByName("timeOffset", out var field))
-            throw new InvalidOperationException("PeriodConfig missing timeOffset field.");
-
-        newConfig.SetInjectorFloat(field.Index, clamped);
-        period.UpdateConfig(newConfig);
+    public void UpdatePeriodMinLength(IPeriod period, float minLength)
+    {
+        UpdatePeriodConfig(period, minLength: minLength);
     }
 }

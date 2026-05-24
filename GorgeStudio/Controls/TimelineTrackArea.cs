@@ -278,6 +278,14 @@ public class TimelineTrackArea : Control
                     context.FillRectangle(fillBrush, blockRect);
                     context.DrawRectangle(borderPen, blockRect, 4);
 
+                    // Resize handle (right 6px)
+                    if (blockW > 6)
+                    {
+                        var handleRect = new Rect(blockX + blockW - 6, trackY + 2, 6, rowHeight - 4);
+                        var handleBrush = new SolidColorBrush(Color.FromArgb(60, 255, 255, 255));
+                        context.FillRectangle(handleBrush, handleRect);
+                    }
+
                     // Label
                     if (blockW > 30)
                     {
@@ -317,22 +325,44 @@ public class TimelineTrackArea : Control
 
     public PeriodBlockInfo? HitTestPeriod(Point viewportPoint)
     {
+        var result = HitTestPeriodPart(viewportPoint);
+        return result.Block;
+    }
+
+    public PeriodHitResult HitTestPeriodPart(Point viewportPoint)
+    {
         var tracks = Tracks;
-        if (tracks == null) return null;
+        if (tracks == null) return new PeriodHitResult(null, PeriodHitKind.None);
 
         var trackIndex = (int)((viewportPoint.Y + ScrollOffsetY) / TrackRowHeight);
-        if (trackIndex < 0 || trackIndex >= tracks.Count) return null;
+        if (trackIndex < 0 || trackIndex >= tracks.Count) return new PeriodHitResult(null, PeriodHitKind.None);
 
         var timeX = (viewportPoint.X + ScrollOffsetX) / PixelsPerSecond;
+        var pps = PixelsPerSecond;
 
         foreach (var period in tracks[trackIndex].Periods)
         {
             var start = period.StartSeconds;
             var end = start + period.DurationSeconds;
             if (timeX >= start && timeX <= end)
-                return period;
+            {
+                var blockEndVp = end * pps - ScrollOffsetX;
+                var resizeHandleStartVp = blockEndVp - 6.0;
+                if (viewportPoint.X >= resizeHandleStartVp)
+                    return new PeriodHitResult(period, PeriodHitKind.RightResizeHandle);
+                return new PeriodHitResult(period, PeriodHitKind.Body);
+            }
         }
 
-        return null;
+        return new PeriodHitResult(null, PeriodHitKind.None);
     }
 }
+
+public enum PeriodHitKind
+{
+    None,
+    Body,
+    RightResizeHandle
+}
+
+public record PeriodHitResult(PeriodBlockInfo? Block, PeriodHitKind Kind);

@@ -8,15 +8,24 @@ using GorgeStudio.ViewModels;
 
 namespace GorgeStudio.Views;
 
+public enum PeriodDragMode
+{
+    None,
+    Move,
+    ResizeMinLength
+}
+
 public partial class TimelinePanelView : UserControl
 {
     private bool _isSyncing;
 
     // Drag state
     private const double DragThresholdPixels = 4;
+    private PeriodDragMode _dragMode;
     private PeriodBlockInfo? _draggingPeriod;
     private Point _dragStartPoint;
     private double _dragStartTimeOffset;
+    private double _dragStartMinLength;
     private bool _isDraggingPeriod;
 
     public TimelinePanelView()
@@ -55,14 +64,17 @@ public partial class TimelinePanelView : UserControl
         }
 
         // Left-click
-        var hitPeriod = TrackAreaControl.HitTestPeriod(point.Position);
-        if (hitPeriod != null)
+        var hitResult = TrackAreaControl.HitTestPeriodPart(point.Position);
+        if (hitResult is { Kind: not PeriodHitKind.None, Block: not null })
         {
-            // Start potential drag
-            vm.SelectPeriod(hitPeriod.Period);
-            _draggingPeriod = hitPeriod;
+            vm.SelectPeriod(hitResult.Block.Period);
+            _draggingPeriod = hitResult.Block;
             _dragStartPoint = point.Position;
-            _dragStartTimeOffset = hitPeriod.Period.TimeOffset;
+            _dragStartTimeOffset = hitResult.Block.Period.TimeOffset;
+            _dragStartMinLength = hitResult.Block.Period.MinLength;
+            _dragMode = hitResult.Kind == PeriodHitKind.RightResizeHandle
+                ? PeriodDragMode.ResizeMinLength
+                : PeriodDragMode.Move;
             _isDraggingPeriod = false;
             e.Pointer.Capture(TrackAreaControl);
         }
@@ -76,9 +88,20 @@ public partial class TimelinePanelView : UserControl
 
     private void OnTrackAreaPointerMoved(object? sender, PointerEventArgs e)
     {
-        if (_draggingPeriod == null || DataContext is not TimelinePanelViewModel vm) return;
+        if (DataContext is not TimelinePanelViewModel vm) return;
 
         var point = e.GetCurrentPoint(TrackAreaControl);
+
+        // Cursor feedback when not dragging
+        if (_draggingPeriod == null)
+        {
+            var hoverHit = TrackAreaControl.HitTestPeriodPart(point.Position);
+            TrackAreaControl.Cursor = hoverHit.Kind == PeriodHitKind.RightResizeHandle
+                ? new Cursor(StandardCursorType.SizeWestEast)
+                : Cursor.Default;
+            return;
+        }
+
         if (!point.Properties.IsLeftButtonPressed)
         {
             CancelDrag(vm);
@@ -95,8 +118,18 @@ public partial class TimelinePanelView : UserControl
         if (_isDraggingPeriod)
         {
             var pps = TrackAreaControl.PixelsPerSecond;
-            var previewTime = Math.Max(0, _dragStartTimeOffset + deltaX / pps);
-            vm.PreviewPeriodTimeOffset(_draggingPeriod.Period, previewTime);
+            var deltaSeconds = deltaX / pps;
+
+            if (_dragMode == PeriodDragMode.ResizeMinLength)
+            {
+                var previewMinLength = Math.Max(0.25, _dragStartMinLength + deltaSeconds);
+                vm.PreviewPeriodMinLength(_draggingPeriod.Period, previewMinLength);
+            }
+            else
+            {
+                var previewTime = Math.Max(0, _dragStartTimeOffset + deltaSeconds);
+                vm.PreviewPeriodTimeOffset(_draggingPeriod.Period, previewTime);
+            }
         }
     }
 
@@ -106,7 +139,10 @@ public partial class TimelinePanelView : UserControl
 
         if (_isDraggingPeriod && _draggingPeriod != null)
         {
-            vm.CommitPeriodTimeOffset(_draggingPeriod.Period);
+            if (_dragMode == PeriodDragMode.ResizeMinLength)
+                vm.CommitPeriodMinLength(_draggingPeriod.Period);
+            else
+                vm.CommitPeriodTimeOffset(_draggingPeriod.Period);
         }
 
         ClearDragState();
@@ -123,7 +159,7 @@ public partial class TimelinePanelView : UserControl
     {
         _draggingPeriod = null;
         _isDraggingPeriod = false;
-        // Release pointer capture if we have it
-        // Pointer capture is released automatically on pointer up, but clean up state
+        _dragMode = PeriodDragMode.None;
+        TrackAreaControl.Cursor = Cursor.Default;
     }
 }

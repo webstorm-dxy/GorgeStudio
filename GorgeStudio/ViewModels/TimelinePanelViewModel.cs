@@ -82,6 +82,7 @@ public partial class TimelinePanelViewModel : ViewModelBase
 
     private IPeriod? _previewPeriod;
     private double? _previewTimeOffset;
+    private double? _previewMinLength;
 
     public void PreviewPeriodTimeOffset(IPeriod period, double timeOffset)
     {
@@ -118,6 +119,46 @@ public partial class TimelinePanelViewModel : ViewModelBase
 
         _previewPeriod = null;
         _previewTimeOffset = null;
+        _previewMinLength = null;
+
+        ClearAllPreviews();
+        RefreshFromScore();
+        SelectPeriod(period);
+    }
+
+    public void PreviewPeriodMinLength(IPeriod period, double minLength)
+    {
+        var clamped = Math.Max(0.25, minLength);
+        _previewPeriod = period;
+        _previewMinLength = clamped;
+
+        foreach (var track in Tracks)
+        {
+            foreach (var block in track.Periods)
+            {
+                if (block.Period == period)
+                {
+                    block.PreviewMinLengthSeconds = clamped;
+
+                    var previewEnd = block.StartSeconds + block.DurationSeconds;
+                    if (previewEnd > TotalDuration)
+                        TotalDuration = Math.Ceiling(previewEnd);
+                    return;
+                }
+            }
+        }
+    }
+
+    public void CommitPeriodMinLength(IPeriod period)
+    {
+        if (_periodEditingService == null) return;
+        if (_previewPeriod == period && _previewMinLength.HasValue)
+        {
+            _periodEditingService.UpdatePeriodMinLength(period, (float)_previewMinLength.Value);
+        }
+
+        _previewPeriod = null;
+        _previewMinLength = null;
 
         ClearAllPreviews();
         RefreshFromScore();
@@ -128,6 +169,7 @@ public partial class TimelinePanelViewModel : ViewModelBase
     {
         _previewPeriod = null;
         _previewTimeOffset = null;
+        _previewMinLength = null;
         ClearAllPreviews();
     }
 
@@ -138,6 +180,7 @@ public partial class TimelinePanelViewModel : ViewModelBase
             foreach (var block in track.Periods)
             {
                 block.PreviewStartSeconds = null;
+                block.PreviewMinLengthSeconds = null;
             }
         }
     }
@@ -197,6 +240,7 @@ public partial class TimelinePanelViewModel : ViewModelBase
 
         _previewPeriod = null;
         _previewTimeOffset = null;
+        _previewMinLength = null;
 
         Elements.Clear();
         Tracks.Clear();
@@ -462,12 +506,16 @@ public partial class PeriodBlockInfo : ObservableObject
     [ObservableProperty]
     private double? _previewStartSeconds;
 
+    [ObservableProperty]
+    private double? _previewMinLengthSeconds;
+
     public double StartSeconds => PreviewStartSeconds ?? Period.TimeOffset;
     public double DurationSeconds
     {
         get
         {
-            var minLen = Period.MinLength;
+            var effectiveMinLength = PreviewMinLengthSeconds ?? Period.MinLength;
+            effectiveMinLength = Math.Max(0.25, effectiveMinLength);
             if (Period is ElementPeriod ep)
             {
                 var maxElementEnd = ep.Elements.Count > 0
@@ -483,9 +531,9 @@ public partial class PeriodBlockInfo : ObservableObject
                         return 0f;
                     })
                     : 0;
-                return Math.Max(minLen, maxElementEnd - StartSeconds);
+                return Math.Max(effectiveMinLength, maxElementEnd - StartSeconds);
             }
-            return minLen;
+            return effectiveMinLength;
         }
     }
     public bool IsSelected { get; set; }
