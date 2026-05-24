@@ -17,8 +17,8 @@ public sealed class ChartService : IChartService
 {
     public Task<SimulationScore> BuildChartDocumentAsync(CompileResult result, CancellationToken ct = default)
     {
-        if (result.Project == null || result.ClassDeclarations == null)
-            throw new ArgumentException("CompileResult must have Project and ClassDeclarations.");
+        if (result.Project == null || result.ClassDeclarations == null || result.AllClassDeclarations == null)
+            throw new ArgumentException("CompileResult must have Project, ClassDeclarations and AllClassDeclarations.");
 
         // 设置枚举值查找表，供 InjectorHardcodeGenerator 使用
         SetEnumValues(result.Project.Enums);
@@ -27,6 +27,7 @@ public sealed class ChartService : IChartService
 
         // 构建 Staff → Period 结构
         score.BuildFromClassDeclarations(result.ClassDeclarations);
+        score.ClassDeclarations = result.AllClassDeclarations;
 
         // 载入资产文件
         foreach (var assetFile in result.AssetFiles)

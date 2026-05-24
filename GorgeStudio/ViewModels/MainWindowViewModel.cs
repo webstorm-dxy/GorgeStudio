@@ -107,6 +107,22 @@ public partial class MainWindowViewModel : ViewModelBase
             if (e.PropertyName == nameof(ElementListPanelViewModel.SelectedItem))
                 propertiesPanel.SelectedObject = elementListPanel.SelectedItem?.Tag;
         };
+
+        // 时间线乐段变更时，刷新元素列表和属性面板
+        timelinePanel.ScoreChanged += () =>
+        {
+            if (CurrentScore != null)
+            {
+                elementListPanel.ReloadSimulationScore(CurrentScore);
+                propertiesPanel.SetChartDocument(CurrentScore);
+            }
+        };
+
+        // 时间线选中变更时，同步到属性面板
+        timelinePanel.SelectionChanged += selected =>
+        {
+            propertiesPanel.SelectedObject = selected;
+        };
     }
 
     /// <summary>

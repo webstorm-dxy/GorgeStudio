@@ -104,12 +104,27 @@
                               ScrollChanged="OnTrackScrollerScrollChanged">
                     <controls:TimelineTrackArea x:Name="TrackAreaControl"
                         PointerPressed="OnTrackAreaPointerPressed"
+                        PointerMoved="OnTrackAreaPointerMoved"
+                        PointerReleased="OnTrackAreaPointerReleased"
                         PixelsPerSecond="{Binding PixelsPerSecond}"
                         PlayheadPositionSeconds="{Binding PlayheadPosition}"
-                        TrackCount="{Binding Tracks.Count}"
+                        TrackCount="{Binding TrackCount}"
+                        Tracks="{Binding Tracks}"
                         TrackRowHeight="40"
                         TotalDurationSeconds="{Binding TotalDuration}"
-                        SelectedTrackIndex="{Binding SelectedTrackIndex}" />
+                        SelectedTrackIndex="{Binding SelectedTrackIndex}">
+                        <controls:TimelineTrackArea.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Add Period" Command="{Binding AddPeriodCommand}"
+                                          IsEnabled="{Binding CanAddPeriod}" />
+                                <Separator />
+                                <MenuItem Header="Copy Period" Command="{Binding CopyPeriodCommand}"
+                                          IsEnabled="{Binding CanCopyPeriod}" />
+                                <MenuItem Header="Delete Period" Command="{Binding DeletePeriodCommand}"
+                                          IsEnabled="{Binding CanDeletePeriod}" />
+                            </ContextMenu>
+                        </controls:TimelineTrackArea.ContextMenu>
+                    </controls:TimelineTrackArea>
                 </ScrollViewer>
 
             </Grid>

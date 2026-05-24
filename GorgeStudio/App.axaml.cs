@@ -68,6 +68,9 @@ public partial class App : Application
             // 项目设置服务
             services.AddSingleton<IProjectSettingsService, ProjectSettingsService>();
 
+            // 乐段编辑服务
+            services.AddSingleton<IPeriodEditingService, PeriodEditingService>();
+
             // 面板 ViewModel
             services.AddTransient<ProjectSettingsWindowViewModel>();
             services.AddTransient<ElementListPanelViewModel>();

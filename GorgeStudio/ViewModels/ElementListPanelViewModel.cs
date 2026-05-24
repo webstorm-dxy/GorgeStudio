@@ -76,6 +76,20 @@ public partial class ElementListPanelViewModel : ViewModelBase
             Description = $"{score.Stave.Count} staff(s), {score.Stave.Sum(s => s.Periods.Count())} period(s) loaded.";
     }
 
+    /// <summary>
+    /// 移除所有谱表节点并重新从 SimulationScore 构建。
+    /// 用于乐段增删后刷新树视图。
+    /// </summary>
+    public void ReloadSimulationScore(SimulationScore score)
+    {
+        for (var i = RootNodes.Count - 1; i >= 0; i--)
+        {
+            if (RootNodes[i].Category == TreeNodeCategory.Staff)
+                RootNodes.RemoveAt(i);
+        }
+        LoadSimulationScore(score);
+    }
+
     private static TreeNode CreateStaffNode(IStaff staff)
     {
         var prefix = staff is ElementStaff ? "[ElementStaff]" : "[AudioStaff]";

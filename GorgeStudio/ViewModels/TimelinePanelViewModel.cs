@@ -21,7 +21,11 @@ public partial class TimelinePanelViewModel : ViewModelBase
 {
     private readonly IProjectSettingsService? _settingsService;
     private readonly IServiceProvider? _serviceProvider;
+    private readonly IPeriodEditingService? _periodEditingService;
     private SimulationScore? _simulationScore;
+
+    public event Action? ScoreChanged;
+    public event Action<object?>? SelectionChanged;
 
     [ObservableProperty]
     private string _title = "Timeline";
@@ -41,6 +45,8 @@ public partial class TimelinePanelViewModel : ViewModelBase
     [ObservableProperty]
     private double _pixelsPerSecond = 100.0;
 
+    public double ContentWidth => TotalDuration * PixelsPerSecond;
+
     [ObservableProperty]
     private int _bpm = 120;
 
@@ -56,22 +62,117 @@ public partial class TimelinePanelViewModel : ViewModelBase
     [ObservableProperty]
     private int _selectedTrackIndex = -1;
 
+    [ObservableProperty]
+    private int _trackCount;
+
+    [ObservableProperty]
+    private IPeriod? _selectedPeriod;
+
     public double TrackRowHeight => 40.0;
+
+    public bool CanAddPeriod => SelectedTrackIndex >= 0 && SelectedTrackIndex < TrackCount;
+    public bool CanDeletePeriod => SelectedPeriod != null;
+    public bool CanCopyPeriod => SelectedPeriod != null;
+
+    public void SelectPeriod(IPeriod? period)
+    {
+        SelectedPeriod = period;
+        SelectionChanged?.Invoke(period);
+    }
+
+    private IPeriod? _previewPeriod;
+    private double? _previewTimeOffset;
+
+    public void PreviewPeriodTimeOffset(IPeriod period, double timeOffset)
+    {
+        var clamped = Math.Max(0, timeOffset);
+        _previewPeriod = period;
+        _previewTimeOffset = clamped;
+
+        // Find the matching PeriodBlockInfo and set its preview
+        foreach (var track in Tracks)
+        {
+            foreach (var block in track.Periods)
+            {
+                if (block.Period == period)
+                {
+                    block.PreviewStartSeconds = clamped;
+
+                    // Expand TotalDuration if preview extends beyond it
+                    var previewEnd = clamped + block.DurationSeconds;
+                    if (previewEnd > TotalDuration)
+                        TotalDuration = Math.Ceiling(previewEnd);
+                    return;
+                }
+            }
+        }
+    }
+
+    public void CommitPeriodTimeOffset(IPeriod period)
+    {
+        if (_periodEditingService == null) return;
+        if (_previewPeriod == period && _previewTimeOffset.HasValue)
+        {
+            _periodEditingService.UpdatePeriodTimeOffset(period, (float)_previewTimeOffset.Value);
+        }
+
+        _previewPeriod = null;
+        _previewTimeOffset = null;
+
+        ClearAllPreviews();
+        RefreshFromScore();
+        SelectPeriod(period);
+    }
+
+    public void CancelPeriodTimeOffsetPreview()
+    {
+        _previewPeriod = null;
+        _previewTimeOffset = null;
+        ClearAllPreviews();
+    }
+
+    private void ClearAllPreviews()
+    {
+        foreach (var track in Tracks)
+        {
+            foreach (var block in track.Periods)
+            {
+                block.PreviewStartSeconds = null;
+            }
+        }
+    }
 
     public TimelinePanelViewModel()
     {
     }
 
-    public TimelinePanelViewModel(IProjectSettingsService settingsService, IServiceProvider serviceProvider)
+    public TimelinePanelViewModel(IProjectSettingsService settingsService, IServiceProvider serviceProvider, IPeriodEditingService periodEditingService)
     {
         _settingsService = settingsService;
         _serviceProvider = serviceProvider;
+        _periodEditingService = periodEditingService;
         LoadSettingsFromService();
     }
 
     partial void OnZoomLevelChanged(double value)
     {
         PixelsPerSecond = Math.Max(10, Math.Min(2000, 100.0 * value));
+    }
+
+    partial void OnSelectedTrackIndexChanged(int value)
+    {
+        OnPropertyChanged(nameof(CanAddPeriod));
+    }
+
+    partial void OnTrackCountChanged(int value)
+    {
+        OnPropertyChanged(nameof(CanAddPeriod));
+    }
+
+    partial void OnSelectedPeriodChanged(IPeriod? value)
+    {
+        OnPropertyChanged(nameof(CanDeletePeriod));
+        OnPropertyChanged(nameof(CanCopyPeriod));
     }
 
     private void LoadSettingsFromService()
@@ -87,12 +188,34 @@ public partial class TimelinePanelViewModel : ViewModelBase
     public void SetChartDocument(SimulationScore score)
     {
         _simulationScore = score;
+        RefreshFromScore();
+    }
+
+    private void RefreshFromScore()
+    {
+        if (_simulationScore == null) return;
+
+        _previewPeriod = null;
+        _previewTimeOffset = null;
+
         Elements.Clear();
         Tracks.Clear();
 
-        var newElements = new List<TimelineElement>();
+        // Build tracks from score.Stave with Staff references and Period block info
+        foreach (var staff in _simulationScore.Stave)
+        {
+            var track = new TrackInfo { Name = staff.ClassName, Staff = staff };
+            foreach (var period in staff.Periods)
+            {
+                track.Periods.Add(new PeriodBlockInfo { Staff = staff, Period = period });
+            }
+            Tracks.Add(track);
+        }
+        TrackCount = Tracks.Count;
 
-        foreach (var staff in score.Stave)
+        // Populate TimelineElement list for element rendering on tracks
+        var newElements = new List<TimelineElement>();
+        foreach (var staff in _simulationScore.Stave)
         {
             if (staff is ElementStaff elementStaff)
             {
@@ -107,22 +230,19 @@ public partial class TimelinePanelViewModel : ViewModelBase
         }
 
         newElements.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
-
         foreach (var e in newElements)
             Elements.Add(e);
 
-        var trackNames = newElements
-            .Select(e => e.SourceInjector)
-            .Distinct()
-            .OrderBy(n => n);
-        foreach (var name in trackNames)
-            Tracks.Add(new TrackInfo { Name = name });
+        // Calculate TotalDuration from elements and period blocks
+        double maxEnd = 1.0;
+        foreach (var e in newElements)
+            maxEnd = Math.Max(maxEnd, e.StartTime + e.Duration);
+        foreach (var track in Tracks)
+            foreach (var block in track.Periods)
+                maxEnd = Math.Max(maxEnd, block.StartSeconds + block.DurationSeconds);
+        TotalDuration = Math.Ceiling(Math.Max(maxEnd, 1.0));
 
-        if (newElements.Count > 0)
-        {
-            var maxEnd = newElements.Max(e => e.StartTime + e.Duration);
-            TotalDuration = Math.Ceiling(Math.Max(maxEnd, 1.0));
-        }
+        ScoreChanged?.Invoke();
     }
 
     [RelayCommand]
@@ -166,7 +286,9 @@ public partial class TimelinePanelViewModel : ViewModelBase
             : new AudioStaff(className, true, displayName);
 
         _simulationScore.Stave.Add(newStaff);
-        Tracks.Add(new TrackInfo { Name = className });
+        Tracks.Add(new TrackInfo { Name = className, Staff = newStaff });
+        TrackCount = Tracks.Count;
+        ScoreChanged?.Invoke();
     }
 
     [RelayCommand]
@@ -179,16 +301,85 @@ public partial class TimelinePanelViewModel : ViewModelBase
                 _simulationScore.Stave.Remove(staff);
             Tracks.RemoveAt(SelectedTrackIndex);
             SelectedTrackIndex = -1;
+            TrackCount = Tracks.Count;
+            ScoreChanged?.Invoke();
         }
     }
 
     [RelayCommand]
     private void CopyTrack()
     {
+        if (_simulationScore == null) return;
         if (SelectedTrackIndex >= 0 && SelectedTrackIndex < Tracks.Count)
         {
             var source = Tracks[SelectedTrackIndex];
-            Tracks.Insert(SelectedTrackIndex + 1, new TrackInfo { Name = $"{source.Name} (Copy)" });
+            if (source.Staff != null)
+            {
+                var clonedStaff = source.Staff.Clone();
+                var baseName = source.Name;
+                var newName = baseName;
+                var counter = 1;
+                while (_simulationScore.CheckStaffNameConflict(newName))
+                {
+                    newName = $"{baseName}{counter}";
+                    counter++;
+                }
+                clonedStaff.ClassName = newName;
+                clonedStaff.DisplayName = newName;
+                _simulationScore.Stave.Add(clonedStaff);
+                Tracks.Insert(SelectedTrackIndex + 1, new TrackInfo { Name = newName, Staff = clonedStaff });
+            }
+            TrackCount = Tracks.Count;
+            ScoreChanged?.Invoke();
+        }
+    }
+
+    [RelayCommand]
+    private void AddPeriod()
+    {
+        if (_simulationScore == null || _periodEditingService == null) return;
+        if (SelectedTrackIndex < 0 || SelectedTrackIndex >= Tracks.Count) return;
+
+        var track = Tracks[SelectedTrackIndex];
+        if (track.Staff == null) return;
+
+        var period = _periodEditingService.CreatePeriod(track.Staff, _simulationScore, (float)PlayheadPosition);
+        _periodEditingService.InsertPeriod(track.Staff, period);
+        RefreshFromScore();
+    }
+
+    [RelayCommand]
+    private void DeletePeriod()
+    {
+        if (_simulationScore == null || _periodEditingService == null) return;
+        if (SelectedPeriod == null) return;
+
+        foreach (var staff in _simulationScore.Stave)
+        {
+            if (staff.Periods.Any(p => p == SelectedPeriod))
+            {
+                _periodEditingService.RemovePeriod(staff, SelectedPeriod);
+                SelectedPeriod = null;
+                RefreshFromScore();
+                return;
+            }
+        }
+    }
+
+    [RelayCommand]
+    private void CopyPeriod()
+    {
+        if (_simulationScore == null || _periodEditingService == null) return;
+        if (SelectedPeriod == null) return;
+
+        foreach (var staff in _simulationScore.Stave)
+        {
+            if (staff.Periods.Any(p => p == SelectedPeriod))
+            {
+                _periodEditingService.DuplicatePeriod(staff, SelectedPeriod);
+                RefreshFromScore();
+                return;
+            }
         }
     }
 
@@ -258,4 +449,45 @@ public partial class TimelinePanelViewModel : ViewModelBase
 public class TrackInfo
 {
     public string Name { get; set; } = "";
+    public IStaff? Staff { get; set; }
+    public ObservableCollection<PeriodBlockInfo> Periods { get; set; } = new();
+}
+
+public partial class PeriodBlockInfo : ObservableObject
+{
+    public IStaff Staff { get; set; } = null!;
+    public IPeriod Period { get; set; } = null!;
+    public string DisplayName => Period.MethodName;
+
+    [ObservableProperty]
+    private double? _previewStartSeconds;
+
+    public double StartSeconds => PreviewStartSeconds ?? Period.TimeOffset;
+    public double DurationSeconds
+    {
+        get
+        {
+            var minLen = Period.MinLength;
+            if (Period is ElementPeriod ep)
+            {
+                var maxElementEnd = ep.Elements.Count > 0
+                    ? ep.Elements.Max(e =>
+                    {
+                        var decl = e.InjectedClassDeclaration;
+                        if (decl.TryGetInjectorFieldByName("time", out var tf) && !e.GetInjectorFloatDefault(tf.Index))
+                            return e.GetInjectorFloat(tf.Index);
+                        if (decl.TryGetInjectorFieldByName("hitTime", out var htf) && !e.GetInjectorFloatDefault(htf.Index))
+                            return e.GetInjectorFloat(htf.Index);
+                        if (decl.TryGetInjectorFieldByName("startTime", out var stf) && !e.GetInjectorFloatDefault(stf.Index))
+                            return e.GetInjectorFloat(stf.Index);
+                        return 0f;
+                    })
+                    : 0;
+                return Math.Max(minLen, maxElementEnd - StartSeconds);
+            }
+            return minLen;
+        }
+    }
+    public bool IsSelected { get; set; }
+    public bool IsAudio => Period is AudioPeriod;
 }
