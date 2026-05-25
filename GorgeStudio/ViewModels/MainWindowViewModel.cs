@@ -107,6 +107,25 @@ public partial class MainWindowViewModel : ViewModelBase
             if (e.PropertyName == nameof(ElementListPanelViewModel.SelectedItem))
                 propertiesPanel.SelectedObject = elementListPanel.SelectedItem?.Tag;
         };
+
+        // 时间线乐段变更时，刷新元素列表和属性面板
+        timelinePanel.ScoreChanged += () =>
+        {
+            if (CurrentScore != null)
+            {
+                elementListPanel.ReloadSimulationScore(CurrentScore);
+                propertiesPanel.SetChartDocument(CurrentScore);
+            }
+        };
+
+        // 时间线选中变更时，同步到属性面板
+        timelinePanel.SelectionChanged += selected =>
+        {
+            var refreshOnly = ReferenceEquals(propertiesPanel.SelectedObject, selected);
+            propertiesPanel.SelectedObject = selected;
+            if (refreshOnly)
+                propertiesPanel.RefreshSelectedObject();
+        };
     }
 
     /// <summary>
@@ -346,6 +365,9 @@ public partial class MainWindowViewModel : ViewModelBase
                 }
 
                 _loadedForms = loadedForms;
+
+                if (loadedForms != null && _projectSettingsService != null)
+                    _projectSettingsService.CurrentSettings.Forms = loadedForms.Select(f => f.Name).ToList();
 
                 var elementListPanel = ElementListPanel as ElementListPanelViewModel;
                 elementListPanel?.LoadProject(result.Project);

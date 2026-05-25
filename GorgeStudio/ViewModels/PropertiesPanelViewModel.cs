@@ -34,8 +34,13 @@ public partial class PropertiesPanelViewModel : ViewModelBase
     public void SetChartDocument(SimulationScore? score)
     {
         _simulationScore = score;
-        if (SelectedObject is CompiledClassInfo)
+        if (SelectedObject != null)
             OnSelectedObjectChanged(SelectedObject);
+    }
+
+    public void RefreshSelectedObject()
+    {
+        OnSelectedObjectChanged(SelectedObject);
     }
 
     partial void OnSelectedObjectChanged(object? value)
@@ -227,8 +232,8 @@ public partial class PropertiesPanelViewModel : ViewModelBase
     {
         Description = $"Period: {period.MethodName}";
         Add("Method Name", period.MethodName);
-        Add("Time Offset", period.TimeOffset.ToString(CultureInfo.InvariantCulture));
-        Add("Min Length", period.MinLength.ToString(CultureInfo.InvariantCulture));
+        Add("Time Offset (s)", period.TimeOffset.ToString("0.###", CultureInfo.InvariantCulture));
+        Add("Min Length (s)", period.MinLength.ToString("0.###", CultureInfo.InvariantCulture));
 
         if (period is ElementPeriod elementPeriod)
         {

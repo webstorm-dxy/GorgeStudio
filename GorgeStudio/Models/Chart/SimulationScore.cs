@@ -35,6 +35,12 @@ public class SimulationScore
     /// </summary>
     public readonly List<IStaff> Stave;
 
+    /// <summary>
+    /// 所有运行时类声明映射（类完全限定名 → ClassDeclaration），包含 Native 类型。
+    /// 供 PeriodEditingService 创建 GorgeFramework.PeriodConfig 等内建类型的 Injector。
+    /// </summary>
+    public IReadOnlyDictionary<string, ClassDeclaration>? ClassDeclarations { get; set; }
+
     public SimulationScore(float startTime, float terminateTime, float simulationSpeed)
     {
         StartTime = startTime;

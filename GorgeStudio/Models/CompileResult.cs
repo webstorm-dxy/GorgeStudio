@@ -42,8 +42,15 @@ public class CompileResult
     /// <summary>
     /// 编译产生的运行时类声明映射（类完全限定名 → ClassDeclaration）。
     /// 仅在编译成功时非 null，供 ChartService 创建可编辑 Injector 使用。
+    /// 仅包含非 Native 类。
     /// </summary>
     public IReadOnlyDictionary<string, Gorge.GorgeLanguage.Objective.ClassDeclaration>? ClassDeclarations { get; init; }
+
+    /// <summary>
+    /// 所有运行时类声明映射（类完全限定名 → ClassDeclaration），包含 Native 和非 Native 类型。
+    /// 仅在编译成功时非 null，供 PeriodEditingService 创建 GorgeFramework.PeriodConfig 等内建类型的 Injector。
+    /// </summary>
+    public IReadOnlyDictionary<string, Gorge.GorgeLanguage.Objective.ClassDeclaration>? AllClassDeclarations { get; init; }
 
     /// <summary>
     /// 包中的二进制资源文件列表（PNG、WAV 等）。

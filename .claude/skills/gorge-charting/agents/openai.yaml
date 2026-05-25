@@ -1,0 +1,3 @@
+interface:
+  display_name: "Gorge Charting,short_description=Reference for Gorge language injectors, scene coordinates, chart structure, and Dremu form rhythm game authoring.,default_prompt=Consult the Gorge charting references to understand injector syntax, scene/coordinate system, chart structure (Score/Staff/Period), and Dremu form mechanics when working with .g chart files or discussing Gorge/Dremu gameplay design."
+  short_description: "Gorge Charting,short_description=Reference for Gorge lang helper"

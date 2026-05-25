@@ -58,7 +58,7 @@ public sealed class FileService : IFileService, IDisposable
             var package = await LoadPackageFromFileAsync(filePath, isChart, ct);
 
             ReportStatus($"Compiling {package.SourceFiles.Count} source file(s)...");
-            var (project, classDecls) = await CompilePackageAsync(package, progress, ct);
+            var (project, classDecls, allClassDecls) = await CompilePackageAsync(package, progress, ct);
 
             ReportStatus("Compilation complete.");
             return new CompileResult
@@ -68,6 +68,7 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
+                AllClassDeclarations = allClassDecls,
                 AssetFiles = package.AssetFiles,
                 Settings = package.Settings
             };
@@ -113,7 +114,7 @@ public sealed class FileService : IFileService, IDisposable
             }
 
             ReportStatus($"Compiling {package.SourceFiles.Count} source file(s)...");
-            var (project, classDecls) = await CompilePackageAsync(package, progress, ct);
+            var (project, classDecls, allClassDecls) = await CompilePackageAsync(package, progress, ct);
 
             ReportStatus("Compilation complete.");
             return new CompileResult
@@ -123,6 +124,7 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
+                AllClassDeclarations = allClassDecls,
                 AssetFiles = package.AssetFiles,
                 Settings = package.Settings
             };
@@ -167,7 +169,7 @@ public sealed class FileService : IFileService, IDisposable
             }
 
             ReportStatus($"Compiling {package.SourceFiles.Count} source file(s)...");
-            var (project, classDecls) = await CompilePackageAsync(package, progress, ct);
+            var (project, classDecls, allClassDecls) = await CompilePackageAsync(package, progress, ct);
 
             ReportStatus("Compilation complete.");
             return new CompileResult
@@ -177,6 +179,7 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
+                AllClassDeclarations = allClassDecls,
                 AssetFiles = package.AssetFiles,
                 Settings = package.Settings
             };
@@ -222,7 +225,7 @@ public sealed class FileService : IFileService, IDisposable
             }
 
             ReportStatus($"Compiling {package.SourceFiles.Count} source file(s)...");
-            var (project, classDecls) = await CompilePackageAsync(package, progress, ct);
+            var (project, classDecls, allClassDecls) = await CompilePackageAsync(package, progress, ct);
 
             ReportStatus("Compilation complete.");
             return new CompileResult
@@ -232,6 +235,7 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
+                AllClassDeclarations = allClassDecls,
                 AssetFiles = package.AssetFiles,
                 Settings = package.Settings
             };
@@ -326,7 +330,7 @@ public sealed class FileService : IFileService, IDisposable
             }
 
             ReportStatus($"Compiling {package.SourceFiles.Count} source file(s)...");
-            var (project, classDecls) = await CompilePackageAsync(package, progress, ct);
+            var (project, classDecls, allClassDecls) = await CompilePackageAsync(package, progress, ct);
 
             ReportStatus("Compilation complete.");
             return new CompileResult
@@ -336,6 +340,7 @@ public sealed class FileService : IFileService, IDisposable
                 SourceFilePaths = package.SourceFiles.Select(f => f.Path).ToList(),
                 CompileTime = sw.Elapsed,
                 ClassDeclarations = classDecls,
+                AllClassDeclarations = allClassDecls,
                 AssetFiles = package.AssetFiles,
                 Settings = package.Settings
             };
@@ -630,7 +635,7 @@ public sealed class FileService : IFileService, IDisposable
     /// <param name="progress">进度报告器。为 <c>null</c> 时不报告进度。</param>
     /// <param name="ct">取消令牌。</param>
     /// <returns>包含编译后的项目模型和类声明映射的元组。</returns>
-    private static async Task<(CompiledProject Project, Dictionary<string, ClassDeclaration> ClassDecls)> CompilePackageAsync(
+    private static async Task<(CompiledProject Project, Dictionary<string, ClassDeclaration> ClassDecls, Dictionary<string, ClassDeclaration> AllClassDecls)> CompilePackageAsync(
         GorgePackage package, IProgress<float>? progress, CancellationToken ct)
     {
         // 文件加载占 0-10%，编译占 10-100%
@@ -671,7 +676,10 @@ public sealed class FileService : IFileService, IDisposable
         var classDeclarations = new Dictionary<string, ClassDeclaration>();
         var project = ProcessCompilationContext(context, package, classDeclarations);
 
-        return (project, classDeclarations);
+        var allClassDeclarations = new Dictionary<string, ClassDeclaration>();
+        WalkAllClasses(context.GlobalScope, allClassDeclarations);
+
+        return (project, classDeclarations, allClassDeclarations);
     }
 
     /// <summary>
@@ -746,6 +754,24 @@ public sealed class FileService : IFileService, IDisposable
         foreach (var (_, subNs) in ns.SubNamespaces)
         {
             WalkNamespace(subNs, classes, enums, interfaces, sourcePathIsChart, classDeclarations);
+        }
+    }
+
+    /// <summary>
+    /// 递归遍历命名空间作用域树，收集所有类（含 Native 类型）的 ClassDeclaration 映射。
+    /// </summary>
+    private static void WalkAllClasses(NamespaceScope ns, Dictionary<string, ClassDeclaration> allClassDecls)
+    {
+        foreach (var (_, classScope) in ns.Classes)
+        {
+            var decl = classScope.Declaration;
+            var fullName = decl.Type.FullName ?? decl.Name;
+            allClassDecls[fullName] = decl;
+        }
+
+        foreach (var (_, subNs) in ns.SubNamespaces)
+        {
+            WalkAllClasses(subNs, allClassDecls);
         }
     }
 
