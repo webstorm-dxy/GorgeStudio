@@ -175,14 +175,14 @@ public partial class TimelinePanelViewModel : ViewModelBase
     }
 
     private IPeriod? _previewPeriod;
-    private double? _previewTimeOffset;
-    private double? _previewMinLength;
+    private double? _previewTimeOffsetSeconds;
+    private double? _previewMinLengthSeconds;
 
-    public void PreviewPeriodTimeOffset(IPeriod period, double timeOffset)
+    public void PreviewPeriodTimeOffset(IPeriod period, double timeOffsetSeconds)
     {
-        var clamped = Math.Max(0, timeOffset);
+        var clamped = Math.Max(0, timeOffsetSeconds);
         _previewPeriod = period;
-        _previewTimeOffset = clamped;
+        _previewTimeOffsetSeconds = clamped;
 
         // Find the matching PeriodBlockInfo and set its preview
         foreach (var track in Tracks)
@@ -206,25 +206,25 @@ public partial class TimelinePanelViewModel : ViewModelBase
     public void CommitPeriodTimeOffset(IPeriod period)
     {
         if (_periodEditingService == null) return;
-        if (_previewPeriod == period && _previewTimeOffset.HasValue)
+        if (_previewPeriod == period && _previewTimeOffsetSeconds.HasValue)
         {
-            _periodEditingService.UpdatePeriodTimeOffset(period, (float)_previewTimeOffset.Value);
+            _periodEditingService.UpdatePeriodTimeOffset(period, (float)_previewTimeOffsetSeconds.Value);
         }
 
         _previewPeriod = null;
-        _previewTimeOffset = null;
-        _previewMinLength = null;
+        _previewTimeOffsetSeconds = null;
+        _previewMinLengthSeconds = null;
 
         ClearAllPreviews();
         RefreshFromScore();
         SelectPeriod(period);
     }
 
-    public void PreviewPeriodMinLength(IPeriod period, double minLength)
+    public void PreviewPeriodMinLength(IPeriod period, double minLengthSeconds)
     {
-        var clamped = Math.Max(0.25, minLength);
+        var clamped = Math.Max(TimelineTimeConverter.MinimumPeriodLengthSeconds, minLengthSeconds);
         _previewPeriod = period;
-        _previewMinLength = clamped;
+        _previewMinLengthSeconds = clamped;
 
         foreach (var track in Tracks)
         {
@@ -246,13 +246,13 @@ public partial class TimelinePanelViewModel : ViewModelBase
     public void CommitPeriodMinLength(IPeriod period)
     {
         if (_periodEditingService == null) return;
-        if (_previewPeriod == period && _previewMinLength.HasValue)
+        if (_previewPeriod == period && _previewMinLengthSeconds.HasValue)
         {
-            _periodEditingService.UpdatePeriodMinLength(period, (float)_previewMinLength.Value);
+            _periodEditingService.UpdatePeriodMinLength(period, (float)_previewMinLengthSeconds.Value);
         }
 
         _previewPeriod = null;
-        _previewMinLength = null;
+        _previewMinLengthSeconds = null;
 
         ClearAllPreviews();
         RefreshFromScore();
@@ -262,8 +262,8 @@ public partial class TimelinePanelViewModel : ViewModelBase
     public void CancelPeriodTimeOffsetPreview()
     {
         _previewPeriod = null;
-        _previewTimeOffset = null;
-        _previewMinLength = null;
+        _previewTimeOffsetSeconds = null;
+        _previewMinLengthSeconds = null;
         ClearAllPreviews();
     }
 
@@ -336,8 +336,8 @@ public partial class TimelinePanelViewModel : ViewModelBase
         if (_simulationScore == null) return;
 
         _previewPeriod = null;
-        _previewTimeOffset = null;
-        _previewMinLength = null;
+        _previewTimeOffsetSeconds = null;
+        _previewMinLengthSeconds = null;
 
         Elements.Clear();
         Tracks.Clear();
@@ -345,7 +345,7 @@ public partial class TimelinePanelViewModel : ViewModelBase
         // Build tracks from score.Stave with Staff references and Period block info
         foreach (var staff in _simulationScore.Stave)
         {
-            var track = new TrackInfo { Name = staff.ClassName, Staff = staff };
+            var track = new TrackInfo { Staff = staff };
             foreach (var period in staff.Periods)
             {
                 track.Periods.Add(new PeriodBlockInfo { Staff = staff, Period = period });
@@ -427,7 +427,7 @@ public partial class TimelinePanelViewModel : ViewModelBase
             : new AudioStaff(className, true, displayName);
 
         _simulationScore.Stave.Add(newStaff);
-        Tracks.Add(new TrackInfo { Name = className, Staff = newStaff });
+        Tracks.Add(new TrackInfo { Staff = newStaff });
         TrackCount = Tracks.Count;
         ScoreChanged?.Invoke();
     }
@@ -437,9 +437,9 @@ public partial class TimelinePanelViewModel : ViewModelBase
     {
         if (SelectedTrackIndex >= 0 && SelectedTrackIndex < Tracks.Count)
         {
-            var trackName = Tracks[SelectedTrackIndex].Name;
-            if (_simulationScore?.TryGetStaff(trackName, out var staff) == true)
-                _simulationScore.Stave.Remove(staff);
+            var track = Tracks[SelectedTrackIndex];
+            if (track.Staff != null && _simulationScore != null)
+                _simulationScore.Stave.Remove(track.Staff);
             Tracks.RemoveAt(SelectedTrackIndex);
             SelectedTrackIndex = -1;
             TrackCount = Tracks.Count;
@@ -457,7 +457,7 @@ public partial class TimelinePanelViewModel : ViewModelBase
             if (source.Staff != null)
             {
                 var clonedStaff = source.Staff.Clone();
-                var baseName = source.Name;
+                var baseName = source.ClassName;
                 var newName = baseName;
                 var counter = 1;
                 while (_simulationScore.CheckStaffNameConflict(newName))
@@ -466,13 +466,38 @@ public partial class TimelinePanelViewModel : ViewModelBase
                     counter++;
                 }
                 clonedStaff.ClassName = newName;
-                clonedStaff.DisplayName = newName;
+
+                var copyDisplayName = $"{(string.IsNullOrWhiteSpace(source.Staff.DisplayName) ? source.ClassName : source.Staff.DisplayName)} 副本";
+                if (copyDisplayName.Length > 64)
+                    copyDisplayName = copyDisplayName[..64];
+                clonedStaff.DisplayName = copyDisplayName;
+
                 _simulationScore.Stave.Add(clonedStaff);
-                Tracks.Insert(SelectedTrackIndex + 1, new TrackInfo { Name = newName, Staff = clonedStaff });
+                Tracks.Insert(SelectedTrackIndex + 1, new TrackInfo { Staff = clonedStaff });
             }
             TrackCount = Tracks.Count;
             ScoreChanged?.Invoke();
         }
+    }
+
+    [RelayCommand]
+    private async Task RenameTrackDisplayNameAsync(TrackInfo? track)
+    {
+        if (track?.Staff == null) return;
+
+        var window = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+            ? desktop.MainWindow
+            : null;
+        if (window == null) return;
+
+        var vm = new RenameStaffDisplayNameWindowViewModel(track.ClassName, track.Staff.DisplayName);
+        var result = await RenameStaffDisplayNameWindow.ShowAsync(window, vm);
+        if (!result) return;
+
+        track.Staff.DisplayName = vm.DisplayName;
+        track.RefreshDisplayName();
+        ScoreChanged?.Invoke();
+        SelectionChanged?.Invoke(track.Staff);
     }
 
     [RelayCommand]
@@ -484,7 +509,10 @@ public partial class TimelinePanelViewModel : ViewModelBase
         var track = Tracks[SelectedTrackIndex];
         if (track.Staff == null) return;
 
-        var period = _periodEditingService.CreatePeriod(track.Staff, _simulationScore, (float)SnapTime(PlayheadPosition));
+        var period = _periodEditingService.CreatePeriod(
+            track.Staff,
+            _simulationScore,
+            (float)SnapTime(PlayheadPosition));
         _periodEditingService.InsertPeriod(track.Staff, period);
         RefreshFromScore();
     }
@@ -587,11 +615,38 @@ public partial class TimelinePanelViewModel : ViewModelBase
     }
 }
 
-public class TrackInfo
+public class TrackInfo : ObservableObject
 {
-    public string Name { get; set; } = "";
-    public IStaff? Staff { get; set; }
+    private IStaff? _staff;
+
+    public IStaff? Staff
+    {
+        get => _staff;
+        set
+        {
+            if (SetProperty(ref _staff, value))
+            {
+                OnPropertyChanged(nameof(ClassName));
+                OnPropertyChanged(nameof(DisplayName));
+                OnPropertyChanged(nameof(Name));
+            }
+        }
+    }
+
+    public string ClassName => Staff?.ClassName ?? "";
+
+    public string DisplayName =>
+        string.IsNullOrWhiteSpace(Staff?.DisplayName) ? ClassName : Staff.DisplayName;
+
+    public string Name => DisplayName;
+
     public ObservableCollection<PeriodBlockInfo> Periods { get; set; } = new();
+
+    public void RefreshDisplayName()
+    {
+        OnPropertyChanged(nameof(DisplayName));
+        OnPropertyChanged(nameof(Name));
+    }
 }
 
 public partial class PeriodBlockInfo : ObservableObject
@@ -612,7 +667,7 @@ public partial class PeriodBlockInfo : ObservableObject
         get
         {
             var effectiveMinLength = PreviewMinLengthSeconds ?? Period.MinLength;
-            effectiveMinLength = Math.Max(0.25, effectiveMinLength);
+            effectiveMinLength = Math.Max(TimelineTimeConverter.MinimumPeriodLengthSeconds, effectiveMinLength);
             if (Period is ElementPeriod ep)
             {
                 var maxElementEnd = ep.Elements.Count > 0

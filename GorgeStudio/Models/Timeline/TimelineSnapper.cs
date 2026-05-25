@@ -11,6 +11,9 @@ public enum TimelineSnapMode
 
 public static class TimelineSnapper
 {
+    /// <summary>
+    /// Snaps an absolute timeline position. Input and output are seconds.
+    /// </summary>
     public static double Snap(
         double seconds,
         bool enabled,
@@ -22,25 +25,20 @@ public static class TimelineSnapper
     {
         seconds = Math.Max(0, seconds);
         if (!enabled) return seconds;
-        if (bpm <= 0 || beatsPerBar <= 0 || subdivisionsPerBeat <= 0) return seconds;
+        if (!TimelineTimeConverter.TryGetSnapIntervalSeconds(
+                mode, bpm, beatsPerBar, subdivisionsPerBeat, out var interval))
+            return seconds;
 
-        var offsetSeconds = offsetMilliseconds / 1000.0;
-        var beatSeconds = 60.0 / bpm;
-
-        var interval = mode switch
-        {
-            TimelineSnapMode.Bar => beatSeconds * beatsPerBar,
-            TimelineSnapMode.Beat => beatSeconds,
-            TimelineSnapMode.Subdivision => beatSeconds / subdivisionsPerBeat,
-            _ => beatSeconds / subdivisionsPerBeat
-        };
-
+        var offsetSeconds = TimelineTimeConverter.OffsetMillisecondsToSeconds(offsetMilliseconds);
         var relative = seconds - offsetSeconds;
         var snappedRelative = Math.Round(relative / interval, MidpointRounding.AwayFromZero) * interval;
         var snapped = offsetSeconds + snappedRelative;
         return Math.Max(0, snapped);
     }
 
+    /// <summary>
+    /// Snaps a duration. Input and output are seconds; timeline offset is intentionally not applied.
+    /// </summary>
     public static double SnapDuration(
         double duration,
         bool enabled,
@@ -49,21 +47,13 @@ public static class TimelineSnapper
         int beatsPerBar,
         int subdivisionsPerBeat)
     {
-        duration = Math.Max(0.25, duration);
+        duration = Math.Max(TimelineTimeConverter.MinimumPeriodLengthSeconds, duration);
         if (!enabled) return duration;
-        if (bpm <= 0 || beatsPerBar <= 0 || subdivisionsPerBeat <= 0) return duration;
-
-        var beatSeconds = 60.0 / bpm;
-
-        var interval = mode switch
-        {
-            TimelineSnapMode.Bar => beatSeconds * beatsPerBar,
-            TimelineSnapMode.Beat => beatSeconds,
-            TimelineSnapMode.Subdivision => beatSeconds / subdivisionsPerBeat,
-            _ => beatSeconds / subdivisionsPerBeat
-        };
+        if (!TimelineTimeConverter.TryGetSnapIntervalSeconds(
+                mode, bpm, beatsPerBar, subdivisionsPerBeat, out var interval))
+            return duration;
 
         var snapped = Math.Round(duration / interval, MidpointRounding.AwayFromZero) * interval;
-        return Math.Max(0.25, snapped);
+        return Math.Max(TimelineTimeConverter.MinimumPeriodLengthSeconds, snapped);
     }
 }

@@ -23,7 +23,8 @@ public class TickDivision
             };
         }
 
-        var beatTime = 60.0 / bpm;
+        if (!TimelineTimeConverter.TryGetBeatSeconds(bpm, out var beatTime))
+            beatTime = 1.0;
         var subBeatTime = beatTime / subdivisionsPerBeat;
         var barTime = beatTime * beatsPerBar;
 

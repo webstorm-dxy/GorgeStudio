@@ -6,6 +6,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using GorgeStudio.Controls;
+using GorgeStudio.Models.Timeline;
 using GorgeStudio.ViewModels;
 
 namespace GorgeStudio.Views;
@@ -181,7 +182,7 @@ public partial class TimelinePanelView : UserControl
 
             if (_dragMode == PeriodDragMode.ResizeMinLength)
             {
-                var previewMinLength = Math.Max(0.25, _dragStartMinLength + deltaSeconds);
+                var previewMinLength = Math.Max(TimelineTimeConverter.MinimumPeriodLengthSeconds, _dragStartMinLength + deltaSeconds);
                 vm.PreviewPeriodMinLength(_draggingPeriod.Period, vm.SnapDuration(previewMinLength));
             }
             else

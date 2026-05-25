@@ -121,7 +121,10 @@ public partial class MainWindowViewModel : ViewModelBase
         // 时间线选中变更时，同步到属性面板
         timelinePanel.SelectionChanged += selected =>
         {
+            var refreshOnly = ReferenceEquals(propertiesPanel.SelectedObject, selected);
             propertiesPanel.SelectedObject = selected;
+            if (refreshOnly)
+                propertiesPanel.RefreshSelectedObject();
         };
     }
 

@@ -12,7 +12,7 @@ public class PeriodEditingService : IPeriodEditingService
     private const string WavAudioAssetFullName = "GorgeFramework.WavAudioAsset";
     private const string AudioAssetFullName = "GorgeFramework.AudioAsset";
 
-    public IPeriod CreatePeriod(IStaff staff, SimulationScore score, float timeOffset)
+    public IPeriod CreatePeriod(IStaff staff, SimulationScore score, float timeOffsetSeconds)
     {
         if (score.ClassDeclarations == null)
             throw new InvalidOperationException("SimulationScore.ClassDeclarations is null.");
@@ -30,7 +30,7 @@ public class PeriodEditingService : IPeriodEditingService
 
         var timeField = periodConfigDecl.InjectorFields.FirstOrDefault(f => f.Name == "timeOffset");
         if (timeField != null)
-            config.SetInjectorFloat(timeField.Index, timeOffset);
+            config.SetInjectorFloat(timeField.Index, timeOffsetSeconds);
 
         if (staff is ElementStaff elementStaff)
         {
@@ -84,35 +84,35 @@ public class PeriodEditingService : IPeriodEditingService
 
     private const float MinimumPeriodLengthSeconds = 0.25f;
 
-    public void UpdatePeriodConfig(IPeriod period, float? timeOffset = null, float? minLength = null)
+    public void UpdatePeriodConfig(IPeriod period, float? timeOffsetSeconds = null, float? minLengthSeconds = null)
     {
         var newConfig = (Injector)period.ConfigInjector.Clone();
         var decl = newConfig.InjectedClassDeclaration;
 
-        if (timeOffset.HasValue)
+        if (timeOffsetSeconds.HasValue)
         {
             if (!decl.TryGetInjectorFieldByName("timeOffset", out var field))
                 throw new InvalidOperationException("PeriodConfig missing timeOffset field.");
-            newConfig.SetInjectorFloat(field.Index, Math.Max(0, timeOffset.Value));
+            newConfig.SetInjectorFloat(field.Index, Math.Max(0, timeOffsetSeconds.Value));
         }
 
-        if (minLength.HasValue)
+        if (minLengthSeconds.HasValue)
         {
             if (!decl.TryGetInjectorFieldByName("minLength", out var field))
                 throw new InvalidOperationException("PeriodConfig missing minLength field.");
-            newConfig.SetInjectorFloat(field.Index, Math.Max(MinimumPeriodLengthSeconds, minLength.Value));
+            newConfig.SetInjectorFloat(field.Index, Math.Max(MinimumPeriodLengthSeconds, minLengthSeconds.Value));
         }
 
         period.UpdateConfig(newConfig);
     }
 
-    public void UpdatePeriodTimeOffset(IPeriod period, float timeOffset)
+    public void UpdatePeriodTimeOffset(IPeriod period, float timeOffsetSeconds)
     {
-        UpdatePeriodConfig(period, timeOffset: timeOffset);
+        UpdatePeriodConfig(period, timeOffsetSeconds: timeOffsetSeconds);
     }
 
-    public void UpdatePeriodMinLength(IPeriod period, float minLength)
+    public void UpdatePeriodMinLength(IPeriod period, float minLengthSeconds)
     {
-        UpdatePeriodConfig(period, minLength: minLength);
+        UpdatePeriodConfig(period, minLengthSeconds: minLengthSeconds);
     }
 }

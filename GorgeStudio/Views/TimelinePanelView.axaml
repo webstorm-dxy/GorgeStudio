@@ -103,10 +103,18 @@
                                             Background="Transparent"
                                             BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
                                             BorderThickness="0,0,0,1">
-                                        <TextBlock Text="{Binding Name}"
+                                        <Border.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="修改显示名..."
+                                                          Command="{Binding $parent[UserControl].DataContext.RenameTrackDisplayNameCommand}"
+                                                          CommandParameter="{Binding}" />
+                                            </ContextMenu>
+                                        </Border.ContextMenu>
+                                        <TextBlock Text="{Binding DisplayName}"
                                                    FontWeight="Bold"
                                                    VerticalAlignment="Center"
-                                                   TextTrimming="CharacterEllipsis" />
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip.Tip="{Binding DisplayName}" />
                                     </Border>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>

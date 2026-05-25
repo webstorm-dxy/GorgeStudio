@@ -1,0 +1,55 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GorgeStudio.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="220"
+        x:Class="GorgeStudio.Views.RenameStaffDisplayNameWindow"
+        x:DataType="vm:RenameStaffDisplayNameWindowViewModel"
+        Title="修改谱表显示名"
+        Width="420" Height="220"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner">
+
+    <Design.DataContext>
+        <vm:RenameStaffDisplayNameWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto" Margin="20">
+
+        <!-- Class name (read-only) -->
+        <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,12">
+            <TextBlock Text="类名" FontSize="12"
+                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+            <TextBlock Text="{Binding ClassName}" FontSize="13" FontWeight="SemiBold" />
+        </StackPanel>
+
+        <!-- Display name (editable) -->
+        <StackPanel Grid.Row="1" Spacing="4">
+            <TextBlock Text="显示名" FontSize="12"
+                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+            <TextBox Name="DisplayNameTextBox"
+                     Text="{Binding DisplayName}"
+                     Watermark="请输入显示名..."
+                     MinHeight="30" />
+        </StackPanel>
+
+        <!-- Error message -->
+        <TextBlock Grid.Row="2" Text="{Binding ErrorMessage}"
+                   Foreground="{DynamicResource SystemControlErrorTextColor}"
+                   FontSize="12"
+                   Margin="0,4,0,0"
+                   IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal"
+                    HorizontalAlignment="Right" Spacing="8"
+                    Margin="0,16,0,0">
+            <Button Content="确定" Classes="accent"
+                    Command="{Binding OkCommand}"
+                    IsEnabled="{Binding CanConfirm}" />
+            <Button Content="取消"
+                    Command="{Binding CancelCommand}" />
+        </StackPanel>
+    </Grid>
+</Window>

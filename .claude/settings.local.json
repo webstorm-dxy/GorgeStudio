@@ -12,7 +12,10 @@
       "Bash(cmd.exe /c \"taskkill /F /PID 41940\")",
       "Bash(taskkill -f -pid 32880)",
       "Bash(taskkill -f -pid 50764)",
-      "Bash(taskkill -f -pid 42396)"
+      "Bash(taskkill -f -pid 42396)",
+      "Bash(find / -path \"*/skill-creator/scripts/init_skill.py\" 2>/dev/null | head -5)",
+      "Bash(python \"C:/Users/daxingyi/AppData/Local/JetBrains/Rider2026.1/aia/agents/.agents/skills/skill-creator/scripts/init_skill.py\" gorge-charting --path \"C:/Users/daxingyi/RiderProjects/GorgeStudio/.claude/skills\" --resources references --interface \"display_name=Gorge Charting,short_description=Reference for Gorge language injectors, scene coordinates, chart structure, and Dremu form rhythm game authoring.,default_prompt=Consult the Gorge charting references to understand injector syntax, scene/coordinate system, chart structure \\(Score/Staff/Period\\), and Dremu form mechanics when working with .g chart files or discussing Gorge/Dremu gameplay design.\")",
+      "Bash(python \"C:/Users/daxingyi/AppData/Local/JetBrains/Rider2026.1/aia/agents/.agents/skills/skill-creator/scripts/quick_validate.py\" \"C:/Users/daxingyi/RiderProjects/GorgeStudio/.claude/skills/gorge-charting\")"
     ]
   }
 }
