@@ -485,17 +485,28 @@ public partial class MainWindowViewModel : ViewModelBase
 
             // 收集已加载 Form 的 .g 源文件
             List<Gorge.GorgeCompiler.SourceCodeFile>? formSourceFiles = null;
+            List<AssetFile>? formResourceFiles = null;
             if (_loadedForms is { Count: > 0 })
             {
                 formSourceFiles = new List<Gorge.GorgeCompiler.SourceCodeFile>();
+                formResourceFiles = new List<AssetFile>();
                 foreach (var form in _loadedForms)
                 {
-                    var formGFiles = Directory.EnumerateFiles(form.Path, "*.g", SearchOption.AllDirectories);
-                    foreach (var filePath in formGFiles)
+                    var allFormFiles = Directory.EnumerateFiles(form.Path, "*.*", SearchOption.AllDirectories);
+                    foreach (var filePath in allFormFiles)
                     {
-                        var relativePath = "Forms/" + form.DirectoryName + "/" + Path.GetRelativePath(form.Path, filePath);
-                        var code = await File.ReadAllTextAsync(filePath);
-                        formSourceFiles.Add(new Gorge.GorgeCompiler.SourceCodeFile(relativePath, code, true));
+                        var relativePath = "Forms/" + form.DirectoryName + "/"
+                            + Path.GetRelativePath(form.Path, filePath).Replace('\\', '/');
+                        if (filePath.EndsWith(".g", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var code = await File.ReadAllTextAsync(filePath);
+                            formSourceFiles.Add(new Gorge.GorgeCompiler.SourceCodeFile(relativePath, code, true));
+                        }
+                        else
+                        {
+                            var data = await File.ReadAllBytesAsync(filePath);
+                            formResourceFiles.Add(new AssetFile(relativePath, data, true));
+                        }
                     }
                 }
             }
@@ -507,7 +518,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 settings.Forms = _loadedForms.Select(f => f.DirectoryName).ToList();
             }
 
-            var zipData = _packageWriter!.WriteZip(sourceFiles, CurrentScore!.ChartAssetFiles, settings, formSourceFiles);
+            var zipData = _packageWriter!.WriteZip(sourceFiles, CurrentScore!.ChartAssetFiles, settings, formSourceFiles, formResourceFiles);
 
             await using var stream = new FileStream(savePath, FileMode.Create, FileAccess.Write, FileShare.None);
             await stream.WriteAsync(zipData);

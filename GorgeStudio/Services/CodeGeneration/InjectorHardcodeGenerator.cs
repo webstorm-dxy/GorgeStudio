@@ -125,7 +125,7 @@ public static class InjectorHardcodeGenerator
         stringBuilder.Append("}", indentation);
 
         if (!anyField)
-            return $"{injectedClass.Type.HardcodeType()} : {{ : }}";
+            return $"{injectedClass.Type.HardcodeType()} : {{}}";
 
         return stringBuilder.ToString();
     }
@@ -140,8 +140,8 @@ public static class InjectorHardcodeGenerator
         if (arrayInjector.length == 0)
         {
             if (isValue)
-                return $"{itemObjectType.HardcodeType()} : {{ , }}";
-            return $"{{ , }}";
+                return $"{itemObjectType.HardcodeType()} : {{}}";
+            return $"{{}}";
         }
 
         var stringBuilder = new StringBuilder();
@@ -212,8 +212,8 @@ public static class InjectorHardcodeGenerator
         if (arrayInjector.length == 0)
         {
             if (isValue)
-                return $"float : {{ , }}";
-            return $"{{ , }}";
+                return $"float : {{}}";
+            return $"{{}}";
         }
 
         var stringBuilder = new StringBuilder();
@@ -247,8 +247,8 @@ public static class InjectorHardcodeGenerator
         if (arrayInjector.Count == 0)
         {
             if (isValue)
-                return $"{typeName} : {{ , }}";
-            return $"{{ , }}";
+                return $"{typeName} : {{}}";
+            return $"{{}}";
         }
 
         var stringBuilder = new StringBuilder();
