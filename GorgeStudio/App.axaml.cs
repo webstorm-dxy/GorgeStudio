@@ -14,6 +14,7 @@ using GorgeStudio.Services.FileService;
 using GorgeStudio.Services.ChartService;
 using GorgeStudio.Services.CodeGeneration;
 using GorgeStudio.Services.Packaging;
+using GorgeStudio.Services.RemotePlayer;
 using GorgeStudio.ViewModels;
 using GorgeStudio.Views;
 
@@ -71,11 +72,15 @@ public partial class App : Application
             // 乐段编辑服务
             services.AddSingleton<IPeriodEditingService, PeriodEditingService>();
 
+            // Godot demo 远程播放 UDP 控制服务
+            services.AddSingleton<IRemotePlayerService, RemotePlayerService>();
+
             // 面板 ViewModel
             services.AddTransient<ProjectSettingsWindowViewModel>();
             services.AddTransient<ElementListPanelViewModel>();
             services.AddTransient<PropertiesPanelViewModel>();
             services.AddTransient<TimelinePanelViewModel>();
+            services.AddTransient<RemotePlayerPanelViewModel>();
 
             // 主窗口 ViewModel（注入所有依赖）
             services.AddTransient<MainWindowViewModel>();

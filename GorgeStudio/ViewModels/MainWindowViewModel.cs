@@ -58,6 +58,9 @@ public partial class MainWindowViewModel : ViewModelBase
     private ViewModelBase? _timelinePanel;
 
     [ObservableProperty]
+    private ViewModelBase? _remotePlayerPanel;
+
+    [ObservableProperty]
     private CompiledProject? _currentProject;
 
     [ObservableProperty]
@@ -83,7 +86,8 @@ public partial class MainWindowViewModel : ViewModelBase
         IServiceProvider serviceProvider,
         ElementListPanelViewModel elementListPanel,
         PropertiesPanelViewModel propertiesPanel,
-        TimelinePanelViewModel timelinePanel)
+        TimelinePanelViewModel timelinePanel,
+        RemotePlayerPanelViewModel remotePlayerPanel)
     {
         _embedService = embedService;
         _fileService = fileService;
@@ -96,6 +100,7 @@ public partial class MainWindowViewModel : ViewModelBase
         RightPanel = propertiesPanel;
         ElementListPanel = elementListPanel;
         TimelinePanel = timelinePanel;
+        RemotePlayerPanel = remotePlayerPanel;
 
         // 合并服务的状态消息
         _embedService.StatusChanged += msg => StatusText = msg;

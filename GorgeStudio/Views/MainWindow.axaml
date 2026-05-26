@@ -14,7 +14,7 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto,300,Auto">
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,300,Auto">
         <!-- Menu -->
         <Menu Grid.Row="0">
             <MenuItem Header="文件">
@@ -56,8 +56,12 @@
             </StackPanel>
         </Border>
 
-        <!-- Row 2: Embed area + Right panel -->
-        <Grid Grid.Row="2" ColumnDefinitions="*,4,350,4,350">
+        <!-- Remote player controls -->
+        <ContentControl Grid.Row="2"
+                        Content="{Binding RemotePlayerPanel}" />
+
+        <!-- Row 3: Embed area + Right panel -->
+        <Grid Grid.Row="3" ColumnDefinitions="*,4,350,4,350">
             <!-- Left: Godot embed area -->
             <Border x:Name="EmbedHost"
                     Grid.Column="0"
@@ -94,16 +98,16 @@
         </Grid>
 
         <!-- Row 3: Resize handle (horizontal) -->
-        <GridSplitter Grid.Row="3"
+        <GridSplitter Grid.Row="4"
                       Height="4"
                       ResizeDirection="Rows" />
 
         <!-- Timeline -->
-        <ContentControl Grid.Row="4"
+        <ContentControl Grid.Row="5"
                         Content="{Binding TimelinePanel}" />
 
         <!-- Status bar -->
-        <Border Grid.Row="5" Classes="statusBar">
+        <Border Grid.Row="6" Classes="statusBar">
             <TextBlock Classes="statusBarText"
                        Text="{Binding StatusText}"
                        VerticalAlignment="Center" />

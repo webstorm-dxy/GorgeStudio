@@ -1,0 +1,122 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GorgeStudio.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="132"
+             x:Class="GorgeStudio.Views.RemotePlayerPanelView"
+             x:DataType="vm:RemotePlayerPanelViewModel">
+
+    <Design.DataContext>
+        <vm:RemotePlayerPanelViewModel/>
+    </Design.DataContext>
+
+    <Border Classes="cardPanel" CornerRadius="0" BorderThickness="0,0,0,1">
+        <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,Auto,Auto,*,Auto"
+              Margin="16,10" RowSpacing="8" ColumnSpacing="12">
+
+            <StackPanel Grid.Row="0" Grid.Column="0"
+                        Orientation="Horizontal" Spacing="8"
+                        VerticalAlignment="Center">
+                <TextBlock Text="UDP"
+                           Classes="subtitle"
+                           VerticalAlignment="Center" />
+                <TextBox Width="140"
+                         Text="{Binding Host, Mode=TwoWay}"
+                         Watermark="127.0.0.1" />
+                <NumericUpDown Width="90"
+                               Value="{Binding Port, Mode=TwoWay}"
+                               Minimum="1" Maximum="65535"
+                               Increment="1" />
+                <NumericUpDown Width="86"
+                               Value="{Binding TimeoutSeconds, Mode=TwoWay}"
+                               Minimum="0.1" Maximum="60"
+                               Increment="0.5" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="0" Grid.Column="1"
+                        Orientation="Horizontal" Spacing="6"
+                        VerticalAlignment="Center">
+                <Button Content="播放"
+                        Classes="accent"
+                        Command="{Binding PlayCommand}" />
+                <Button Content="暂停"
+                        Command="{Binding PauseCommand}" />
+                <Button Content="停止"
+                        Command="{Binding StopCommand}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="0" Grid.Column="2"
+                        Orientation="Horizontal" Spacing="6"
+                        VerticalAlignment="Center">
+                <NumericUpDown Width="112"
+                               Value="{Binding SeekSeconds, Mode=TwoWay}"
+                               Minimum="-999999" Maximum="999999"
+                               Increment="1"
+                               FormatString="0.###" />
+                <Button Content="跳转"
+                        Command="{Binding SeekCommand}" />
+                <Button Content="刷新状态"
+                        Command="{Binding RefreshStatusCommand}" />
+            </StackPanel>
+
+            <Grid Grid.Row="0" Grid.Column="3"
+                  ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                  ColumnSpacing="6"
+                  VerticalAlignment="Center">
+                <TextBlock Grid.Column="0"
+                           Text="当前"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                <TextBlock Grid.Column="1"
+                           Text="{Binding CurrentTimeText}"
+                           FontWeight="Bold" />
+                <TextBlock Grid.Column="2"
+                           Text="/"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                <TextBlock Grid.Column="3"
+                           Text="{Binding DurationText}"
+                           FontWeight="Bold" />
+                <TextBlock Grid.Column="4"
+                           Text="范围"
+                           Margin="12,0,0,0"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                <TextBlock Grid.Column="5"
+                           Text="{Binding RangeText}" />
+            </Grid>
+
+            <TextBlock Grid.Row="0" Grid.Column="4"
+                       Text="{Binding ConnectionText}"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold" />
+
+            <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5"
+                  ColumnDefinitions="Auto,*,Auto,*,Auto"
+                  ColumnSpacing="8">
+                <Button Grid.Column="0"
+                        Content="Runtime"
+                        Command="{Binding PickRuntimePackageCommand}" />
+                <TextBox Grid.Column="1"
+                         Text="{Binding RuntimePackagePath, Mode=TwoWay}"
+                         Watermark="runtime.zip 路径；多路径可换行或用 ; 分隔"
+                         TextWrapping="NoWrap" />
+                <Button Grid.Column="2"
+                        Content="Chart"
+                        Command="{Binding PickChartPackageCommand}" />
+                <TextBox Grid.Column="3"
+                         Text="{Binding ChartPackagePath, Mode=TwoWay}"
+                         Watermark="chart.zip / .gpkg 路径；多路径可换行或用 ; 分隔"
+                         TextWrapping="NoWrap" />
+                <Button Grid.Column="4"
+                        Content="设置包"
+                        Command="{Binding SetPackagesCommand}" />
+            </Grid>
+
+            <TextBlock Grid.Row="2"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="5"
+                       Text="{Binding MessageText}"
+                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                       TextTrimming="CharacterEllipsis" />
+        </Grid>
+    </Border>
+</UserControl>
