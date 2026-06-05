@@ -19,12 +19,7 @@ class SingleAuto
             {
                 return new Priority[0]{,};
             },
-            null,
             new TouchType[0]{,},
-            bool:(int signalId)->
-            {
-                return true;
-            },
             bool:(TouchSignal signal) ->
             {
                 return false;

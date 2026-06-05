@@ -10,6 +10,15 @@
       <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
     </ItemGroup>
 
+    <!-- Plugin mode: exclude local compiler sources, include external plugin sources -->
+    <ItemGroup Condition="'$(GorgeFrameworkSource)' == 'Plugin'">
+        <Compile Remove="Class1.cs" />
+        <Compile Remove="gorge-compiler\src\**\*.cs" />
+        <Compile Include="$(GorgePluginCompilerSourceRoot)\**\*.cs">
+            <Link>PluginGorgeCompiler\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </Compile>
+    </ItemGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\GorgeCore\GorgeCore.csproj" />
     </ItemGroup>

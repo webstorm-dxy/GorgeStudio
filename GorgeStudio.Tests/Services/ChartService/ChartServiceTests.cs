@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO.Compression;
 using Gorge.GorgeCompiler;
 using Gorge.GorgeLanguage.Objective;
@@ -459,6 +460,130 @@ class DremuStaff
         var assetBytes = new byte[assetEntry.Length];
         assetStream.ReadExactly(assetBytes);
         Assert.Equal(originalAssetData, assetBytes);
+    }
+
+    #endregion
+
+    #region Form Resource Packaging Tests
+
+    [Fact]
+    public void WriteZip_IncludesFormResourceFiles()
+    {
+        var sourceFiles = new List<SourceCodeFile>
+        {
+            new("Score.g", "class Score {}", true),
+        };
+        var formSourceFiles = new List<SourceCodeFile>
+        {
+            new("Forms/Dremu/DremuTap.g", "class DremuTap {}", true),
+        };
+        var formResourceFiles = new List<AssetFile>
+        {
+            new("Forms/Dremu/FormAsset/Tap.png", new byte[] { 0x89, 0x50, 0x4E, 0x47 }, true),
+            new("Forms/Dremu/FormAsset/HitSong0.wav", new byte[] { 0x52, 0x49, 0x46, 0x46 }, true),
+        };
+
+        var zipData = _packageWriter.WriteZip(sourceFiles, formResourceFiles: formResourceFiles, formSourceFiles: formSourceFiles);
+
+        using var ms = new MemoryStream(zipData);
+        using var archive = new ZipArchive(ms, ZipArchiveMode.Read);
+        // Score.g + DremuTap.g + Tap.png + HitSong0.wav = 4 entries
+        Assert.Equal(4, archive.Entries.Count);
+        Assert.Contains(archive.Entries, e => e.Name == "Tap.png");
+        Assert.Contains(archive.Entries, e => e.Name == "HitSong0.wav");
+        Assert.Contains(archive.Entries, e => e.Name == "DremuTap.g");
+    }
+
+    [Fact]
+    public void WriteZip_FormResourcePathsPreserved()
+    {
+        var sourceFiles = new List<SourceCodeFile>
+        {
+            new("Score.g", "class Score {}", true),
+        };
+        var formResourceFiles = new List<AssetFile>
+        {
+            new("Forms/Dremu/FormAsset/Tap.png", new byte[] { 1, 2, 3 }, true),
+            new("Forms/Dremu/Note/Tsiga/AutoPlay/DremuTapTsiga.g.meta", new byte[] { 4, 5, 6 }, true),
+        };
+
+        var zipData = _packageWriter.WriteZip(sourceFiles, formResourceFiles: formResourceFiles);
+
+        using var ms = new MemoryStream(zipData);
+        using var archive = new ZipArchive(ms, ZipArchiveMode.Read);
+        var tapEntry = archive.GetEntry("Forms/Dremu/FormAsset/Tap.png");
+        Assert.NotNull(tapEntry);
+        Assert.Equal(3, tapEntry!.Length);
+
+        var metaEntry = archive.GetEntry("Forms/Dremu/Note/Tsiga/AutoPlay/DremuTapTsiga.g.meta");
+        Assert.NotNull(metaEntry);
+        Assert.Equal(3, metaEntry!.Length);
+    }
+
+    [Fact]
+    public void WriteZip_FormResourceFilesOptional()
+    {
+        var sourceFiles = new List<SourceCodeFile>
+        {
+            new("Score.g", "class Score {}", true),
+        };
+
+        // formResourceFiles defaults to null — should not throw
+        var zipData = _packageWriter.WriteZip(sourceFiles);
+
+        using var ms = new MemoryStream(zipData);
+        using var archive = new ZipArchive(ms, ZipArchiveMode.Read);
+        Assert.Single(archive.Entries);
+    }
+
+    #endregion
+
+    #region InjectorHardcodeGenerator Format Tests
+
+    [Fact]
+    public void InjectorHardcodeGenerator_EmptyInjector_ProducesEmptyBraces()
+    {
+        var decl = CreateTestClassDeclaration();
+        var injector = new CompiledInjector(decl);
+        // All fields at default → empty injector
+        var result = InjectorHardcodeGenerator.Generate(injector);
+        Assert.DoesNotContain("{ : }", result);
+        Assert.Contains("{}", result);
+    }
+
+    [Fact]
+    public void InjectorHardcodeGenerator_EmptyObjectList_ProducesEmptyBraces()
+    {
+        var decl = CreateTestClassDeclaration();
+        var injector = new CompiledInjector(decl);
+        var objectList = new ObjectList(injector.InjectedClassDeclaration.Type, new List<GorgeObject>());
+
+        var result = InjectorHardcodeGenerator.Generate(objectList, isValue: true);
+
+        Assert.DoesNotContain("{ , }", result);
+        Assert.Contains("{}", result);
+    }
+
+    [Fact]
+    public void InjectorHardcodeGenerator_EmptyObjectListAsNonValue_ProducesEmptyBraces()
+    {
+        var decl = CreateTestClassDeclaration();
+        var injector = new CompiledInjector(decl);
+        var objectList = new ObjectList(injector.InjectedClassDeclaration.Type, new List<GorgeObject>());
+
+        var result = InjectorHardcodeGenerator.Generate(objectList, isValue: false);
+
+        // Non-value form should be "{}" without type prefix
+        Assert.Equal("{}", result);
+    }
+
+    [Fact]
+    public void InjectorHardcodeGenerator_EmptyInjectorList_ProducesEmptyBraces()
+    {
+        var result = InjectorHardcodeGenerator.Generate("GorgeFramework.Element^", new List<Injector>(), isValue: false);
+
+        Assert.DoesNotContain("{ , }", result);
+        Assert.Equal("{}", result);
     }
 
     #endregion

@@ -21,8 +21,9 @@ public interface IPackageWriter
     /// <param name="assetFiles">要打包的资源文件（PNG、WAV 等）。可为空。</param>
     /// <param name="settings">项目设置。非 null 时序列化为 setting.json 写入 ZIP 根目录。</param>
     /// <param name="formSourceFiles">Form 源文件列表。非 null 时写入 Forms/ 子目录下。</param>
+    /// <param name="formResourceFiles">Form 资源文件列表（PNG、WAV 等）。非 null 时写入 Forms/ 子目录下，保持相对路径。</param>
     /// <returns>ZIP 文件的完整二进制数据。</returns>
-    byte[] WriteZip(IReadOnlyList<SourceCodeFile> sourceFiles, IReadOnlyList<AssetFile>? assetFiles = null, ProjectSettings? settings = null, IReadOnlyList<SourceCodeFile>? formSourceFiles = null);
+    byte[] WriteZip(IReadOnlyList<SourceCodeFile> sourceFiles, IReadOnlyList<AssetFile>? assetFiles = null, ProjectSettings? settings = null, IReadOnlyList<SourceCodeFile>? formSourceFiles = null, IReadOnlyList<AssetFile>? formResourceFiles = null);
 }
 
 /// <summary>
@@ -31,7 +32,7 @@ public interface IPackageWriter
 /// </summary>
 public sealed class PackageWriter : IPackageWriter
 {
-    public byte[] WriteZip(IReadOnlyList<SourceCodeFile> sourceFiles, IReadOnlyList<AssetFile>? assetFiles = null, ProjectSettings? settings = null, IReadOnlyList<SourceCodeFile>? formSourceFiles = null)
+    public byte[] WriteZip(IReadOnlyList<SourceCodeFile> sourceFiles, IReadOnlyList<AssetFile>? assetFiles = null, ProjectSettings? settings = null, IReadOnlyList<SourceCodeFile>? formSourceFiles = null, IReadOnlyList<AssetFile>? formResourceFiles = null)
     {
         using var memoryStream = new MemoryStream();
         using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
@@ -58,7 +59,18 @@ public sealed class PackageWriter : IPackageWriter
                 }
             }
 
-            // 3) Write asset files
+            // 3) Write form resource files (PNG, WAV, etc.) under Forms/{dirName}/
+            if (formResourceFiles != null)
+            {
+                foreach (var resourceFile in formResourceFiles)
+                {
+                    var entry = archive.CreateEntry(resourceFile.Path, CompressionLevel.Optimal);
+                    using var entryStream = entry.Open();
+                    entryStream.Write(resourceFile.Data, 0, resourceFile.Data.Length);
+                }
+            }
+
+            // 4) Write asset files
             if (assetFiles != null)
             {
                 foreach (var assetFile in assetFiles)
@@ -70,7 +82,7 @@ public sealed class PackageWriter : IPackageWriter
                 }
             }
 
-            // 4) Write setting.json
+            // 5) Write setting.json
             if (settings != null)
             {
                 var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });

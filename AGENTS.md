@@ -69,3 +69,34 @@ GorgeStudio/
 - 64 位 Windows 上 `GetWindowLong`/`SetWindowLong` 不存在，P/Invoke 使用 `EntryPoint = "GetWindowLongPtrW"` / `"SetWindowLongPtrW"`
 - `EmbedService` 在构造函数中订阅 `Window.Closing` 自动清理，无需在 View 层手动 Dispose
 - 项目 pin .NET 9.0.301 SDK（`global.json`），NuGet 配置在根目录 `NuGet.Config`
+
+## Gorge Framework Source Switching
+
+GorgeStudio supports building against two sets of Gorge framework sources:
+
+| Mode | Source | Description |
+|---|---|---|
+| `Local` (default) | `GorgeCore/gorge-core-csharp/src/`, `GorgeCompileFramework/gorge-compiler/src/` | In-repo sources |
+| `Plugin` | `GorgePluginGodot/addons/gorgeplugin/GorgeTools/GorgeCoreCSharp/src/`, `GorgeCompiler/src/` | External Godot plugin sources |
+
+**Build commands:**
+
+```bash
+# Default local build (no change from before)
+build_env.bat
+
+# Plugin version build
+build_env.bat /p:GorgeFrameworkSource=Plugin
+
+# Plugin version with explicit plugin repo root
+dotnet build GorgeStudio.sln /p:GorgeFrameworkSource=Plugin /p:GorgePluginGodotRoot=C:\Users\daxingyi\RiderProjects\GorgePluginGodot
+```
+
+**After switching modes**, clean stale build artifacts:
+
+```bash
+# Remove bin/obj from affected projects
+Remove-Item -Recurse -Force GorgeCore/bin, GorgeCore/obj, GorgeCompileFramework/bin, GorgeCompileFramework/obj, GorgeCompilerToolchain/bin, GorgeCompilerToolchain/obj, GorgeStudio/bin, GorgeStudio/obj
+```
+
+**Never** copy external plugin sources into this repository. The switching is done entirely through MSBuild properties — no files are duplicated.
