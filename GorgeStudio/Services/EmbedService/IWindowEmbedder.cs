@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 
@@ -33,6 +34,10 @@ public interface IWindowEmbedder : IDisposable
     /// <param name="timeout">
     /// 等待窗口出现的超时时间。为 <c>null</c> 时使用默认值 30 秒。
     /// </param>
+    /// <param name="arguments">
+    /// 传递给外部可执行文件的命令行参数。为 <c>null</c> 时不传递参数。
+    /// 使用 <see cref="System.Diagnostics.ProcessStartInfo.ArgumentList"/> 安全传递，防止注入。
+    /// </param>
     /// <returns>
     /// 操作结果：成功返回 <c>true</c>；文件不存在、进程启动失败或窗口超时则返回 <c>false</c>。
     /// </returns>
@@ -41,7 +46,8 @@ public interface IWindowEmbedder : IDisposable
         Window parentWindow,
         string executablePath,
         string? workingDirectory = null,
-        TimeSpan? timeout = null);
+        TimeSpan? timeout = null,
+        IReadOnlyList<string>? arguments = null);
 
     /// <summary>
     /// 状态消息事件，用于向 UI 反馈嵌入进度。

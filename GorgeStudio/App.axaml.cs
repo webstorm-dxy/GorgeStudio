@@ -13,6 +13,7 @@ using GorgeStudio.Services.EmbedService;
 using GorgeStudio.Services.FileService;
 using GorgeStudio.Services.ChartService;
 using GorgeStudio.Services.CodeGeneration;
+using GorgeStudio.Services.GodotRemote;
 using GorgeStudio.Services.Packaging;
 using GorgeStudio.ViewModels;
 using GorgeStudio.Views;
@@ -64,6 +65,10 @@ public partial class App : Application
             // 源码生成和打包
             services.AddSingleton<IGorgeCodeGenerator, GorgeCodeGenerator>();
             services.AddSingleton<IPackageWriter, PackageWriter>();
+
+            // Godot Remote 通信
+            services.AddSingleton(new GodotRemoteOptions());
+            services.AddSingleton<IGodotRemoteClient, GodotRemoteClient>();
 
             // 项目设置服务
             services.AddSingleton<IProjectSettingsService, ProjectSettingsService>();

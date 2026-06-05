@@ -287,7 +287,8 @@ internal sealed partial class Win32WindowEmbedder : IWindowEmbedder
         Window parentWindow,
         string executablePath,
         string? workingDirectory = null,
-        TimeSpan? timeout = null)
+        TimeSpan? timeout = null,
+        IReadOnlyList<string>? arguments = null)
     {
         _hostControl = hostControl ?? throw new ArgumentNullException(nameof(hostControl));
         _parentWindow = parentWindow ?? throw new ArgumentNullException(nameof(parentWindow));
@@ -310,6 +311,11 @@ internal sealed partial class Win32WindowEmbedder : IWindowEmbedder
             UseShellExecute = false,
             CreateNoWindow = false,
         };
+        if (arguments != null)
+        {
+            foreach (var arg in arguments)
+                psi.ArgumentList.Add(arg);
+        }
 
         try
         {

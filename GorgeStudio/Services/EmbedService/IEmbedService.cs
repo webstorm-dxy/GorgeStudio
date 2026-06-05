@@ -15,12 +15,12 @@ public interface IEmbedService
     /// 启动外部 Godot 进程并将其主窗口嵌入（或关联）到 IDE 宿主区域。
     /// </summary>
     /// <returns>
-    /// 嵌入成功返回 <c>true</c>；如果可执行文件未找到、进程启动失败或窗口超时则返回 <c>false</c>。
+    /// <see cref="EmbedLaunchResult"/> 包含成功状态和可能的错误消息。
     /// </returns>
     /// <remarks>
     /// 调用前会先释放上一次嵌入的资源。通过 <see cref="IWindowEmbedder"/> 工厂创建平台特定的嵌入器。
     /// </remarks>
-    Task<bool> LaunchAsync();
+    Task<EmbedLaunchResult> LaunchAsync();
 
     /// <summary>
     /// 嵌入过程中的状态变化通知事件。
@@ -28,3 +28,10 @@ public interface IEmbedService
     /// </summary>
     event Action<string>? StatusChanged;
 }
+
+/// <summary>
+/// Godot 进程启动的结果。
+/// </summary>
+/// <param name="Success">启动成功时为 <c>true</c>。</param>
+/// <param name="ErrorMessage">失败时的错误消息；成功时为 <c>null</c>。</param>
+public record EmbedLaunchResult(bool Success, string? ErrorMessage = null);

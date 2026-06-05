@@ -16,6 +16,7 @@ using GorgeStudio.Services;
 using GorgeStudio.Services.ChartService;
 using GorgeStudio.Services.CodeGeneration;
 using GorgeStudio.Services.FileService;
+using GorgeStudio.Services.GodotRemote;
 using GorgeStudio.Services.Packaging;
 using GorgeStudio.Views;
 
@@ -29,6 +30,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IGorgeCodeGenerator? _codeGenerator;
     private readonly IPackageWriter? _packageWriter;
     private readonly IProjectSettingsService? _projectSettingsService;
+    private readonly IGodotRemoteClient? _godotRemoteClient;
     private readonly IServiceProvider? _serviceProvider;
 
     /// <summary>
@@ -41,6 +43,8 @@ public partial class MainWindowViewModel : ViewModelBase
     /// 当前已加载的 Form 列表。用于保存时将 Form 源文件打包进 .gpkg。
     /// </summary>
     private List<FormInfo>? _loadedForms;
+
+    private sealed record SaveChartResult(bool Success, bool Cancelled, string? FilePath, string? ErrorMessage);
 
     [ObservableProperty]
     private string _statusText = "就绪";
@@ -80,6 +84,7 @@ public partial class MainWindowViewModel : ViewModelBase
         IGorgeCodeGenerator codeGenerator,
         IPackageWriter packageWriter,
         IProjectSettingsService projectSettingsService,
+        IGodotRemoteClient godotRemoteClient,
         IServiceProvider serviceProvider,
         ElementListPanelViewModel elementListPanel,
         PropertiesPanelViewModel propertiesPanel,
@@ -91,6 +96,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _codeGenerator = codeGenerator;
         _packageWriter = packageWriter;
         _projectSettingsService = projectSettingsService;
+        _godotRemoteClient = godotRemoteClient;
         _serviceProvider = serviceProvider;
 
         RightPanel = propertiesPanel;
@@ -297,13 +303,58 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
+        if (CurrentScore == null)
+        {
+            StatusText = "没有可加载的谱面数据";
+            return;
+        }
+
         CanLaunch = false;
-        StatusText = "正在启动...";
 
         try
         {
-            bool ok = _embedService != null && await _embedService.LaunchAsync();
-            StatusText = ok ? "嵌入完成" : "嵌入失败";
+            // 1. 保存当前谱面
+            StatusText = "正在保存谱面...";
+            var saveResult = await SaveCurrentChartForGodotAsync();
+            if (saveResult.Cancelled)
+            {
+                StatusText = "已取消加载";
+                return;
+            }
+            if (!saveResult.Success)
+            {
+                StatusText = $"保存失败：{saveResult.ErrorMessage ?? "未知错误"}";
+                return;
+            }
+
+            // 2. 启动 Godot 进程
+            StatusText = "正在启动 Godot...";
+            var launchResult = await _embedService!.LaunchAsync();
+            if (!launchResult.Success)
+            {
+                StatusText = $"启动失败：{launchResult.ErrorMessage ?? "未知错误"}";
+                return;
+            }
+
+            // 3. 等待 Godot UDP 就绪
+            StatusText = "等待 Godot 就绪...";
+            var readyResult = await _godotRemoteClient!.WaitUntilReadyAsync();
+            if (!readyResult.Success)
+            {
+                StatusText = $"Godot 未就绪：{readyResult.Error ?? "超时"}";
+                return;
+            }
+
+            // 4. 发送 set_packages 命令
+            StatusText = "正在加载谱面到 Godot...";
+            var setResult = await _godotRemoteClient.SetGpkgAsync(saveResult.FilePath!);
+            if (!setResult.Success)
+            {
+                StatusText = $"加载失败：{setResult.Error ?? "未知错误"}";
+                return;
+            }
+
+            StatusText = $"Godot 已加载当前谱面，时长 {setResult.DurationSeconds:F1}s";
         }
         finally
         {
@@ -473,17 +524,48 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// 将当前谱面数据写入指定路径。
-    /// 同时将已加载 Form 的源文件打包进 .gpkg，确保下次打开时自包含。
+    /// 为 Godot 加载流程保存当前谱面。
+    /// 如果已有文件路径则直接覆盖保存，否则弹出"另存为"对话框。
     /// </summary>
-    private async Task WriteSaveDataAsync(string savePath)
+    private async Task<SaveChartResult> SaveCurrentChartForGodotAsync()
+    {
+        if (_currentFilePath != null)
+        {
+            return await WriteSaveDataForResultAsync(_currentFilePath);
+        }
+
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
+            || desktop.MainWindow is not { } window)
+            return new SaveChartResult(false, false, null, "无法获取主窗口");
+
+        var file = await window.StorageProvider.SaveFilePickerAsync(new Avalonia.Platform.Storage.FilePickerSaveOptions
+        {
+            Title = "保存谱面后启动 Godot",
+            DefaultExtension = ".gpkg",
+            FileTypeChoices = new[]
+            {
+                new Avalonia.Platform.Storage.FilePickerFileType("Gorge 谱面包")
+                {
+                    Patterns = new[] { "*.gpkg" }
+                }
+            }
+        });
+
+        if (file == null)
+            return new SaveChartResult(false, true, null, null);
+
+        return await WriteSaveDataForResultAsync(file.Path.LocalPath);
+    }
+
+    /// <summary>
+    /// 将当前谱面数据写入指定路径，以 <see cref="SaveChartResult"/> 形式返回结果。
+    /// </summary>
+    private async Task<SaveChartResult> WriteSaveDataForResultAsync(string savePath)
     {
         try
         {
-            StatusText = "正在保存...";
             var sourceFiles = _codeGenerator!.Generate(CurrentScore!);
 
-            // 收集已加载 Form 的 .g 源文件
             List<Gorge.GorgeCompiler.SourceCodeFile>? formSourceFiles = null;
             List<AssetFile>? formResourceFiles = null;
             if (_loadedForms is { Count: > 0 })
@@ -511,7 +593,6 @@ public partial class MainWindowViewModel : ViewModelBase
                 }
             }
 
-            // 更新项目设置中的 Forms 列表
             var settings = _projectSettingsService?.CurrentSettings;
             if (settings != null && _loadedForms != null)
             {
@@ -524,11 +605,25 @@ public partial class MainWindowViewModel : ViewModelBase
             await stream.WriteAsync(zipData);
 
             _currentFilePath = savePath;
-            StatusText = $"保存成功：{Path.GetFileName(savePath)}";
+            return new SaveChartResult(true, false, savePath, null);
         }
         catch (Exception ex)
         {
-            StatusText = $"保存失败：{ex.Message}";
+            return new SaveChartResult(false, false, null, ex.Message);
         }
+    }
+
+    /// <summary>
+    /// 将当前谱面数据写入指定路径。
+    /// 同时将已加载 Form 的源文件打包进 .gpkg，确保下次打开时自包含。
+    /// </summary>
+    private async Task WriteSaveDataAsync(string savePath)
+    {
+        StatusText = "正在保存...";
+        var result = await WriteSaveDataForResultAsync(savePath);
+        if (result.Success)
+            StatusText = $"保存成功：{Path.GetFileName(savePath)}";
+        else
+            StatusText = $"保存失败：{result.ErrorMessage ?? "未知错误"}";
     }
 }
