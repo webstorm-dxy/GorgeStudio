@@ -22,12 +22,7 @@ class CatchNormal
                     priorities[1] = new Priority(float:(ISignal signal) -> { return note.respondArea.BestDistance((TouchSignal) signal); });
                     return priorities;
                 },
-                null,
                 new TouchType[0]{,},
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     return false;
@@ -56,12 +51,7 @@ class CatchNormal
                     priorities[1] = new Priority(float:(ISignal signal) -> { return note.respondArea.BestDistance((TouchSignal) signal); });
                     return priorities;
                 },
-                null,
                 new TouchType[1]{TouchType.Keep},
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     return note.respondArea.IsInRespondArea(signal);

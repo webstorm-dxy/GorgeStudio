@@ -1,0 +1,14 @@
+<Project>
+    <PropertyGroup>
+        <!-- Gorge framework source mode: "Local" (default) or "Plugin" -->
+        <GorgeFrameworkSource Condition="'$(GorgeFrameworkSource)' == ''">Local</GorgeFrameworkSource>
+
+        <!-- Root directory of the GorgePluginGodot repository -->
+        <GorgePluginGodotRoot Condition="'$(GorgePluginGodotRoot)' == ''">C:\Users\daxingyi\RiderProjects\GorgePluginGodot</GorgePluginGodotRoot>
+
+        <!-- Derived paths for plugin source directories -->
+        <GorgePluginToolsRoot>$(GorgePluginGodotRoot)\addons\gorgeplugin\GorgeTools</GorgePluginToolsRoot>
+        <GorgePluginCoreSourceRoot>$(GorgePluginToolsRoot)\GorgeCoreCSharp\src</GorgePluginCoreSourceRoot>
+        <GorgePluginCompilerSourceRoot>$(GorgePluginToolsRoot)\GorgeCompiler\src</GorgePluginCompilerSourceRoot>
+    </PropertyGroup>
+</Project>

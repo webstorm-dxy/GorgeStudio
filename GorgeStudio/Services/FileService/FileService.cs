@@ -655,7 +655,7 @@ public sealed class FileService : IFileService, IDisposable
             }
         }
 
-        var compileProgress = progress != null
+        IProgress<float>? compileProgress = progress != null
             ? new Progress<float>(p => progress.Report(0.1f + p * 0.9f))
             : null;
 
@@ -664,7 +664,9 @@ public sealed class FileService : IFileService, IDisposable
         ClassImplementationContext context;
         try
         {
-            context = await Compiler.CompileAsync(allSourceFiles, compileProgress, ct);
+            compileProgress?.Report(0.05f);
+            context = await Task.Run(() => Compiler.Compile(allSourceFiles), ct);
+            compileProgress?.Report(1.0f);
         }
         finally
         {

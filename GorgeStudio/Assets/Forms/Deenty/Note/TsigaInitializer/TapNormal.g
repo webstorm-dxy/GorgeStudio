@@ -22,12 +22,7 @@ class TapNormal
                     priorities[1] = new Priority(float:(ISignal signal) -> { return note.respondArea.BestDistance((TouchSignal) signal); });
                     return priorities;
                 },
-                null,
                 new TouchType[0]{,},
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     return false;
@@ -56,12 +51,7 @@ class TapNormal
                     priorities[1] = new Priority(float:(ISignal signal) -> { return note.respondArea.BestDistance((TouchSignal) signal); });
                     return priorities;
                 },
-                null,
                 new TouchType[1]{TouchType.Begin},
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     return note.respondArea.IsInRespondArea(signal);
@@ -90,12 +80,7 @@ class TapNormal
                     priorities[1] = new Priority(float:(ISignal signal) -> { return note.respondArea.BestDistance((TouchSignal) signal); });
                     return priorities;
                 },
-                null,
                 new TouchType[1]{TouchType.Begin},
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     return note.respondArea.IsInRespondArea(signal);

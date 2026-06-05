@@ -7,4 +7,13 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
+    <!-- Plugin mode: exclude local Core sources, include external plugin sources -->
+    <ItemGroup Condition="'$(GorgeFrameworkSource)' == 'Plugin'">
+        <Compile Remove="Class1.cs" />
+        <Compile Remove="gorge-core-csharp\src\**\*.cs" />
+        <Compile Include="$(GorgePluginCoreSourceRoot)\**\*.cs">
+            <Link>PluginGorgeCore\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </Compile>
+    </ItemGroup>
+
 </Project>

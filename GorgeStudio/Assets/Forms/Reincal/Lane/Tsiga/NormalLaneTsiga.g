@@ -22,17 +22,7 @@ class NormalLaneTsiga
                     priorities[0] = new Priority(float:(ISignal signal) -> { return lane.GetAimDistance((TouchSignal) signal); });
                     return priorities;
                 },
-                void:(int signalId, TouchSignal signal)->
-                {
-                    lane.handlingSignalId = signalId;
-                    lane.set = false;
-                    return;
-                },
                 new TouchType[1]{TouchType.Keep},
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     bool isInTouchArea = lane.IsInTouchArea(signal);
@@ -63,16 +53,7 @@ class NormalLaneTsiga
                     priorities[0] = new Priority(float:(ISignal signal) -> { return lane.GetAimDistance((TouchSignal) signal); });
                     return priorities;
                 },
-                void:(int signalId, TouchSignal signal)->
-                {
-                    lane.set = true;
-                    return;
-                },
                 new TouchType[1]{TouchType.Keep},
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     return lane.IsInTouchArea(signal);

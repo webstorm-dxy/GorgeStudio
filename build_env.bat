@@ -19,4 +19,4 @@ set "HOMEPATH=\Users\daxingyi"
 if not exist "%DOTNET_CLI_HOME%" mkdir "%DOTNET_CLI_HOME%"
 if not exist "%USERPROFILE%\.dotnet" mkdir "%USERPROFILE%\.dotnet"
 cd /d C:\Users\daxingyi\RiderProjects\GorgeStudio
-dotnet build GorgeStudio.sln
+dotnet build GorgeStudio.sln %*

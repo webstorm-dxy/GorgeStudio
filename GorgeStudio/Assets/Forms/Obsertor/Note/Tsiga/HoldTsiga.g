@@ -76,12 +76,7 @@ class HoldTsiga
                 {
                     return new Priority[0];
                 },
-                null,
                 new TouchType[0],
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     return false;
@@ -109,12 +104,7 @@ class HoldTsiga
                     priorities[1] = new Priority(float:(ISignal signal) -> { return note.GetAimDistance((TouchSignal) signal); });
                     return priorities;
                 },
-                null,
                 new TouchType[1]{TouchType.Begin},
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     return note.GetAimDistance(signal) < radius;
@@ -142,12 +132,7 @@ class HoldTsiga
                     priorities[1] = new Priority(float:(ISignal signal) -> { return note.GetAimDistance((TouchSignal) signal); });
                     return priorities;
                 },
-                null,
                 new TouchType[1]{TouchType.Begin},
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     return note.GetAimDistance(signal) < radius;
@@ -175,12 +160,7 @@ class HoldTsiga
                     priorities[1] = new Priority(float:(ISignal signal) -> { return note.GetAimDistance((TouchSignal) signal); });
                     return priorities;
                 },
-                null,
                 new TouchType[2]{TouchType.Begin, TouchType.Keep},
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     return note.GetAimDistance(signal) < radius;
@@ -205,12 +185,7 @@ class HoldTsiga
                 {
                     return new Priority[0];
                 },
-                null,
                 new TouchType[0],
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     return false;

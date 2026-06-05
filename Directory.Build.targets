@@ -1,0 +1,9 @@
+<Project>
+    <Target Name="ValidateGorgePluginPaths" BeforeTargets="BeforeBuild"
+            Condition="'$(GorgeFrameworkSource)' == 'Plugin'">
+        <Error Condition="!Exists('$(GorgePluginCoreSourceRoot)')"
+               Text="GorgeFrameworkSource is 'Plugin' but GorgePluginCoreSourceRoot does not exist: '$(GorgePluginCoreSourceRoot)'. Current GorgePluginGodotRoot is '$(GorgePluginGodotRoot)'. To fix, pass /p:GorgePluginGodotRoot=actual_path." />
+        <Error Condition="!Exists('$(GorgePluginCompilerSourceRoot)')"
+               Text="GorgeFrameworkSource is 'Plugin' but GorgePluginCompilerSourceRoot does not exist: '$(GorgePluginCompilerSourceRoot)'. Current GorgePluginGodotRoot is '$(GorgePluginGodotRoot)'. To fix, pass /p:GorgePluginGodotRoot=actual_path." />
+    </Target>
+</Project>

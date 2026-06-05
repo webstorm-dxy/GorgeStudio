@@ -22,16 +22,7 @@ class SliderLaneTsiga
                     priorities[0] = new Priority(float:(ISignal signal) -> { return 0; });
                     return priorities;
                 },
-                void:(int signalId, TouchSignal signal)->
-                {
-                    lane.handlingSignalId = signalId;
-                    return;
-                },
                 new TouchType[1]{TouchType.Begin},
-                bool:(int signalId)->
-                {
-                    return true;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     bool isInTouchArea = lane.IsInTouchArea(signal);
@@ -64,21 +55,7 @@ class SliderLaneTsiga
                     priorities[0] = new Priority(float:(ISignal signal) -> { return 0; });
                     return priorities;
                 },
-                void:(int signalId, TouchSignal signal)->
-                {
-                    if(signal == null || signalId != lane.touchSignalId)
-                    {
-                        return;
-                    }
-                    lane.nowAngle = lane.GetTouchAngle(signal);
-                    lane.rotation = lane.baseRotation + (lane.nowAngle - lane.baseAngle) * 3.1415926 / 180;
-                    return;
-                },
                 new TouchType[1]{TouchType.End},
-                bool:(int signalId)->
-                {
-                    return signalId == lane.touchSignalId;
-                },
                 bool:(TouchSignal signal) ->
                 {
                     return true;
