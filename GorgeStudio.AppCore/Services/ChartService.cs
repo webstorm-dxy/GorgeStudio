@@ -26,8 +26,9 @@ public sealed class ChartService : IChartService
         var score = new SimulationScore(0f, 100f, 1f);
 
         // 构建 Staff → Period 结构
-        score.BuildFromClassDeclarations(result.ClassDeclarations);
+        // 先设置 AllClassDeclarations，BuildFromClassDeclarations 中需要通过返回类型查找框架类的 ClassDeclaration
         score.ClassDeclarations = result.AllClassDeclarations;
+        score.BuildFromClassDeclarations(result.ClassDeclarations);
 
         // 载入资产文件
         foreach (var assetFile in result.AssetFiles)

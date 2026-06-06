@@ -513,13 +513,20 @@ public sealed class FileService : IFileService, IDisposable
             }
 
             var entryPath = $"{sourceName}/{entry.FullName}";
+            var normalizedEntryName = entry.FullName.Replace('\\', '/');
 
             if (entry.Name.EndsWith(".g", StringComparison.OrdinalIgnoreCase))
             {
+                // Forms/ 下的文件是运行库/form 代码，不是用户谱面代码
+                var entryIsChart = isChart
+                    && !normalizedEntryName.StartsWith("Forms/", StringComparison.OrdinalIgnoreCase);
+
                 using var reader = new StreamReader(entry.Open());
                 var code = reader.ReadToEnd();
-                sourceFiles.Add(new SourceCodeFile(entryPath, code, isChart));
-                sourcePathIsChart[entryPath] = isChart;
+                // Normalize {} to {:} / {,} for compatibility with the Studio compiler
+                code = NormalizeEmptyInjectors(code);
+                sourceFiles.Add(new SourceCodeFile(entryPath, code, entryIsChart));
+                sourcePathIsChart[entryPath] = entryIsChart;
             }
             else
             {
@@ -527,7 +534,10 @@ public sealed class FileService : IFileService, IDisposable
                 using var entryStream = entry.Open();
                 using var ms = new MemoryStream();
                 entryStream.CopyTo(ms);
-                assetFiles.Add(new AssetFile(entry.FullName, ms.ToArray(), isChart));
+                // 资源文件也按路径分类：Forms/ 下标记为非谱面资源
+                var assetIsChart = isChart
+                    && !normalizedEntryName.StartsWith("Forms/", StringComparison.OrdinalIgnoreCase);
+                assetFiles.Add(new AssetFile(entry.FullName, ms.ToArray(), assetIsChart));
             }
         }
 
@@ -1079,6 +1089,31 @@ public sealed class FileService : IFileService, IDisposable
     /// 发送状态变更消息。通过 <see cref="StatusChanged"/> 事件通知所有订阅者。
     /// </summary>
     /// <param name="message">状态消息文本，如 "Loading file: ..."。</param>
+    /// <summary>
+    /// Normalize empty injector syntax in Gorge source code.
+    /// Converts <c>{}</c> (compact form from external tools) to <c>{:}</c> (empty object injector)
+    /// or <c>{,}</c> (empty array injector) to match the Studio compiler's grammar.
+    /// </summary>
+    /// <remarks>
+    /// Context-based replacement:
+    /// <list type="bullet">
+    /// <item><c>TypeName : {}</c> → <c>TypeName : {:}</c> (object injector after ':')</item>
+    /// <item><c>new T[N]{}</c> → <c>new T[N]{,}</c> (array injector after ']')</item>
+    /// </list>
+    /// </remarks>
+    private static string NormalizeEmptyInjectors(string code)
+    {
+        // TypeName : {} → TypeName : {:}
+        var replaced = System.Text.RegularExpressions.Regex.Replace(
+            code, @"(?<=:\s*)\{\}", "{:}");
+
+        // new T[...]{} → new T[...]{,}
+        replaced = System.Text.RegularExpressions.Regex.Replace(
+            replaced, @"(?<=\]\s*)\{\}", "{,}");
+
+        return replaced;
+    }
+
     private void ReportStatus(string message)
     {
         StatusChanged?.Invoke(message);

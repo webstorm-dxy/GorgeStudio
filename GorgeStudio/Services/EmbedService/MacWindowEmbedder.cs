@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Versioning;
@@ -42,7 +43,8 @@ internal sealed class MacWindowEmbedder : IWindowEmbedder
         Window parentWindow,
         string executablePath,
         string? workingDirectory = null,
-        TimeSpan? timeout = null)
+        TimeSpan? timeout = null,
+        IReadOnlyList<string>? arguments = null)
     {
         // hostControl and parentWindow are ignored on macOS —
         // the process launches as a standalone window.
@@ -65,6 +67,11 @@ internal sealed class MacWindowEmbedder : IWindowEmbedder
             WorkingDirectory = wd,
             UseShellExecute = true,
         };
+        if (arguments != null)
+        {
+            foreach (var arg in arguments)
+                psi.ArgumentList.Add(arg);
+        }
 
         try
         {

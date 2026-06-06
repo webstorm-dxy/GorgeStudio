@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -67,14 +68,30 @@ public sealed class EmbedService : IEmbedService, IDisposable
     /// 状态变更事件通过嵌入器的 <see cref="IWindowEmbedder.StatusChanged"/> 转发，
     /// 供 ViewModel 订阅以更新 UI 状态栏。
     /// </remarks>
-    public async Task<bool> LaunchAsync()
+    public async Task<EmbedLaunchResult> LaunchAsync()
     {
         _embedder?.Dispose();
         _embedder = _embedderFactory();
         _embedder.StatusChanged += msg => StatusChanged?.Invoke(msg);
 
         string exePath = ResolveExePath();
-        return await _embedder.EmbedAsync(_hostControl, _parentWindow, exePath);
+        var ok = await _embedder.EmbedAsync(_hostControl, _parentWindow, exePath);
+        return ok
+            ? new EmbedLaunchResult(true)
+            : new EmbedLaunchResult(false, "Failed to embed Godot process");
+    }
+
+    public async Task<EmbedLaunchResult> LaunchAsync(IReadOnlyList<string> arguments)
+    {
+        _embedder?.Dispose();
+        _embedder = _embedderFactory();
+        _embedder.StatusChanged += msg => StatusChanged?.Invoke(msg);
+
+        string exePath = ResolveExePath();
+        var ok = await _embedder.EmbedAsync(_hostControl, _parentWindow, exePath, arguments: arguments);
+        return ok
+            ? new EmbedLaunchResult(true)
+            : new EmbedLaunchResult(false, "Failed to embed Godot process");
     }
 
     /// <summary>
