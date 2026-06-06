@@ -49,6 +49,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _statusText = "就绪";
 
+    partial void OnStatusTextChanged(string value)
+    {
+        Console.WriteLine($"[GorgeStudio] {value}");
+    }
+
     [ObservableProperty]
     private bool _canLaunch = true;
 
@@ -582,12 +587,12 @@ public partial class MainWindowViewModel : ViewModelBase
                         if (filePath.EndsWith(".g", StringComparison.OrdinalIgnoreCase))
                         {
                             var code = await File.ReadAllTextAsync(filePath);
-                            formSourceFiles.Add(new Gorge.GorgeCompiler.SourceCodeFile(relativePath, code, true));
+                            formSourceFiles.Add(new Gorge.GorgeCompiler.SourceCodeFile(relativePath, code, false));
                         }
                         else
                         {
                             var data = await File.ReadAllBytesAsync(filePath);
-                            formResourceFiles.Add(new AssetFile(relativePath, data, true));
+                            formResourceFiles.Add(new AssetFile(relativePath, data, false));
                         }
                     }
                 }
