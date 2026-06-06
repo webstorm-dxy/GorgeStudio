@@ -120,9 +120,17 @@ public class SimulationScore
                             throw new Exception("Song注解没有名为config的元数据");
 
                         var periodConfig = (Injector)configMetadata.Value;
-                        var audio = new CompiledInjector(method.ReturnType != null
-                            ? classDecl
-                            : classDecl);
+                        var returnTypeDecl = classDecl;
+                        if (ClassDeclarations != null)
+                        {
+                            // method.ReturnType for Injector types has the inner type in SubTypes[0]
+                            var typeToLookup = method.ReturnType;
+                            if (typeToLookup?.SubTypes.Length > 0)
+                                typeToLookup = typeToLookup.SubTypes[0];
+                            if (typeToLookup != null && ClassDeclarations.TryGetValue(typeToLookup.FullName, out var resolvedDecl))
+                                returnTypeDecl = resolvedDecl;
+                        }
+                        var audio = new CompiledInjector(returnTypeDecl);
                         var period = new AudioPeriod(method.Name, periodConfig, audio);
                         staff.Periods.Add(period);
                     }

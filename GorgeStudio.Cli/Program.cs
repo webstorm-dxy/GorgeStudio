@@ -187,16 +187,8 @@ class Program
         if (loadResult.LoadedForms != null)
             session.LoadedForms.AddRange(loadResult.LoadedForms);
 
-        // Save first, then launch
+        // Save + Launch Godot + load via UDP (SaveLaunchAndLoadAsync handles all three steps)
         Console.WriteLine("正在保存并启动 Godot...");
-        var saveResult = await workspace.SaveAsync(session);
-        if (!saveResult.Success || saveResult.FilePath == null)
-        {
-            Console.Error.WriteLine($"保存失败: {saveResult.ErrorMessage}");
-            return 1;
-        }
-
-        // Launch Godot and load via UDP
         var launchResult = await launchWorkflow.SaveLaunchAndLoadAsync(session);
         if (launchResult.Success)
         {
