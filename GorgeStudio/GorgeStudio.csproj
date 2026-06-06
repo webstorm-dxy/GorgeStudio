@@ -31,6 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\GorgeStudio.AppCore\GorgeStudio.AppCore.csproj"/>
         <ProjectReference Include="..\GorgeCore\GorgeCore.csproj"/>
         <ProjectReference Include="..\GorgeCompileFramework\GorgeCompileFramework.csproj"/>
         <ProjectReference Include="..\GorgeCompilerToolchain\GorgeCompilerToolchain.csproj"/>

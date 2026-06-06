@@ -7,14 +7,10 @@ using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
+using GorgeStudio.AppCore.DependencyInjection;
 using GorgeStudio.Interop;
 using GorgeStudio.Services;
 using GorgeStudio.Services.EmbedService;
-using GorgeStudio.Services.FileService;
-using GorgeStudio.Services.ChartService;
-using GorgeStudio.Services.CodeGeneration;
-using GorgeStudio.Services.GodotRemote;
-using GorgeStudio.Services.Packaging;
 using GorgeStudio.ViewModels;
 using GorgeStudio.Views;
 
@@ -39,7 +35,11 @@ public partial class App : Application
 
             var services = new ServiceCollection();
 
-            // 平台嵌入器工厂
+            // Register all AppCore services (FileService, ChartService, CodeGeneration,
+            // Packaging, GodotRemote, workflow services, etc.)
+            services.AddGorgeStudioAppCore();
+
+            // Platform-specific window embedder factory
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 services.AddSingleton<Func<IWindowEmbedder>>(_ => () => new Win32WindowEmbedder());
@@ -49,40 +49,18 @@ public partial class App : Application
                 services.AddSingleton<Func<IWindowEmbedder>>(_ => () => new MacWindowEmbedder());
             }
 
-            // 嵌入服务
+            // Embed service (Avalonia-dependent: needs Control + Window)
             services.AddSingleton<IEmbedService>(sp =>
             {
                 var factory = sp.GetRequiredService<Func<IWindowEmbedder>>();
                 return new EmbedService(mainWindow.EmbedHostControl, mainWindow, factory);
             });
 
-            // 文件服务
-            services.AddSingleton<IFileService>(_ => new GorgeStudio.Services.FileService.FileService());
-
-            // 谱面服务
-            services.AddSingleton<IChartService, ChartService>();
-
-            // 源码生成和打包
-            services.AddSingleton<IGorgeCodeGenerator, GorgeCodeGenerator>();
-            services.AddSingleton<IPackageWriter, PackageWriter>();
-
-            // Godot Remote 通信
-            services.AddSingleton(new GodotRemoteOptions());
-            services.AddSingleton<IGodotRemoteClient, GodotRemoteClient>();
-
-            // 项目设置服务
-            services.AddSingleton<IProjectSettingsService, ProjectSettingsService>();
-
-            // 乐段编辑服务
-            services.AddSingleton<IPeriodEditingService, PeriodEditingService>();
-
-            // 面板 ViewModel
+            // ViewModels
             services.AddTransient<ProjectSettingsWindowViewModel>();
             services.AddTransient<ElementListPanelViewModel>();
             services.AddTransient<PropertiesPanelViewModel>();
             services.AddTransient<TimelinePanelViewModel>();
-
-            // 主窗口 ViewModel（注入所有依赖）
             services.AddTransient<MainWindowViewModel>();
 
             _serviceProvider = services.BuildServiceProvider();
@@ -92,7 +70,6 @@ public partial class App : Application
 
             desktop.MainWindow = mainWindow;
 
-            // 启动时自动加载 Assets/Forms 目录下的所有 .g 源文件
             mainWindow.Opened += async (_, _) =>
             {
                 await mainWindowViewModel.AutoLoadAsync();
