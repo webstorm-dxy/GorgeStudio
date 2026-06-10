@@ -18,6 +18,9 @@ namespace Gorge.GorgeCompiler.Expression
         private readonly IGorgeValueExpression _listObject;
         private readonly IGorgeValueExpression _length;
 
+        public object InjectorCompileConstantValue =>
+            _listObject is { IsCompileConstant: true } ? _listObject.CompileConstantValue : null;
+
         public ArrayConstructorInvocationExpression(SymbolicGorgeType itemType, IGorgeValueExpression listObject,
             IGorgeValueExpression length, CodeBlockScope block, ParserRuleContext expressionLocation) : base(block,
             expressionLocation)

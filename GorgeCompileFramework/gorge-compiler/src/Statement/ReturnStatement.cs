@@ -6,6 +6,7 @@ using Gorge.GorgeCompiler.CompileContext.Scope;
 using Gorge.GorgeCompiler.CompileContext.Symbol;
 using Gorge.GorgeCompiler.Exceptions.CompileException;
 using Gorge.GorgeCompiler.Expression;
+using Gorge.GorgeLanguage.Objective;
 using Gorge.GorgeLanguage.VirtualMachine;
 
 namespace Gorge.GorgeCompiler.Statement
@@ -18,12 +19,27 @@ namespace Gorge.GorgeCompiler.Statement
         private readonly IGorgeValueExpression? _returnExpression;
         public CodeBlockScope Block { get; }
 
+        public object? CompileConstantValue { get; }
+        public bool HasCompileConstantValue { get; }
+
         public ReturnStatement(IGorgeValueExpression? returnExpression, CodeBlockScope block,
             ParserRuleContext antlrContext)
         {
             _returnExpression = returnExpression;
             Block = block;
             AntlrContext = antlrContext;
+
+            if (_returnExpression is { IsCompileConstant: true })
+            {
+                HasCompileConstantValue = true;
+                CompileConstantValue = _returnExpression.CompileConstantValue;
+            }
+            else if (_returnExpression is ArrayConstructorInvocationExpression arrayExpr
+                     && arrayExpr.InjectorCompileConstantValue != null)
+            {
+                HasCompileConstantValue = true;
+                CompileConstantValue = arrayExpr.InjectorCompileConstantValue;
+            }
 
             #region 返回类型验证
 

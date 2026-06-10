@@ -30,6 +30,7 @@ public static class GorgeStudioAppCoreServiceCollectionExtensions
         services.AddSingleton<IChartWorkspaceService, ChartWorkspaceService>();
         services.AddSingleton<IFormsCatalogService, FormsCatalogService>();
         services.AddSingleton<IGodotLaunchWorkflow, GodotLaunchWorkflow>();
+        services.AddSingleton<IPlaybackWorkflow, PlaybackWorkflow>();
         services.AddSingleton<ITimelineEditingWorkflow, TimelineEditingWorkflow>();
         services.AddSingleton<IPropertyInspectionService, PropertyInspectionService>();
 

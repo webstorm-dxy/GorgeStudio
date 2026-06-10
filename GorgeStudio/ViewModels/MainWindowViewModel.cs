@@ -1,9 +1,12 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,9 +27,15 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IChartWorkspaceService? _workspaceService;
     private readonly IFormsCatalogService? _formsCatalogService;
     private readonly IGodotLaunchWorkflow? _godotLaunchWorkflow;
+    private readonly IPlaybackWorkflow? _playbackWorkflow;
     private readonly IProjectSettingsService? _projectSettingsService;
 
     private readonly ChartSession _session = new();
+
+    // Playback sync state
+    private CancellationTokenSource? _playbackSyncCts;
+    private double _anchorRemoteSeconds;
+    private long _anchorLocalTicks;
 
     [ObservableProperty]
     private string _statusText = "就绪";
@@ -38,6 +47,15 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _canLaunch = true;
+
+    [ObservableProperty]
+    private bool _isPlaybackBusy;
+
+    [ObservableProperty]
+    private bool _isRemotePlaying;
+
+    [ObservableProperty]
+    private bool _isRemotePaused;
 
     [ObservableProperty]
     private ViewModelBase? _rightPanel;
@@ -69,6 +87,7 @@ public partial class MainWindowViewModel : ViewModelBase
         IChartWorkspaceService workspaceService,
         IFormsCatalogService formsCatalogService,
         IGodotLaunchWorkflow godotLaunchWorkflow,
+        IPlaybackWorkflow playbackWorkflow,
         IProjectSettingsService projectSettingsService,
         IServiceProvider serviceProvider,
         ElementListPanelViewModel elementListPanel,
@@ -79,6 +98,7 @@ public partial class MainWindowViewModel : ViewModelBase
         _workspaceService = workspaceService;
         _formsCatalogService = formsCatalogService;
         _godotLaunchWorkflow = godotLaunchWorkflow;
+        _playbackWorkflow = playbackWorkflow;
         _projectSettingsService = projectSettingsService;
         _serviceProvider = serviceProvider;
 
@@ -89,6 +109,7 @@ public partial class MainWindowViewModel : ViewModelBase
         // 合并服务的状态消息
         _embedService.StatusChanged += msg => StatusText = msg;
         _workspaceService.StatusChanged += msg => StatusText = msg;
+        _godotLaunchWorkflow.StatusChanged += msg => StatusText = msg;
 
         // 元素列表选中项变更时，同步到属性面板
         elementListPanel.PropertyChanged += (_, e) =>
@@ -384,5 +405,144 @@ public partial class MainWindowViewModel : ViewModelBase
 
         if (file == null) return;
         await _workspaceService!.SaveAsync(_session, file.Path.LocalPath);
+    }
+
+    [RelayCommand]
+    private async Task PlayAsync()
+    {
+        if (_playbackWorkflow == null || CurrentScore == null)
+        {
+            StatusText = "没有可播放的谱面数据";
+            return;
+        }
+
+        if (IsPlaybackBusy) return;
+        IsPlaybackBusy = true;
+
+        try
+        {
+            var timelinePanel = TimelinePanel as TimelinePanelViewModel;
+            var playheadSeconds = timelinePanel?.PlayheadPosition ?? 0;
+
+            _playbackWorkflow.StatusChanged += OnPlaybackStatus;
+            var result = await _playbackWorkflow.PlayFromAsync(_session, playheadSeconds);
+            _playbackWorkflow.StatusChanged -= OnPlaybackStatus;
+
+            if (!result.Success)
+            {
+                StatusText = result.Error ?? "播放失败";
+                return;
+            }
+
+            IsRemotePlaying = true;
+            IsRemotePaused = false;
+            _anchorRemoteSeconds = result.CurrentSeconds;
+            _anchorLocalTicks = Stopwatch.GetTimestamp();
+            StartPlayheadSync();
+        }
+        finally
+        {
+            IsPlaybackBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task PauseAsync()
+    {
+        if (_playbackWorkflow == null) return;
+        if (IsPlaybackBusy || !IsRemotePlaying) return;
+        IsPlaybackBusy = true;
+
+        try
+        {
+            StopPlayheadSync();
+            var result = await _playbackWorkflow.PauseAsync();
+
+            if (!result.Success)
+            {
+                StatusText = result.Error ?? "暂停失败";
+                return;
+            }
+
+            IsRemotePlaying = false;
+            IsRemotePaused = true;
+
+            if (TimelinePanel is TimelinePanelViewModel tp)
+                tp.PlayheadPosition = result.CurrentSeconds;
+
+            StatusText = $"已暂停 ({result.CurrentSeconds:F2}s)";
+        }
+        finally
+        {
+            IsPlaybackBusy = false;
+        }
+    }
+
+    private void OnPlaybackStatus(string msg) => StatusText = msg;
+
+    private void StartPlayheadSync()
+    {
+        StopPlayheadSync();
+        _playbackSyncCts = new CancellationTokenSource();
+        var ct = _playbackSyncCts.Token;
+        _ = RunPlayheadSyncLoopAsync(ct);
+    }
+
+    private void StopPlayheadSync()
+    {
+        _playbackSyncCts?.Cancel();
+        _playbackSyncCts?.Dispose();
+        _playbackSyncCts = null;
+    }
+
+    private async Task RunPlayheadSyncLoopAsync(CancellationToken ct)
+    {
+        var statusPollInterval = TimeSpan.FromMilliseconds(200);
+        var uiUpdateInterval = TimeSpan.FromMilliseconds(20);
+        var lastStatusPoll = Stopwatch.GetTimestamp();
+        int consecutiveFailures = 0;
+
+        while (!ct.IsCancellationRequested && IsRemotePlaying)
+        {
+            // UI update: interpolate playhead from local clock
+            var elapsed = Stopwatch.GetElapsedTime(_anchorLocalTicks);
+            var estimated = _anchorRemoteSeconds + elapsed.TotalSeconds;
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (TimelinePanel is TimelinePanelViewModel tp && IsRemotePlaying)
+                    tp.PlayheadPosition = estimated;
+            });
+
+            // Status poll every 200ms
+            var sinceLastPoll = Stopwatch.GetElapsedTime(lastStatusPoll);
+            if (sinceLastPoll >= statusPollInterval && _playbackWorkflow != null)
+            {
+                lastStatusPoll = Stopwatch.GetTimestamp();
+                var status = await _playbackWorkflow.GetStatusAsync(ct);
+                if (status.Success)
+                {
+                    consecutiveFailures = 0;
+                    _anchorRemoteSeconds = status.CurrentSeconds;
+                    _anchorLocalTicks = Stopwatch.GetTimestamp();
+                }
+                else
+                {
+                    consecutiveFailures++;
+                    if (consecutiveFailures >= 10)
+                    {
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            IsRemotePlaying = false;
+                            StatusText = "播放已结束（状态查询超时）";
+                        });
+                        return;
+                    }
+                }
+            }
+
+            try { await Task.Delay(uiUpdateInterval, ct); }
+            catch (OperationCanceledException) { return; }
+        }
     }
 }

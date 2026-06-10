@@ -53,6 +53,15 @@
                         Content="加载Godot运行核心"
                         Command="{Binding LaunchCommand}"
                         IsEnabled="{Binding CanLaunch}" />
+                <Separator Width="1" Height="22"
+                           Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                           VerticalAlignment="Center" />
+                <Button Content="播放"
+                        Command="{Binding PlayCommand}"
+                        IsEnabled="{Binding !IsPlaybackBusy}" />
+                <Button Content="暂停"
+                        Command="{Binding PauseCommand}"
+                        IsEnabled="{Binding IsRemotePlaying}" />
             </StackPanel>
         </Border>
 

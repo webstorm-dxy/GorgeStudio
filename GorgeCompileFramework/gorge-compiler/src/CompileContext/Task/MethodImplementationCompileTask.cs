@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Gorge.GorgeCompiler.CodeBlock;
+using Gorge.GorgeCompiler.CompileContext.Block;
 using Gorge.GorgeCompiler.CompileContext.Scope;
 using Gorge.GorgeCompiler.CompileContext.Symbol;
 using Gorge.GorgeCompiler.Exceptions;
 using Gorge.GorgeCompiler.Exceptions.CompileException;
 using Gorge.GorgeCompiler.Optimizer;
+using Gorge.GorgeCompiler.Statement;
 using Gorge.GorgeCompiler.Visitors;
 using Gorge.GorgeLanguage.Objective;
 using Gorge.GorgeLanguage.VirtualMachine;
@@ -52,6 +55,8 @@ namespace Gorge.GorgeCompiler.CompileContext.Task
                 _codeBlockList = blockListVisitor.Visit(_context);
                 PanicExceptions.AddRange(blockListVisitor.PanicExceptions);
 
+                ExtractReturnValueToAnnotationMetadata();
+
                 if (generateCode)
                 {
                     DoImplement();
@@ -66,6 +71,61 @@ namespace Gorge.GorgeCompiler.CompileContext.Task
 
                 PanicExceptions.Add(e);
             }
+        }
+
+        private void ExtractReturnValueToAnnotationMetadata()
+        {
+            if (_codeBlockList == null || _methodScope == null)
+                return;
+
+            var methodInfo = _methodScope.MethodInformation;
+            if (methodInfo == null)
+                return;
+
+            Annotation chartAnnotation = null;
+            Annotation songAnnotation = null;
+            foreach (var ann in methodInfo.Annotations)
+            {
+                if (ann.Name == "Chart") chartAnnotation = ann;
+                else if (ann.Name == "Song") songAnnotation = ann;
+            }
+
+            if (chartAnnotation == null && songAnnotation == null)
+                return;
+
+            var returnValue = FindReturnCompileConstant();
+            if (returnValue == null)
+                return;
+
+            if (chartAnnotation != null)
+            {
+                var elementsType = GorgeType.Object("ObjectList", "Gorge");
+                chartAnnotation.TryAddMetadata(new Metadata(elementsType, "elements", returnValue));
+            }
+            else if (songAnnotation != null)
+            {
+                var audioType = GorgeType.Object("Injector", "Gorge");
+                songAnnotation.TryAddMetadata(new Metadata(audioType, "audio", returnValue));
+            }
+        }
+
+        private object? FindReturnCompileConstant()
+        {
+            if (_codeBlockList == null) return null;
+
+            foreach (var block in _codeBlockList)
+            {
+                if (block is NormalBlock normalBlock)
+                {
+                    foreach (var statement in normalBlock.Statements)
+                    {
+                        if (statement is ReturnStatement { HasCompileConstantValue: true } ret)
+                            return ret.CompileConstantValue;
+                    }
+                }
+            }
+
+            return null;
         }
 
         private void DoImplement()

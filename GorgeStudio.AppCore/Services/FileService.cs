@@ -155,8 +155,12 @@ public sealed class FileService : IFileService, IDisposable
         try
         {
             ReportStatus($"Loading zip: {zipFilePath}");
-            using var zipStream = new FileStream(zipFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var package = LoadPackageFromZip(zipStream, zipFilePath, isChart);
+            GorgePackage package;
+            {
+                var fileBytes = await File.ReadAllBytesAsync(zipFilePath, ct);
+                using var zipStream = new MemoryStream(fileBytes);
+                package = LoadPackageFromZip(zipStream, zipFilePath, isChart);
+            }
 
             if (package.SourceFiles.Count == 0)
             {

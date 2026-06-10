@@ -112,6 +112,78 @@ public sealed class GodotRemoteClient : IGodotRemoteClient, IDisposable
         }
     }
 
+    public async Task<PlaybackStatusResult> GetStatusAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            EnsureClient();
+            var request = Encoding.UTF8.GetBytes("{\"cmd\":\"status\"}");
+            await _client!.SendAsync(new ReadOnlyMemory<byte>(request), _options.Host, _options.Port, ct);
+
+            using var responseCts = new CancellationTokenSource(_options.SingleRequestTimeout);
+            using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct, responseCts.Token);
+            var result = await _client.ReceiveAsync(linked.Token);
+            var json = Encoding.UTF8.GetString(result.Buffer);
+
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+            if (root.TryGetProperty("ok", out var ok) && ok.GetBoolean())
+            {
+                double current = root.TryGetProperty("currentSeconds", out var c) ? c.GetDouble() : 0;
+                double begin = root.TryGetProperty("beginSeconds", out var b) ? b.GetDouble() : 0;
+                double end = root.TryGetProperty("endSeconds", out var e) ? e.GetDouble() : 0;
+                double duration = root.TryGetProperty("durationSeconds", out var d) ? d.GetDouble() : 0;
+                return new PlaybackStatusResult(true, null, current, begin, end, duration);
+            }
+
+            var error = root.TryGetProperty("error", out var err) ? err.GetString() : "status failed";
+            return new PlaybackStatusResult(false, error);
+        }
+        catch (OperationCanceledException)
+        {
+            return new PlaybackStatusResult(false, "Cancelled");
+        }
+        catch (Exception ex)
+        {
+            return new PlaybackStatusResult(false, ex.Message);
+        }
+    }
+
+    public async Task<PlaybackCommandResult> SendPlayAsync(CancellationToken ct = default)
+    {
+        return await SendFireAndForgetAsync("{\"cmd\":\"play\"}", ct);
+    }
+
+    public async Task<PlaybackCommandResult> SendPauseAsync(CancellationToken ct = default)
+    {
+        return await SendFireAndForgetAsync("{\"cmd\":\"pause\"}", ct);
+    }
+
+    public async Task<PlaybackCommandResult> SendSeekAsync(double seconds, CancellationToken ct = default)
+    {
+        var payload = JsonSerializer.Serialize(new { cmd = "seek", seconds });
+        return await SendFireAndForgetAsync(payload, ct);
+    }
+
+    private async Task<PlaybackCommandResult> SendFireAndForgetAsync(string payload, CancellationToken ct)
+    {
+        try
+        {
+            EnsureClient();
+            var request = Encoding.UTF8.GetBytes(payload);
+            await _client!.SendAsync(new ReadOnlyMemory<byte>(request), _options.Host, _options.Port, ct);
+            return new PlaybackCommandResult(true);
+        }
+        catch (OperationCanceledException)
+        {
+            return new PlaybackCommandResult(false, "Cancelled");
+        }
+        catch (Exception ex)
+        {
+            return new PlaybackCommandResult(false, ex.Message);
+        }
+    }
+
     private void EnsureClient()
     {
         _client ??= new UdpClient();

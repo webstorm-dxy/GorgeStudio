@@ -19,6 +19,8 @@ namespace Gorge.GorgeCompiler.CodeBlock
     {
         private readonly List<IStatement> _statements;
 
+        public IReadOnlyList<IStatement> Statements => _statements;
+
         public NormalBlock(bool isElse, List<IStatement> statements, CodeBlockScope block) : base(isElse, block)
         {
             _statements = statements;

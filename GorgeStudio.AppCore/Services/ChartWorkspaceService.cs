@@ -176,8 +176,7 @@ public sealed class ChartWorkspaceService : IChartWorkspaceService
             var zipData = _packageWriter.WriteZip(sourceFiles, session.CurrentScore.ChartAssetFiles,
                 settings, formSourceFiles, formResourceFiles);
 
-            await using var stream = new FileStream(targetPath, FileMode.Create, FileAccess.Write, FileShare.None);
-            await stream.WriteAsync(zipData, ct);
+            await WriteFileRobustAsync(targetPath, zipData, ct);
 
             session.CurrentFilePath = targetPath;
             StatusChanged?.Invoke($"保存成功：{Path.GetFileName(targetPath)}");
@@ -185,7 +184,7 @@ public sealed class ChartWorkspaceService : IChartWorkspaceService
         }
         catch (Exception ex)
         {
-            return new SaveChartResult(false, false, null, ex.Message);
+            return new SaveChartResult(false, false, null, $"{targetPath}: {ex.Message}");
         }
     }
 
@@ -229,5 +228,55 @@ public sealed class ChartWorkspaceService : IChartWorkspaceService
         }
 
         return null;
+    }
+
+    private static async Task WriteFileRobustAsync(string targetPath, byte[] data, CancellationToken ct)
+    {
+        var dir = Path.GetDirectoryName(targetPath)!;
+
+        // Verify the target directory is writable; fall back to temp if not
+        if (!IsDirectoryWritable(dir))
+        {
+            dir = Path.GetTempPath();
+        }
+
+        var tempPath = Path.Combine(dir, Path.GetRandomFileName());
+        await File.WriteAllBytesAsync(tempPath, data, ct);
+
+        // Strip read-only attribute on the target if present (File.Move fails otherwise on Windows)
+        if (File.Exists(targetPath))
+        {
+            var attrs = File.GetAttributes(targetPath);
+            if ((attrs & FileAttributes.ReadOnly) != 0)
+                File.SetAttributes(targetPath, attrs & ~FileAttributes.ReadOnly);
+        }
+
+        // Retry the move a few times to survive transient locks (AV, OS, stale handles)
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                File.Move(tempPath, targetPath, overwrite: true);
+                return;
+            }
+            catch when (attempt < 2)
+            {
+                await Task.Delay(200, ct);
+            }
+        }
+    }
+
+    private static bool IsDirectoryWritable(string dir)
+    {
+        try
+        {
+            var probe = Path.Combine(dir, Path.GetRandomFileName());
+            using var _ = File.Create(probe, 1, FileOptions.DeleteOnClose);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
