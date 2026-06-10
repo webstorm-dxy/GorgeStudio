@@ -26,7 +26,6 @@ public static class GorgeStudioAppCoreServiceCollectionExtensions
         services.AddSingleton<IGodotRemoteClient, GodotRemoteClient>();
 
         // New AppCore services
-        services.AddSingleton<IGodotProcessService, GodotProcessService>();
         services.AddSingleton<IChartWorkspaceService, ChartWorkspaceService>();
         services.AddSingleton<IFormsCatalogService, FormsCatalogService>();
         services.AddSingleton<IGodotLaunchWorkflow, GodotLaunchWorkflow>();

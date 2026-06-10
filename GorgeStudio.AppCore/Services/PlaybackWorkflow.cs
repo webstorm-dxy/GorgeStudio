@@ -25,18 +25,15 @@ public interface IPlaybackWorkflow
 public sealed class PlaybackWorkflow : IPlaybackWorkflow
 {
     private readonly IChartWorkspaceService _workspaceService;
-    private readonly IGodotProcessService _processService;
     private readonly IGodotRemoteClient _remoteClient;
 
     public event Action<string>? StatusChanged;
 
     public PlaybackWorkflow(
         IChartWorkspaceService workspaceService,
-        IGodotProcessService processService,
         IGodotRemoteClient remoteClient)
     {
         _workspaceService = workspaceService;
-        _processService = processService;
         _remoteClient = remoteClient;
     }
 
@@ -56,39 +53,33 @@ public sealed class PlaybackWorkflow : IPlaybackWorkflow
         if (saveResult.FilePath == null)
             return new PlaybackResult(false, "保存失败：未获取到文件路径");
 
-        // 2. Launch Godot process
-        StatusChanged?.Invoke("正在启动 Godot...");
-        var launchResult = await _processService.LaunchAsync(ct);
-        if (!launchResult.Success)
-            return new PlaybackResult(false, $"Godot 启动失败：{launchResult.ErrorMessage ?? "未知错误"}");
-
-        // 3. Wait for UDP ready
+        // 2. Wait for UDP ready (Godot 进程由嵌入器启动，此处仅复用)
         StatusChanged?.Invoke("等待 Godot 就绪...");
         var readyResult = await _remoteClient.WaitUntilReadyAsync(ct);
         if (!readyResult.Success)
-            return new PlaybackResult(false, $"Godot UDP 未就绪：{readyResult.Error ?? "超时"}");
+            return new PlaybackResult(false, $"Godot 未就绪：请先点击\"启动\"（{readyResult.Error ?? "超时"}）");
 
-        // 4. Send set_packages
+        // 3. Send set_packages
         StatusChanged?.Invoke("正在加载谱面到 Godot...");
         var setResult = await _remoteClient.SetGpkgAsync(saveResult.FilePath, ct);
         if (!setResult.Success)
             return new PlaybackResult(false, $"set_packages 失败：{setResult.Error ?? "未知错误"}");
 
-        // 5. Seek to playhead
+        // 4. Seek to playhead
         StatusChanged?.Invoke("正在定位播放位置...");
         var seekResult = await _remoteClient.SendSeekAsync(playheadSeconds, ct);
         if (!seekResult.Success)
             return new PlaybackResult(false, $"seek 命令发送失败：{seekResult.Error ?? "未知错误"}");
 
-        // 6. Brief delay for Godot to process seek
+        // 5. Brief delay for Godot to process seek
         await Task.Delay(50, ct);
 
-        // 7. Play
+        // 6. Play
         var playResult = await _remoteClient.SendPlayAsync(ct);
         if (!playResult.Success)
             return new PlaybackResult(false, $"play 命令发送失败：{playResult.Error ?? "未知错误"}");
 
-        // 8. Query status to confirm
+        // 7. Query status to confirm
         await Task.Delay(50, ct);
         var status = await _remoteClient.GetStatusAsync(ct);
         var currentSec = status.Success ? status.CurrentSeconds : playheadSeconds;

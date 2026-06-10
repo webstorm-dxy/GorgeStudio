@@ -21,18 +21,15 @@ public interface IGodotLaunchWorkflow
 public sealed class GodotLaunchWorkflow : IGodotLaunchWorkflow
 {
     private readonly IChartWorkspaceService _workspaceService;
-    private readonly IGodotProcessService _processService;
     private readonly IGodotRemoteClient _remoteClient;
 
     public event Action<string>? StatusChanged;
 
     public GodotLaunchWorkflow(
         IChartWorkspaceService workspaceService,
-        IGodotProcessService processService,
         IGodotRemoteClient remoteClient)
     {
         _workspaceService = workspaceService;
-        _processService = processService;
         _remoteClient = remoteClient;
     }
 
@@ -51,19 +48,13 @@ public sealed class GodotLaunchWorkflow : IGodotLaunchWorkflow
         if (saveResult.FilePath == null)
             return new LaunchGodotResult(false, "保存失败：未获取到文件路径");
 
-        // 2. Launch Godot process
-        StatusChanged?.Invoke("正在启动 Godot...");
-        var launchResult = await _processService.LaunchAsync(ct);
-        if (!launchResult.Success)
-            return new LaunchGodotResult(false, $"启动失败：{launchResult.ErrorMessage ?? "未知错误"}");
-
-        // 3. Wait for Godot UDP ready
+        // 2. Wait for Godot UDP ready (进程由嵌入器启动，此处仅复用)
         StatusChanged?.Invoke("等待 Godot 就绪...");
         var readyResult = await _remoteClient.WaitUntilReadyAsync(ct);
         if (!readyResult.Success)
             return new LaunchGodotResult(false, $"Godot 未就绪：{readyResult.Error ?? "超时"}");
 
-        // 4. Send set_packages command
+        // 3. Send set_packages command
         StatusChanged?.Invoke("正在加载谱面到 Godot...");
         var setResult = await _remoteClient.SetGpkgAsync(saveResult.FilePath, ct);
         if (!setResult.Success)
